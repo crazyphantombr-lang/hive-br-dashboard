@@ -1,17 +1,18 @@
-import { Client } from "https://cdn.jsdelivr.net/npm/@hiveio/dhive/dist/dhive.esm.js";
+const dhive = require("@hiveio/dhive");
+const fs = require("fs");
 
-const client = new Client("https://api.hive.blog");
+const client = new dhive.Client("https://api.hive.blog");
 
-// Busca todas as delegações feitas para @hive-br.voter
+// Busca delegações para @hive-br.voter
 async function getDelegators(delegatee) {
-  const delegations = await client.call("database_api", "list_vesting_delegations", {
+  const result = await client.call("database_api", "list_vesting_delegations", {
     start: [delegatee, ""],
-    limit: 1000, // busca até 1000 delegações
+    limit: 1000,
   });
-  return delegations.vesting_delegations;
+  return result.vesting_delegations;
 }
 
-// Pega dados globais da blockchain para converter VESTS -> HP
+// Conversão VESTS -> HP
 async function getGlobalProps() {
   const props = await client.call("database_api", "get_dynamic_global_properties", {});
   return {
@@ -20,27 +21,25 @@ async function getGlobalProps() {
   };
 }
 
-// Função de conversão para HP
 async function vestToHP(vest) {
   const globals = await getGlobalProps();
   return vest * (globals.totalVestingFundHive / globals.totalVestingShares);
 }
 
-// Função principal: retorna ranking ordenado
-export async function fetchDelegationData() {
+// Gera e salva arquivo data/current.json
+async function run() {
   const delegations = await getDelegators("hive-br.voter");
-  const data = [];
+  const list = [];
 
   for (const d of delegations) {
     const hp = await vestToHP(parseFloat(d.vesting_shares));
-    data.push({ delegator: d.delegator, hp });
+    list.push({ delegator: d.delegator, hp });
   }
 
-  // Ordena por maior HP delegado
-  data.sort((a, b) => b.hp - a.hp);
+  list.sort((a, b) => b.hp - a.hp);
 
-  return data;
+  fs.writeFileSync("data/current.json", JSON.stringify(list, null, 2));
+  console.log("✅ current.json atualizado.");
 }
 
-// Permite testar manualmente rodando no console (opcional)
-fetchDelegationData().then(console.log);
+run();
