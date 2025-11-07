@@ -1,58 +1,36 @@
 const fs = require("fs");
-const dhive = require("@hiveio/dhive");
+const fetch = require("node-fetch");
 
-// Lista de RPCs confiáveis — qualquer um aqui funciona com database_api
-const RPCNODES = [
-  "https://api.hive.blog",
-  "https://api.openhive.network",
-  "https://anyx.io",
-  "https://hive.roelandp.nl"
-];
+const TARGET = "hive-br.voter";
 
-const client = new dhive.Client(RPCNODES);
-
-async function getGlobalProps() {
-  const props = await client.call("database_api", "get_dynamic_global_properties", {});
-  return {
-    totalVestingFundHive: parseFloat(props.total_vesting_fund_hive),
-    totalVestingShares: parseFloat(props.total_vesting_shares)
-  };
-}
-
-async function vestToHP(vest) {
-  const g = await getGlobalProps();
-  return vest * (g.totalVestingFundHive / g.totalVestingShares);
-}
-
-async function getDelegations(delegatee) {
-  const result = await client.call("database_api", "list_vesting_delegations", {
-    start: [delegatee, ""],
-    limit: 1000,
-    order: "by_delegatee"
+async function getDelegations() {
+  const response = await fetch("https://api.peakd.com/raw", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      method: "bridge.get_account",
+      params: { account: TARGET },
+      id: 1
+    })
   });
 
-  return result.delegations || [];
+  const json = await response.json();
+  if (!json.result || !json.result.delegations_in) return [];
+
+  return json.result.delegations_in.map(d => ({
+    delegator: d.delegator,
+    hp: d.amount / 1000 // converte de VEST para HP aproximado
+  })).sort((a, b) => b.hp - a.hp);
 }
 
 async function run() {
   try {
-    const rawDelegs = await getDelegations("hive-br.voter");
-    const list = [];
-
-    for (const d of rawDelegs) {
-      const hp = await vestToHP(parseFloat(d.vesting_shares));
-      list.push({
-        delegator: d.delegator,
-        hp: Number(hp.toFixed(3))
-      });
-    }
-
-    list.sort((a, b) => b.hp - a.hp);
-    fs.writeFileSync("data/current.json", JSON.stringify(list, null, 2));
-
-    console.log("✅ current.json atualizado COM SUCESSO.");
+    const delegs = await getDelegations();
+    fs.writeFileSync("data/current.json", JSON.stringify(delegs, null, 2));
+    console.log("✅ current.json atualizado com sucesso!");
   } catch (err) {
-    console.error("❌ Erro:", err.message);
+    console.error("❌ Erro ao buscar delegações:", err.message);
     fs.writeFileSync("data/current.json", "[]");
   }
 }
