@@ -1,18 +1,10 @@
 const dhive = require("@hiveio/dhive");
 const fs = require("fs");
 
-const client = new dhive.Client("https://api.openhive.network");
+// NÓ que suporta API "bridge"
+const client = new dhive.Client("https://rpc.ecency.com");
 
-
-async function getDelegators(delegatee) {
-  const delegations = await client.call("condenser_api", "get_vesting_delegations", [
-    delegatee,
-    "",
-    1000
-  ]);
-  return delegations;
-}
-
+// Converte vest → HP
 async function getGlobalProps() {
   const props = await client.call("database_api", "get_dynamic_global_properties", {});
   return {
@@ -22,23 +14,33 @@ async function getGlobalProps() {
 }
 
 async function vestToHP(vest) {
-  const globals = await getGlobalProps();
-  return vest * (globals.totalVestingFundHive / globals.totalVestingShares);
+  const g = await getGlobalProps();
+  return vest * (g.totalVestingFundHive / g.totalVestingShares);
 }
 
-async function run() {
-  const delegations = await getDelegators("hive-br.voter");
+// AQUI: pegamos delegações recebidas (igual o Hivetasks faz)
+async function getDelegations(delegatee) {
+  const acc = await client.call("bridge", "get_account", { account: delegatee });
+
+  // Se a conta não tem delegações
+  if (!acc.delegations_in) return [];
+
   const list = [];
 
-  for (const d of delegations) {
+  for (const d of acc.delegations_in) {
     const hp = await vestToHP(parseFloat(d.vesting_shares));
     list.push({ delegator: d.delegator, hp });
   }
 
-  list.sort((a, b) => b.hp - a.hp);
+  // Ordena maior → menor
+  return list.sort((a, b) => b.hp - a.hp);
+}
 
-  fs.writeFileSync("data/current.json", JSON.stringify(list, null, 2));
-  console.log("✅ current.json atualizado com sucesso.");
+async function run() {
+  const data = await getDelegations("hive-br.voter");
+
+  fs.writeFileSync("data/current.json", JSON.stringify(data, null, 2));
+  console.log("✅ current.json atualizado.");
 }
 
 run();
