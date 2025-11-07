@@ -3,16 +3,17 @@ const fs = require("fs");
 
 const client = new dhive.Client("https://api.hive.blog");
 
-// Busca delegações para @hive-br.voter
+// Busca delegações recebidas por @hive-br.voter
 async function getDelegators(delegatee) {
   const result = await client.call("database_api", "list_vesting_delegations", {
-    start: [delegatee, ""],
-    limit: 1000,
+    order: "by_delegatee",
+    start: ["", delegatee],
+    limit: 1000
   });
   return result.vesting_delegations;
 }
 
-// Conversão VESTS -> HP
+// Conversão VESTS → HP
 async function getGlobalProps() {
   const props = await client.call("database_api", "get_dynamic_global_properties", {});
   return {
@@ -26,7 +27,7 @@ async function vestToHP(vest) {
   return vest * (globals.totalVestingFundHive / globals.totalVestingShares);
 }
 
-// Gera e salva arquivo data/current.json
+// Processo principal
 async function run() {
   const delegations = await getDelegators("hive-br.voter");
   const list = [];
@@ -37,7 +38,6 @@ async function run() {
   }
 
   list.sort((a, b) => b.hp - a.hp);
-
   fs.writeFileSync("data/current.json", JSON.stringify(list, null, 2));
   console.log("✅ current.json atualizado.");
 }
