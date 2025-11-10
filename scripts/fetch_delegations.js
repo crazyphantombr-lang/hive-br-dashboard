@@ -21,7 +21,7 @@ async function run() {
       .sort((a, b) => b.hp - a.hp);
 
     fs.writeFileSync("data/current.json", JSON.stringify(delegations, null, 2));
-    console.log("✅ current.json atualizado com sucesso!");
+// Não imprimir nada no arquivo do GitHub Pages
   } catch (err) {
     console.error("❌ Erro ao buscar delegações:", err.message);
     fs.writeFileSync("data/current.json", "[]");
