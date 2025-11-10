@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Fetch delegations
-        run: node scripts/fetch_delegations.js > data/current.json
+        run: node scripts/fetch_delegations.js
 
       - name: Commit changes
         run: |
