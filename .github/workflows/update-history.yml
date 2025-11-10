@@ -31,5 +31,6 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add data/current.json
+          git add data/history.json
           git commit -m "Atualização automática do ranking" || echo "Sem mudanças"
           git push
