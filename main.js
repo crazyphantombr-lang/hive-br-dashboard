@@ -1,7 +1,7 @@
 async function loadRanking() {
   try {
     // Busca o arquivo gerado pelo GitHub Actions
-    const res = await fetch("./data/current.json");
+    const res = await fetch("https://crazyphantombr-lang.github.io/hive-br-voter-ranking/data/current.json");
     const delegations = await res.json();
 
     const tbody = document.getElementById("ranking-body");
