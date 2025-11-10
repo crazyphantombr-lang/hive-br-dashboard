@@ -1,54 +1,31 @@
-async function loadCurrent() {
+async function loadRanking() {
   try {
-    const res = await fetch("data/current.json");
-    return await res.json();
-  } catch (e) {
-    console.error("Erro ao carregar current.json:", e);
-    return [];
+    // Busca o arquivo gerado pelo GitHub Actions
+    const res = await fetch("./data/current.json");
+    const delegations = await res.json();
+
+    const tbody = document.getElementById("ranking-body");
+    tbody.innerHTML = "";
+
+    delegations.forEach(({ delegator, hp }) => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>
+          <img src="https://images.hive.blog/u/${delegator}/avatar/small" 
+               style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:6px;">
+          <a href="https://peakd.com/@${delegator}" target="_blank">@${delegator}</a>
+        </td>
+        <td>${hp.toLocaleString("pt-BR", { minimumFractionDigits: 3 })}</td>
+        <td>—</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+  } catch (err) {
+    console.error("Erro ao carregar ranking:", err);
   }
 }
 
-async function loadHistory() {
-  try {
-    const res = await fetch("data/history.json");
-    return await res.json();
-  } catch (e) {
-    console.error("Erro ao carregar history.json:", e);
-    return {};
-  }
-}
-
-async function render() {
-  const ranking = await loadCurrent();
-  const history = await loadHistory();
-  const tbody = document.getElementById("ranking-body");
-
-  tbody.innerHTML = "";
-
-  ranking.forEach((entry) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${entry.delegator}</td>
-      <td class="hp-value">${entry.hp.toFixed(2)}</td>
-      <td><canvas id="chart-${entry.delegator}"></canvas></td>
-    `;
-    tbody.appendChild(row);
-
-    const userHistory = history[entry.delegator] || {};
-    const labels = Object.keys(userHistory);
-    const data = Object.values(userHistory);
-
-    if (labels.length > 1) {
-      new Chart(document.getElementById(`chart-${entry.delegator}`), {
-        type: "line",
-        data: { labels, datasets: [{ data }] },
-        options: {
-          scales: { x: { display: false }, y: { display: false } },
-          plugins: { legend: { display: false } }
-        }
-      });
-    }
-  });
-}
-
-render();
+loadRanking();
