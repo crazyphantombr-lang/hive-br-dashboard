@@ -3,22 +3,8 @@ const fetch = require("node-fetch");
 
 const TARGET = "hive-br.voter";
 
-async function getDelegations() {
-  const query = `
-    select delegator, vesting_shares 
-    from hive_vesting_delegations 
-    where delegatee = '${TARGET}';
-  `;
-
-  const url = "https://db.ausbit.dev/query?q=" + encodeURIComponent(query);
-
-  const res = await fetch(url);
-  const json = await res.json();
-
-  // VESTS → HP converter
-  // HP = VESTS / 1e6 * Hive_Vesting_Share_Ratio
-  // Pegaremos o ratio automaticamente
-  const global = await fetch("https://api.hive.blog", {
+async function getGlobalProps() {
+  const res = await fetch("https://api.hive.blog", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -27,26 +13,39 @@ async function getDelegations() {
       params: [],
       id: 1
     })
-  }).then(r => r.json());
+  });
 
-  const gp = global.result;
+  const json = await res.json();
+  const gp = json.result;
+
   const totalVestingFund = parseFloat(gp.total_vesting_fund_hive.split(" ")[0]);
   const totalVestingShares = parseFloat(gp.total_vesting_shares.split(" ")[0]);
-  const vestToHp = totalVestingFund / totalVestingShares;
 
-  const formatted = json.map(row => ({
-    delegator: row.delegator,
-    hp: parseFloat(row.vesting_shares) * vestToHp
-  })).sort((a, b) => b.hp - a.hp);
+  return totalVestingFund / totalVestingShares;
+}
 
-  return formatted;
+async function getDelegations() {
+  const url = `https://rpc.mahdiyari.info/hafsql/delegations/${TARGET}/incoming?limit=500`;
+  const res = await fetch(url);
+  return await res.json();
 }
 
 async function run() {
   try {
-    const delegs = await getDelegations();
-    fs.writeFileSync("data/current.json", JSON.stringify(delegs, null, 2));
-    console.log("✅ current.json atualizado com sucesso!");
+    const ratio = await getGlobalProps();
+    const delegations = await getDelegations();
+
+    const formatted = delegations.map(d => {
+      const vests = parseFloat(d.vesting_shares.split(" ")[0]);
+      const hp = vests * ratio;
+      return {
+        delegator: d.delegator,
+        hp: Number(hp.toFixed(3))
+      };
+    }).sort((a, b) => b.hp - a.hp);
+
+    fs.writeFileSync("data/current.json", JSON.stringify(formatted, null, 2));
+    console.log("✅ Delegações atualizadas com sucesso!");
   } catch (err) {
     console.error("❌ Erro:", err.message);
     fs.writeFileSync("data/current.json", "[]");
