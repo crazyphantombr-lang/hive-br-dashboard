@@ -8,7 +8,7 @@ const fs = require("fs");
 const path = require("path");
 
 const DATA_DIR = "data";
-const HISTORY_FILE = path.join(DATA_DIR, "history.json");
+const HISTORY_FILE = path.join(DATA_DIR, "ranking_history.json");
 const CURRENT_FILE = path.join(DATA_DIR, "current.json");
 
 // Garante que o diretório exista
