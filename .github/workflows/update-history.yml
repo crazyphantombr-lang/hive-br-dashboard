@@ -6,7 +6,7 @@ on:
   workflow_dispatch:      # Permite rodar manualmente pelo botão
 
 permissions:
-  contents: write         # PERMISSÃO CRÍTICA: Permite salvar o arquivo
+  contents: write         # Permite salvar o arquivo
 
 jobs:
   update:
@@ -30,7 +30,7 @@ jobs:
       - name: Merge History (Step 2)
         run: node scripts/merge_history.js
 
-- name: Commit and Push
+      - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -41,7 +41,7 @@ jobs:
           # Adiciona os arquivos
           git add data/*.json
           
-          # Verifica e salva
+          # Verifica se há mudanças antes de commitar
           if git diff --staged --quiet; then
             echo "Nenhuma mudança detectada no histórico."
           else
