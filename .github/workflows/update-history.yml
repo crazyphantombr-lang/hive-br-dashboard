@@ -30,15 +30,18 @@ jobs:
       - name: Merge History (Step 2)
         run: node scripts/merge_history.js
 
-      - name: Commit and Push
+- name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Adiciona todos os arquivos na pasta data
+          # Tenta baixar mudanças recentes para evitar erro de conflito
+          git pull --rebase --autostash origin main
+          
+          # Adiciona os arquivos
           git add data/*.json
           
-          # Verifica se há algo para commitar antes de tentar
+          # Verifica e salva
           if git diff --staged --quiet; then
             echo "Nenhuma mudança detectada no histórico."
           else
