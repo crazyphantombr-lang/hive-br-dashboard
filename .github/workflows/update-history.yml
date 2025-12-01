@@ -24,28 +24,33 @@ jobs:
       - name: Install Dependencies
         run: npm install node-fetch
 
-      - name: Fetch Delegations (Step 1)
+      - name: Fetch Delegations
         run: node scripts/fetch_delegations.js
 
-      - name: Merge History (Step 2)
+      - name: Merge History
         run: node scripts/merge_history.js
 
-      - name: Commit and Push
+      - name: Debug List Files
+        run: ls -la data/
+
+      - name: Commit and Push (FORÇADO)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Tenta baixar mudanças recentes para evitar erro de conflito
+          # 1. Baixa novidades para não travar
           git pull --rebase --autostash origin main
           
-          # Adiciona os arquivos
-          git add data/*.json
+          # 2. O COMANDO MÁGICO (-f)
+          # Isso obriga o Git a salvar o arquivo mesmo se estiver bloqueado no .gitignore
+          git add -f data/history.json
+          git add data/current.json
           
-          # Verifica se há mudanças antes de commitar
+          # 3. Verifica e Envia
           if git diff --staged --quiet; then
-            echo "Nenhuma mudança detectada no histórico."
+            echo "Nenhuma mudança para salvar."
           else
-            git commit -m "Auto: Atualização de histórico [skip ci]"
+            git commit -m "Auto: Forçando atualização do histórico [skip ci]"
             git push
           fi
         env:
