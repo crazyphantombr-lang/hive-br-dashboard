@@ -1,18 +1,17 @@
 /**
  * Script: Main Frontend Logic
- * Version: 1.3.0
- * Description: Dashboard completo com Search, Stats e Ranking
+ * Version: 1.4.0
+ * Description: Implementa cálculo de fidelidade (Dias) e Badges de Veterano
  */
 
 async function loadDashboard() {
   const BASE_URL = "https://crazyphantombr-lang.github.io/hive-br-voter-ranking/data";
   
   try {
-    // Busca dados em paralelo (incluindo o novo meta.json)
     const [resCurrent, resHistory, resMeta] = await Promise.all([
       fetch(`${BASE_URL}/current.json`),
       fetch(`${BASE_URL}/ranking_history.json`),
-      fetch(`${BASE_URL}/meta.json`) // Tenta buscar metadados, se existir
+      fetch(`${BASE_URL}/meta.json`)
     ]);
 
     if (!resCurrent.ok) throw new Error("Erro ao carregar dados.");
@@ -21,13 +20,8 @@ async function loadDashboard() {
     const historyData = resHistory.ok ? await resHistory.json() : {};
     const metaData = resMeta.ok ? await resMeta.json() : null;
 
-    // 1. Renderiza Cabeçalho e Stats
     updateStats(delegations, metaData, historyData);
-
-    // 2. Renderiza Tabela
     renderTable(delegations, historyData);
-
-    // 3. Ativa Pesquisa
     setupSearch();
 
   } catch (err) {
@@ -37,7 +31,6 @@ async function loadDashboard() {
 }
 
 function updateStats(delegations, meta, historyData) {
-  // Data de Atualização
   const dateEl = document.getElementById("last-updated");
   if (meta && meta.last_updated) {
     const dateObj = new Date(meta.last_updated);
@@ -46,7 +39,6 @@ function updateStats(delegations, meta, historyData) {
     dateEl.innerText = "Atualizado recentemente";
   }
 
-  // Estatísticas Gerais
   const totalHP = delegations.reduce((acc, curr) => acc + curr.hp, 0);
   const totalUsers = delegations.length;
 
@@ -55,9 +47,7 @@ function updateStats(delegations, meta, historyData) {
   
   document.getElementById("stat-count").innerText = totalUsers;
 
-  // Calcula Maior Crescimento (Quem mais subiu de ontem pra hoje)
   let bestGrower = { name: "—", val: 0 };
-  
   delegations.forEach(user => {
     const hist = historyData[user.delegator];
     if (hist) {
@@ -66,10 +56,7 @@ function updateStats(delegations, meta, historyData) {
         const todayVal = hist[dates[dates.length - 1]];
         const yesterdayVal = hist[dates[dates.length - 2]];
         const diff = todayVal - yesterdayVal;
-        
-        if (diff > bestGrower.val) {
-          bestGrower = { name: user.delegator, val: diff };
-        }
+        if (diff > bestGrower.val) bestGrower = { name: user.delegator, val: diff };
       }
     }
   });
@@ -80,6 +67,17 @@ function updateStats(delegations, meta, historyData) {
   }
 }
 
+function calculateDuration(timestamp) {
+  if (!timestamp) return { days: 0, text: "Recente" };
+  
+  const start = new Date(timestamp);
+  const now = new Date();
+  const diffTime = Math.abs(now - start);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+
+  return { days: diffDays, text: `${diffDays} dias` };
+}
+
 function renderTable(delegations, historyData) {
   const tbody = document.getElementById("ranking-body");
   tbody.innerHTML = "";
@@ -88,12 +86,20 @@ function renderTable(delegations, historyData) {
     const rank = index + 1;
     const tr = document.createElement("tr");
     
-    // Adiciona classe para busca (nome do usuário em minúsculo)
     tr.classList.add("delegator-row");
     tr.dataset.name = user.delegator.toLowerCase();
 
     const canvasId = `chart-${user.delegator}`;
     const bonusHtml = getBonusBadge(rank);
+
+    // Lógica de Fidelidade
+    const duration = calculateDuration(user.timestamp);
+    let durationHtml = duration.text;
+    
+    // Se for veterano (mais de 365 dias), adiciona badge
+    if (duration.days > 365) {
+      durationHtml += ` <span class="veteran-badge" title="Veterano (+1 ano)">🎖️</span>`;
+    }
 
     tr.innerHTML = `
       <td>
@@ -105,6 +111,9 @@ function renderTable(delegations, historyData) {
       <td style="font-weight:bold; font-family:monospace; font-size:1.1em;">
           ${user.hp.toLocaleString("pt-BR", { minimumFractionDigits: 3 })}
       </td>
+      <td style="font-size:0.9em;">
+          ${durationHtml}
+      </td>
       <td>${bonusHtml}</td>
       <td style="width:140px;">
           <canvas id="${canvasId}" width="120" height="40"></canvas>
@@ -113,7 +122,6 @@ function renderTable(delegations, historyData) {
 
     tbody.appendChild(tr);
 
-    // Gráfico
     let userHistory = historyData[user.delegator] || {};
     if (Object.keys(userHistory).length === 0) {
        const today = new Date().toISOString().slice(0, 10);
@@ -128,14 +136,8 @@ function setupSearch() {
   input.addEventListener("keyup", (e) => {
     const term = e.target.value.toLowerCase();
     const rows = document.querySelectorAll(".delegator-row");
-
     rows.forEach(row => {
-      const name = row.dataset.name;
-      if (name.includes(term)) {
-        row.style.display = "";
-      } else {
-        row.style.display = "none";
-      }
+      row.style.display = row.dataset.name.includes(term) ? "" : "none";
     });
   });
 }
@@ -165,7 +167,7 @@ function renderSparkline(canvasId, userHistoryObj) {
         data: values,
         borderColor: color,
         borderWidth: 2,
-        pointRadius: values.length === 1 ? 3 : 0, // Bolinha se for só 1 ponto
+        pointRadius: values.length === 1 ? 3 : 0,
         tension: 0.2,
         fill: false
       }]
@@ -179,3 +181,4 @@ function renderSparkline(canvasId, userHistoryObj) {
 }
 
 document.addEventListener("DOMContentLoaded", loadDashboard);
+                      
