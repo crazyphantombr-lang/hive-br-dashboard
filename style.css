@@ -1,7 +1,7 @@
 /**
- * Stylesheet: Hive BR Ranking Theme
- * Version: 1.2.0
- * Update: Added Bonus Badges styles
+ * Stylesheet: Hive BR Dashboard Theme
+ * Version: 1.3.0
+ * Theme: Cyberpunk Clean
  */
 
 :root {
@@ -9,166 +9,176 @@
   --bg-card: #13131f;
   --accent-purple: #9d4eff;
   --accent-green: #4dff91;
+  --accent-blue: #4da6ff;
   --text-main: #e6e6ff;
   --text-muted: #a3a3cc;
   --border-color: #2a2a35;
-  --glow-shadow: 0 0 10px rgba(157, 78, 255, 0.3);
-
-  /* Bonus Colors */
-  --gold: #ffd700;
-  --silver: #c0c0c0;
-  --bronze: #cd7f32;
-  --honor: #4da6ff;
 }
 
 body {
   background-color: var(--bg-dark);
   background-image: radial-gradient(circle at 50% 0%, #1a1025 0%, var(--bg-dark) 80%);
   color: var(--text-main);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   margin: 0;
   padding: 20px;
-  line-height: 1.6;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* --- HEADER --- */
+header {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
 h1 {
-  color: var(--accent-purple);
-  text-align: center;
-  margin-top: 30px;
-  margin-bottom: 40px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-shadow: var(--glow-shadow);
-  text-transform: uppercase;
-  font-size: 2.2rem;
+  font-size: 2.5rem;
+  margin: 10px 0;
+  color: #fff;
+  letter-spacing: 2px;
 }
 
+.highlight {
+  color: var(--accent-purple);
+  text-shadow: 0 0 15px rgba(157, 78, 255, 0.4);
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-top: 0;
+}
+
+.last-updated {
+  font-size: 0.8rem;
+  color: var(--accent-green);
+  font-family: monospace;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+/* --- STATS CARDS --- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.stat-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-card p {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+#stat-total-hp { color: var(--accent-purple); }
+#stat-growth { color: var(--accent-green); }
+
+/* --- SEARCH BAR --- */
+.search-container {
+  margin-bottom: 20px;
+}
+
+#search-input {
+  width: 100%;
+  padding: 15px;
+  font-size: 1rem;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  color: #fff;
+  box-sizing: border-box; /* Garante que padding não estoure a largura */
+  transition: all 0.3s ease;
+}
+
+#search-input:focus {
+  outline: none;
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 15px rgba(157, 78, 255, 0.2);
+}
+
+/* --- TABLE --- */
 table {
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
   border-collapse: separate;
   border-spacing: 0;
   background: var(--bg-card);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   border: 1px solid var(--border-color);
-}
-
-thead {
-  background-color: #1a1130;
 }
 
 th {
   padding: 16px 20px;
   text-align: left;
-  font-size: 0.9rem;
   color: var(--accent-purple);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-weight: 800;
-  border-bottom: 2px solid var(--accent-purple);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background-color: #1a1130;
+  font-size: 0.85rem;
+  border-bottom: 2px solid var(--border-color);
+  background-color: #151525;
 }
 
 td {
   padding: 14px 20px;
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
-  font-size: 1rem;
   color: var(--text-muted);
-  transition: color 0.2s ease;
 }
 
-tr:last-child td {
-  border-bottom: none;
+tr:hover {
+  background-color: rgba(157, 78, 255, 0.05);
 }
 
-tbody tr {
-  transition: background-color 0.2s ease;
-}
-
-tbody tr:hover {
-  background-color: rgba(157, 78, 255, 0.08);
-}
-
-tbody tr:hover td {
+tr:hover td {
   color: #fff;
 }
 
 a {
-  color: var(--text-main);
+  color: #fff;
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.2s;
 }
 
-a:hover {
-  color: var(--accent-purple);
-  text-decoration: underline;
-}
-
-td:nth-child(2) {
-  color: var(--accent-green);
-  font-family: "Courier New", Courier, monospace;
-  font-weight: bold;
-  letter-spacing: -0.5px;
-}
-
-td img {
-  box-shadow: 0 0 5px rgba(0,0,0,0.5);
-  border: 1px solid var(--border-color);
-}
-
-canvas {
-  display: block;
-  max-width: 100%;
-}
-
-/* --- NOVOS ESTILOS DE BÔNUS --- */
+/* Bonus Tags Styles */
 .bonus-tag {
   display: inline-block;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
   font-weight: bold;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  min-width: 50px;
-  text-align: center;
+  border: 1px solid transparent;
 }
+.bonus-gold { color: #ffd700; border-color: #ffd700; background: rgba(255, 215, 0, 0.1); }
+.bonus-silver { color: #c0c0c0; border-color: #c0c0c0; background: rgba(192, 192, 192, 0.1); }
+.bonus-bronze { color: #cd7f32; border-color: #cd7f32; background: rgba(205, 127, 50, 0.1); }
+.bonus-honor { color: var(--accent-blue); border-color: var(--accent-blue); background: rgba(77, 166, 255, 0.1); }
 
-.bonus-gold {
-  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
-  color: #1a1000;
-  border: 1px solid #ffd700;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
-}
-
-.bonus-silver {
-  background: linear-gradient(135deg, #e0e0e0 0%, #757575 100%);
-  color: #212121;
-  border: 1px solid #c0c0c0;
-}
-
-.bonus-bronze {
-  background: linear-gradient(135deg, #cd7f32 0%, #8b4513 100%);
-  color: #fff;
-  border: 1px solid #cd7f32;
-}
-
-.bonus-honor {
-  background: rgba(77, 166, 255, 0.15);
-  color: var(--honor);
-  border: 1px solid var(--honor);
-}
-
+/* Responsividade */
 @media (max-width: 600px) {
-  h1 { font-size: 1.5rem; }
+  h1 { font-size: 1.8rem; }
+  .stats-grid { grid-template-columns: 1fr; }
   th, td { padding: 10px; font-size: 0.85rem; }
   canvas { width: 80px !important; }
 }
