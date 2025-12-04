@@ -1,7 +1,7 @@
 /**
  * Stylesheet: Hive BR Dashboard Theme
- * Version: 1.4.0
- * Update: Added Veteran Badge styles
+ * Version: 1.5.0
+ * Update: Recent Activity styles
  */
 
 :root {
@@ -9,6 +9,7 @@
   --bg-card: #13131f;
   --accent-purple: #9d4eff;
   --accent-green: #4dff91;
+  --accent-red: #ff4d4d;
   --accent-blue: #4da6ff;
   --text-main: #e6e6ff;
   --text-muted: #a3a3cc;
@@ -39,6 +40,34 @@ h1 { font-size: 2.5rem; margin: 10px 0; color: #fff; letter-spacing: 2px; }
 #stat-total-hp { color: var(--accent-purple); }
 #stat-growth { color: var(--accent-green); }
 
+/* --- ACTIVITY SECTION (NOVO) --- */
+.activity-container {
+  margin-bottom: 30px;
+  animation: fadeIn 0.5s ease;
+}
+.section-title {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-left: 3px solid var(--accent-purple);
+  padding-left: 10px;
+}
+.activity-table {
+  width: 100%;
+  background: rgba(19, 19, 31, 0.6); /* Mais transparente que a tabela principal */
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+.activity-table th { background: #151525; padding: 10px 15px; color: var(--text-muted); font-size: 0.8rem; }
+.activity-table td { padding: 10px 15px; border-bottom: 1px solid #222; }
+.diff-positive { color: var(--accent-green); font-weight: bold; }
+.diff-negative { color: var(--accent-red); font-weight: bold; }
+.val-muted { color: #666; font-family: monospace; }
+
+/* Search & Main Table */
 .search-container { margin-bottom: 20px; }
 #search-input { width: 100%; padding: 15px; font-size: 1rem; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; color: #fff; box-sizing: border-box; transition: all 0.3s ease; }
 #search-input:focus { outline: none; border-color: var(--accent-purple); box-shadow: 0 0 15px rgba(157, 78, 255, 0.2); }
@@ -55,24 +84,13 @@ a { color: #fff; text-decoration: none; font-weight: 600; }
 .bonus-silver { color: #c0c0c0; border-color: #c0c0c0; background: rgba(192, 192, 192, 0.1); }
 .bonus-bronze { color: #cd7f32; border-color: #cd7f32; background: rgba(205, 127, 50, 0.1); }
 .bonus-honor { color: var(--accent-blue); border-color: var(--accent-blue); background: rgba(77, 166, 255, 0.1); }
-
-/* Badge de Veterano */
-.veteran-badge {
-  color: #ff9f43;
-  border: 1px solid #ff9f43;
-  background: rgba(255, 159, 67, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  margin-left: 5px;
-  vertical-align: middle;
-  cursor: help;
-}
+.veteran-badge { color: #ff9f43; border: 1px solid #ff9f43; background: rgba(255, 159, 67, 0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 5px; cursor: help; }
 
 @media (max-width: 600px) {
   h1 { font-size: 1.8rem; }
   .stats-grid { grid-template-columns: 1fr; }
   th, td { padding: 10px; font-size: 0.85rem; }
-  canvas { width: 80px !impo
-    rtant; }
+  canvas { width: 80px !important; }
 }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
