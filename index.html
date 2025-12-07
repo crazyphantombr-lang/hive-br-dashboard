@@ -51,19 +51,24 @@
       <input type="text" id="search-input" placeholder="🔍 Buscar delegador..." autocomplete="off">
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Delegador</th>
-          <th>Delegação<br><small>Hivebr.voter</small></th>
-          <th>HP Próprio<br><small>(Total)</small></th>
-          <th>HBR<br><small>Token</small></th> <th>Tempo</th>
-          <th>Bônus</th>
-          <th>Histórico</th>
-        </tr>
-      </thead>
-      <tbody id="ranking-body"></tbody>
-    </table>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th class="sticky-col">Delegador</th>
+            <th>Delegação<br><small>Hivebr.voter</small></th>
+            <th>HP Próprio<br><small>(Total)</small></th>
+            <th>HBR<br><small>(Em Stake)</small></th>
+            <th>Tempo</th>
+            <th>Bônus de<br>Delegação</th>
+            <th>Bônus<br>HBR</th>
+            <th>Histórico de<br>Delegação</th>
+          </tr>
+        </thead>
+        <tbody id="ranking-body"></tbody>
+      </table>
+    </div>
+
   </div>
 
 </body>
