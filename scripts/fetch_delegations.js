@@ -1,7 +1,7 @@
 /**
- * Script: Fetch Delegations (Multi-Node Failover)
- * Version: 1.9.2
- * Update: Implementa rotação de servidores RPC e limite seguro de histórico (1500)
+ * Script: Fetch Delegations (Pagination Fix)
+ * Version: 1.9.3
+ * Update: Busca histórico em lotes de 1000 para respeitar limites da API
  */
 
 const fetch = require("node-fetch");
@@ -14,11 +14,10 @@ const TOKEN_SYMBOL = "HBR";
 const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${ACCOUNT}/incoming?limit=300`;
 const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 
-// Lista de Servidores para garantir que um funcione
 const RPC_NODES = [
-  "https://api.hive.blog",       // Oficial (Lento mas confiável)
-  "https://api.deathwing.me",    // Rápido
-  "https://api.openhive.network" // Alternativo
+  "https://api.hive.blog",
+  "https://api.deathwing.me",
+  "https://api.openhive.network"
 ];
 
 const DATA_DIR = "data";
@@ -27,7 +26,7 @@ if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-// Função inteligente que tenta vários nós até conseguir
+// Função RPC genérica com rotação de nodes
 async function hiveRpc(method, params) {
   for (const node of RPC_NODES) {
     try {
@@ -35,7 +34,7 @@ async function hiveRpc(method, params) {
         method: "POST",
         body: JSON.stringify({ jsonrpc: "2.0", method: method, params: params, id: 1 }),
         headers: { "Content-Type": "application/json" },
-        timeout: 5000 // 5 segundos de timeout
+        timeout: 8000 // Aumentei timeout para 8s
       });
       
       if (!response.ok) throw new Error(`Status ${response.status}`);
@@ -43,9 +42,9 @@ async function hiveRpc(method, params) {
       const json = await response.json();
       if (json.error) throw new Error(json.error.message);
       
-      return json.result; // Sucesso! Retorna e sai do loop
+      return json.result; 
     } catch (err) {
-      console.warn(`⚠️ Falha no node ${node}: ${err.message}. Tentando próximo...`);
+      console.warn(`⚠️ Node ${node} falhou: ${err.message}.`);
     }
   }
   console.error("❌ Todos os nós RPC falharam.");
@@ -72,39 +71,60 @@ async function fetchHiveEngineBalances(accounts, symbol) {
   }
 }
 
+// NOVA LÓGICA DE PAGINAÇÃO
 async function fetchVoteHistory(voterAccount) {
-  console.log(`🔎 Buscando histórico de votos de @${voterAccount}...`);
+  console.log(`🔎 Buscando histórico de votos de @${voterAccount} (Paginação)...`);
   
-  // Limite reduzido para 1500 para evitar bloqueio, mas usando o sistema multi-node
-  const history = await hiveRpc("condenser_api.get_account_history", [voterAccount, -1, 1500]);
-  
-  if (!history || !Array.isArray(history)) {
-    console.warn("⚠️ Não foi possível baixar o histórico de votos.");
-    return {};
+  let fullHistory = [];
+  let start = -1; // Começa do mais recente
+  const batchSize = 1000; // Limite estrito da API
+  const maxBatches = 2; // Faremos 2 chamadas = 2000 operações no total
+
+  for (let i = 0; i < maxBatches; i++) {
+    // Busca o lote
+    const batch = await hiveRpc("condenser_api.get_account_history", [voterAccount, start, batchSize]);
+    
+    if (!batch || batch.length === 0) break;
+
+    // Adiciona ao histórico total (invertemos para processar do mais novo pro antigo se quiséssemos, mas o padrão é cronológico)
+    fullHistory = fullHistory.concat(batch);
+    
+    // Pega o ID do item mais antigo desse lote (o primeiro array é [ID, OP])
+    const firstItem = batch[0];
+    const firstId = firstItem[0];
+
+    // Define o ponto de partida do próximo lote como um antes desse
+    start = firstId - 1;
+    
+    // Se chegamos no começo da conta (ID 0), paramos
+    if (start < 0) break;
+    
+    console.log(`   Batch ${i+1}: Recebidos ${batch.length} itens. Próximo start: ${start}`);
   }
 
-  console.log(`✅ ${history.length} operações recuperadas.`);
+  console.log(`✅ Total recuperado: ${fullHistory.length} operações.`);
 
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
   const voteStats = {}; 
 
-  history.forEach(tx => {
+  fullHistory.forEach(tx => {
     const op = tx[1].op;
     const timestamp = tx[1].timestamp;
     
     if (op[0] === 'vote' && op[1].voter === voterAccount) {
       const author = op[1].author;
-      // Garante formato ISO para compatibilidade
       const voteDate = new Date(timestamp + (timestamp.endsWith("Z") ? "" : "Z"));
 
       if (!voteStats[author]) {
         voteStats[author] = { count_30d: 0, last_vote_ts: null };
       }
 
-      // Salva sempre o timestamp mais recente encontrado
-      voteStats[author].last_vote_ts = timestamp;
+      // Como pegamos lotes, pode haver duplicatas ou ordem variada, garantimos a data mais recente
+      if (!voteStats[author].last_vote_ts || timestamp > voteStats[author].last_vote_ts) {
+        voteStats[author].last_vote_ts = timestamp;
+      }
 
       if (voteDate >= thirtyDaysAgo) {
         voteStats[author].count_30d += 1;
@@ -128,8 +148,7 @@ async function run() {
     console.log(`2. 🌍 Hive RPC (Cotação e HP)...`);
     const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
     
-    // Tratamento de erro caso globals falhe
-    let vestToHp = 0.0005; // Valor fallback aproximado
+    let vestToHp = 0.0005; 
     if (globals) {
         vestToHp = parseFloat(globals.total_vesting_fund_hive) / parseFloat(globals.total_vesting_shares);
     }
@@ -149,7 +168,7 @@ async function run() {
         tokenMap[b.account] = parseFloat(b.stake || 0); 
     });
 
-    console.log(`4. 🗳️ Histórico de Curadoria...`);
+    console.log(`4. 🗳️ Processando Histórico de Votos...`);
     const curationMap = await fetchVoteHistory(ACCOUNT);
 
     const finalData = delegationsData
