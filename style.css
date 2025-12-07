@@ -1,7 +1,7 @@
 /**
  * Stylesheet: Hive BR Dashboard Theme
- * Version: 1.5.0
- * Update: Recent Activity styles
+ * Version: 1.8.0
+ * Update: Responsive Table & HBR Bonus Styles
  */
 
 :root {
@@ -11,6 +11,7 @@
   --accent-green: #4dff91;
   --accent-red: #ff4d4d;
   --accent-blue: #4da6ff;
+  --accent-cyan: #00e5ff; /* Nova cor HBR */
   --text-main: #e6e6ff;
   --text-muted: #a3a3cc;
   --border-color: #2a2a35;
@@ -25,7 +26,8 @@ body {
   padding: 20px;
 }
 
-.container { max-width: 900px; margin: 0 auto; }
+/* Container aumentado para acomodar mais colunas no Desktop */
+.container { max-width: 1200px; margin: 0 auto; }
 
 header { text-align: center; margin-bottom: 40px; }
 h1 { font-size: 2.5rem; margin: 10px 0; color: #fff; letter-spacing: 2px; }
@@ -40,57 +42,76 @@ h1 { font-size: 2.5rem; margin: 10px 0; color: #fff; letter-spacing: 2px; }
 #stat-total-hp { color: var(--accent-purple); }
 #stat-growth { color: var(--accent-green); }
 
-/* --- ACTIVITY SECTION (NOVO) --- */
-.activity-container {
-  margin-bottom: 30px;
-  animation: fadeIn 0.5s ease;
-}
-.section-title {
-  color: var(--text-muted);
-  font-size: 1rem;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-left: 3px solid var(--accent-purple);
-  padding-left: 10px;
-}
-.activity-table {
-  width: 100%;
-  background: rgba(19, 19, 31, 0.6); /* Mais transparente que a tabela principal */
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  font-size: 0.9rem;
-}
-.activity-table th { background: #151525; padding: 10px 15px; color: var(--text-muted); font-size: 0.8rem; }
+.activity-container { margin-bottom: 30px; animation: fadeIn 0.5s ease; }
+.section-title { color: var(--text-muted); font-size: 1rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; border-left: 3px solid var(--accent-purple); padding-left: 10px; }
+.activity-table { width: 100%; background: rgba(19, 19, 31, 0.6); border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem; border-collapse: collapse; }
+.activity-table th { background: #151525; padding: 10px 15px; color: var(--text-muted); font-size: 0.8rem; text-align: left; }
 .activity-table td { padding: 10px 15px; border-bottom: 1px solid #222; }
 .diff-positive { color: var(--accent-green); font-weight: bold; }
 .diff-negative { color: var(--accent-red); font-weight: bold; }
 .val-muted { color: #666; font-family: monospace; }
 
-/* Search & Main Table */
 .search-container { margin-bottom: 20px; }
 #search-input { width: 100%; padding: 15px; font-size: 1rem; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; color: #fff; box-sizing: border-box; transition: all 0.3s ease; }
 #search-input:focus { outline: none; border-color: var(--accent-purple); box-shadow: 0 0 15px rgba(157, 78, 255, 0.2); }
 
-table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
-th { padding: 16px 20px; text-align: left; color: var(--accent-purple); text-transform: uppercase; font-size: 0.85rem; border-bottom: 2px solid var(--border-color); background-color: #151525; }
+/* --- RESPONSIVIDADE DA TABELA --- */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Permite scroll horizontal */
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+table {
+  width: 100%;
+  min-width: 900px; /* Força largura mínima para não espremer colunas no mobile */
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--bg-card);
+}
+
+th { padding: 16px 20px; text-align: left; color: var(--accent-purple); text-transform: uppercase; font-size: 0.85rem; border-bottom: 2px solid var(--border-color); background-color: #151525; white-space: nowrap; }
 td { padding: 14px 20px; border-bottom: 1px solid var(--border-color); vertical-align: middle; color: var(--text-muted); }
 tr:hover { background-color: rgba(157, 78, 255, 0.05); }
 tr:hover td { color: #fff; }
 a { color: #fff; text-decoration: none; font-weight: 600; }
 
-.bonus-tag { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; border: 1px solid transparent; }
-.bonus-gold { color: #ffd700; border-color: #ffd700; background: rgba(255, 215, 0, 0.1); }
-.bonus-silver { color: #c0c0c0; border-color: #c0c0c0; background: rgba(192, 192, 192, 0.1); }
-.bonus-bronze { color: #cd7f32; border-color: #cd7f32; background: rgba(205, 127, 50, 0.1); }
-.bonus-honor { color: var(--accent-blue); border-color: var(--accent-blue); background: rgba(77, 166, 255, 0.1); }
+/* Sticky First Column (Coluna Fixa) */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background-color: var(--bg-card); /* Fundo sólido para não ver através */
+  z-index: 5;
+  border-right: 1px solid var(--border-color);
+  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+}
+th.sticky-col { background-color: #151525; z-index: 10; } /* Header fica acima */
+tr:hover .sticky-col { background-color: #1a1725; } /* Ajuste de cor no hover */
+
+/* BONUS TAGS */
+.bonus-tag { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; min-width: 45px; text-align: center; }
+.bonus-gold { color: #ffd700; border: 1px solid #ffd700; background: rgba(255, 215, 0, 0.1); }
+.bonus-silver { color: #c0c0c0; border: 1px solid #c0c0c0; background: rgba(192, 192, 192, 0.1); }
+.bonus-bronze { color: #cd7f32; border: 1px solid #cd7f32; background: rgba(205, 127, 50, 0.1); }
+.bonus-honor { color: var(--accent-blue); border: 1px solid var(--accent-blue); background: rgba(77, 166, 255, 0.1); }
+
+/* Novo Bônus HBR (Granular) */
+.bonus-hbr {
+  color: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan);
+  background: rgba(0, 229, 255, 0.1);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+}
+
 .veteran-badge { color: #ff9f43; border: 1px solid #ff9f43; background: rgba(255, 159, 67, 0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 5px; cursor: help; }
 
 @media (max-width: 600px) {
   h1 { font-size: 1.8rem; }
   .stats-grid { grid-template-columns: 1fr; }
-  th, td { padding: 10px; font-size: 0.85rem; }
-  canvas { width: 80px !important; }
+  /* Esconde canvas no mobile se ficar muito pesado, ou reduz */
+  canvas { width: 100px !important; }
 }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
