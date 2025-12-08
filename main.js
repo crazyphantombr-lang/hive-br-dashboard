@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 1.9.0
- * Description: Exibe status de curadoria (Votos recentes)
+ * Version: 1.9.4
+ * Description: Diagnóstico de Inatividade (Se não votou, checa se postou)
  */
 
 async function loadDashboard() {
@@ -111,8 +111,8 @@ function renderRecentActivity(delegations, historyData) {
 }
 
 function calculateDuration(dateString) {
-  if (!dateString) return null;
-  const start = new Date(dateString);
+  if (!dateString || dateString.startsWith("1970")) return null; // Hive retorna 1970 se nunca postou
+  const start = new Date(dateString.endsWith("Z") ? dateString : dateString + "Z");
   const now = new Date();
   const diffTime = Math.abs(now - start);
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -154,37 +154,48 @@ function getHbrBonus(stakeBalance) {
   return `<span class="bonus-tag bonus-hbr">+${bonus}%</span>`;
 }
 
-// NOVA FUNÇÃO: Formata a coluna de curadoria
-function getCurationStatus(lastVoteDate, count30d) {
-  if (!lastVoteDate) {
-    return `<span style="color:#666; font-size:0.85em;">—</span>`;
-  }
+// LÓGICA DE CURADORIA INTELIGENTE (1.9.4)
+function getCurationStatus(lastVoteDate, count30d, lastPostDate) {
   
-  // Como lastVoteDate vem da blockchain como string UTC (ex: "2023-10-01T10:00:00")
-  // Precisamos garantir que o formato seja aceito
-  const daysAgo = calculateDuration(lastVoteDate + (lastVoteDate.endsWith('Z') ? '' : 'Z'));
-  
-  let color = "#666";
-  let icon = "";
+  // 1. Cenário: Recebeu Voto
+  if (lastVoteDate) {
+    const daysAgo = calculateDuration(lastVoteDate);
+    let color = "#666";
+    let icon = "";
 
-  if (daysAgo <= 3) {
-    color = "#4dff91"; // Verde (Ativo recentemente)
-    icon = "⚡";
-  } else if (daysAgo <= 15) {
-    color = "#e6e6ff"; // Normal
+    if (daysAgo <= 3) {
+      color = "#4dff91"; // Verde
+      icon = "⚡";
+    } else if (daysAgo <= 15) {
+      color = "#e6e6ff"; // Normal
+    } else {
+      color = "#ffcc00"; // Alerta
+      icon = "⚠️";
+    }
+    const daysText = daysAgo === 0 ? "Hoje" : daysAgo === 1 ? "Ontem" : `${daysAgo}d atrás`;
+    
+    return `
+      <div style="line-height:1.2;">
+        <span style="color:${color}; font-weight:bold;">${icon} ${daysText}</span><br>
+        <span style="font-size:0.8em; color:#888;">(${count30d} votos/mês)</span>
+      </div>
+    `;
+  }
+
+  // 2. Cenário: Nunca recebeu voto (ou não está no histórico)
+  // Vamos checar se o usuário é INATIVO
+  const postDaysAgo = calculateDuration(lastPostDate);
+  
+  if (postDaysAgo === null) {
+    return `<span style="color:#666; font-size:0.8em;">(Sem Posts)</span>`;
+  }
+
+  if (postDaysAgo > 30) {
+    return `<span style="color:#666; font-size:0.85em;">💤 Inativo (${postDaysAgo}d)</span>`;
   } else {
-    color = "#ffcc00"; // Alerta (Amarelo)
-    icon = "⚠️";
+    // Postou recentemente (<30d) mas não recebeu voto = ALERTA PARA O CURADOR
+    return `<span style="color:#ff4d4d; font-weight:bold; font-size:0.85em;">⚠️ Pendente</span><br><span style="font-size:0.7em; color:#888;">(Post: ${postDaysAgo}d atrás)</span>`;
   }
-
-  const daysText = daysAgo === 0 ? "Hoje" : daysAgo === 1 ? "Ontem" : `${daysAgo}d atrás`;
-  
-  return `
-    <div style="line-height:1.2;">
-      <span style="color:${color}; font-weight:bold;">${icon} ${daysText}</span><br>
-      <span style="font-size:0.8em; color:#888;">(${count30d} votos/mês)</span>
-    </div>
-  `;
 }
 
 function renderTable(delegations, historyData) {
@@ -205,10 +216,11 @@ function renderTable(delegations, historyData) {
     const ownHp = user.total_account_hp || 0;
     const hbrStake = user.token_balance || 0;
     
-    // Novas Colunas
     const delegationBonusHtml = getDelegationBonus(rank);
     const hbrBonusHtml = getHbrBonus(hbrStake);
-    const curationHtml = getCurationStatus(user.last_vote_date, user.votes_month);
+    
+    // Passamos também a data do último post para o diagnóstico
+    const curationHtml = getCurationStatus(user.last_vote_date, user.votes_month, user.last_user_post);
 
     const hbrStyle = hbrStake > 0 ? "color:#4da6ff; font-weight:bold;" : "color:#444;"; 
 
@@ -228,9 +240,7 @@ function renderTable(delegations, historyData) {
       <td style="font-family:monospace; ${hbrStyle}">
           ${hbrStake.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 3 })}
       </td>
-      
       <td>${curationHtml}</td>
-      
       <td style="font-size:0.9em;">
           ${durationHtml}
       </td>
@@ -266,7 +276,6 @@ function renderSparkline(canvasId, userHistoryObj) {
   const ctx = document.getElementById(canvasId).getContext('2d');
   const sortedDates = Object.keys(userHistoryObj).sort();
   const values = sortedDates.map(date => userHistoryObj[date]);
-  
   const last = values[values.length - 1];
   const prev = values.length > 1 ? values[values.length - 2] : last;
   const color = last >= prev ? '#4dff91' : '#ff4d4d';
