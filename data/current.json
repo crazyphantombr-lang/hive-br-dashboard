@@ -1,8 +1,8 @@
 [
   {
     "delegator": "matheusggr",
-    "delegated_hp": 10231.204,
-    "total_account_hp": 28818.27854695373,
+    "delegated_hp": 10231.388,
+    "total_account_hp": 28818.797792102567,
     "token_balance": 2428.449,
     "timestamp": "2025-03-08T15:25:27.000Z",
     "last_vote_date": null,
@@ -10,26 +10,26 @@
   },
   {
     "delegator": "wiseagent",
-    "delegated_hp": 6751.284,
-    "total_account_hp": 75617.84929583069,
+    "delegated_hp": 6751.406,
+    "total_account_hp": 75619.2117714327,
     "token_balance": 200,
     "timestamp": "2025-12-05T14:29:03.000Z",
     "last_vote_date": "2025-12-08T00:17:57",
-    "votes_month": 11
+    "votes_month": 10
   },
   {
     "delegator": "rimurutempest",
-    "delegated_hp": 4403.212,
-    "total_account_hp": 8764.551831492745,
+    "delegated_hp": 4403.291,
+    "total_account_hp": 8764.70975039872,
     "token_balance": 200.20995677,
     "timestamp": "2025-11-28T00:58:24.000Z",
     "last_vote_date": "2025-12-04T23:13:09",
-    "votes_month": 8
+    "votes_month": 7
   },
   {
     "delegator": "tfranzini",
-    "delegated_hp": 3117.953,
-    "total_account_hp": 3956.94231060642,
+    "delegated_hp": 3118.009,
+    "total_account_hp": 3957.0136064367957,
     "token_balance": 514.893,
     "timestamp": "2025-10-01T22:54:21.000Z",
     "last_vote_date": null,
@@ -37,8 +37,8 @@
   },
   {
     "delegator": "mengao",
-    "delegated_hp": 2017.503,
-    "total_account_hp": 32878.709569982886,
+    "delegated_hp": 2017.54,
+    "total_account_hp": 32885.98038293574,
     "token_balance": 200.80588465,
     "timestamp": "2025-08-27T17:56:09.000Z",
     "last_vote_date": null,
@@ -46,17 +46,17 @@
   },
   {
     "delegator": "michupa",
-    "delegated_hp": 1070.068,
-    "total_account_hp": 14066.749351310396,
+    "delegated_hp": 1070.088,
+    "total_account_hp": 14079.190809155674,
     "token_balance": 125.78072422,
     "timestamp": "2025-04-24T15:14:03.000Z",
-    "last_vote_date": "2025-12-07T11:36:48",
+    "last_vote_date": "2025-12-08T11:27:42",
     "votes_month": 10
   },
   {
     "delegator": "gwajnberg",
-    "delegated_hp": 1032.729,
-    "total_account_hp": 17543.82901039634,
+    "delegated_hp": 1032.747,
+    "total_account_hp": 17547.514334210424,
     "token_balance": 83.52200001,
     "timestamp": "2025-11-05T21:52:12.000Z",
     "last_vote_date": "2025-12-04T19:17:54",
@@ -64,17 +64,17 @@
   },
   {
     "delegator": "crazyphantombr",
-    "delegated_hp": 1022.985,
-    "total_account_hp": 14821.725543119117,
+    "delegated_hp": 1023.003,
+    "total_account_hp": 14821.992599635802,
     "token_balance": 297.70217843,
     "timestamp": "2025-07-20T23:19:24.000Z",
     "last_vote_date": "2025-12-07T18:43:27",
-    "votes_month": 11
+    "votes_month": 10
   },
   {
     "delegator": "kaibagt",
-    "delegated_hp": 1022.026,
-    "total_account_hp": 6714.699458877363,
+    "delegated_hp": 1022.045,
+    "total_account_hp": 6714.820443727802,
     "token_balance": 100.61831016,
     "timestamp": "2025-04-12T16:32:00.000Z",
     "last_vote_date": null,
@@ -82,17 +82,17 @@
   },
   {
     "delegator": "josiva",
-    "delegated_hp": 1020.27,
-    "total_account_hp": 4051.1538286240743,
+    "delegated_hp": 1020.289,
+    "total_account_hp": 4051.226821949101,
     "token_balance": 63.811,
     "timestamp": "2025-05-30T00:49:18.000Z",
     "last_vote_date": "2025-12-07T12:22:45",
-    "votes_month": 8
+    "votes_month": 7
   },
   {
     "delegator": "elderdark",
-    "delegated_hp": 1018.003,
-    "total_account_hp": 10534.004377636924,
+    "delegated_hp": 1018.021,
+    "total_account_hp": 10534.194178379601,
     "token_balance": 130.47239327,
     "timestamp": "2025-05-08T02:36:12.000Z",
     "last_vote_date": "2025-12-06T03:50:24",
@@ -100,8 +100,8 @@
   },
   {
     "delegator": "blessskateshop",
-    "delegated_hp": 1004.78,
-    "total_account_hp": 2457.5571935526027,
+    "delegated_hp": 1004.798,
+    "total_account_hp": 2459.084965655655,
     "token_balance": 0,
     "timestamp": "2025-10-13T18:54:15.000Z",
     "last_vote_date": "2025-12-08T01:09:45",
@@ -109,17 +109,17 @@
   },
   {
     "delegator": "shiftrox",
-    "delegated_hp": 1000.817,
-    "total_account_hp": 21028.01558001525,
+    "delegated_hp": 1000.835,
+    "total_account_hp": 21029.082685936482,
     "token_balance": 150.333,
     "timestamp": "2025-11-26T19:53:03.000Z",
     "last_vote_date": "2025-12-06T17:27:00",
-    "votes_month": 9
+    "votes_month": 8
   },
   {
     "delegator": "pablito.saldo",
-    "delegated_hp": 618.419,
-    "total_account_hp": 3036.380750138838,
+    "delegated_hp": 618.43,
+    "total_account_hp": 3036.5304915887336,
     "token_balance": 51.915,
     "timestamp": "2024-12-02T00:41:12.000Z",
     "last_vote_date": null,
@@ -127,17 +127,17 @@
   },
   {
     "delegator": "ricestrela",
-    "delegated_hp": 610.012,
-    "total_account_hp": 2041.146141591814,
+    "delegated_hp": 610.023,
+    "total_account_hp": 2041.202925606017,
     "token_balance": 60.33272072,
     "timestamp": "2025-06-09T13:27:48.000Z",
-    "last_vote_date": "2025-12-06T13:56:15",
-    "votes_month": 1
+    "last_vote_date": "2025-12-08T09:28:42",
+    "votes_month": 2
   },
   {
     "delegator": "xvlad",
-    "delegated_hp": 537.698,
-    "total_account_hp": 5760.5876761604,
+    "delegated_hp": 537.707,
+    "total_account_hp": 5760.789503853988,
     "token_balance": 0,
     "timestamp": "2023-07-08T22:07:09.000Z",
     "last_vote_date": null,
@@ -145,8 +145,8 @@
   },
   {
     "delegator": "legalizabrazil",
-    "delegated_hp": 536.664,
-    "total_account_hp": 695.5366685403637,
+    "delegated_hp": 536.674,
+    "total_account_hp": 695.54920065745,
     "token_balance": 0,
     "timestamp": "2023-08-01T15:46:45.000Z",
     "last_vote_date": null,
@@ -154,8 +154,8 @@
   },
   {
     "delegator": "lobaobh",
-    "delegated_hp": 411.016,
-    "total_account_hp": 686.1480507795186,
+    "delegated_hp": 411.024,
+    "total_account_hp": 686.1654154231609,
     "token_balance": 57.858,
     "timestamp": "2025-01-11T17:39:45.000Z",
     "last_vote_date": null,
@@ -163,17 +163,17 @@
   },
   {
     "delegator": "coyotelation",
-    "delegated_hp": 408.591,
-    "total_account_hp": 3384.619413909852,
+    "delegated_hp": 408.599,
+    "total_account_hp": 3384.6803976777915,
     "token_balance": 31.038,
     "timestamp": "2025-03-27T23:04:48.000Z",
     "last_vote_date": "2025-12-08T02:02:33",
-    "votes_month": 11
+    "votes_month": 10
   },
   {
     "delegator": "markitoelias",
-    "delegated_hp": 226.368,
-    "total_account_hp": 264.4195180094412,
+    "delegated_hp": 226.372,
+    "total_account_hp": 264.42428229651546,
     "token_balance": 0,
     "timestamp": "2025-10-05T22:33:33.000Z",
     "last_vote_date": null,
@@ -181,8 +181,8 @@
   },
   {
     "delegator": "nane-qts",
-    "delegated_hp": 223.681,
-    "total_account_hp": 628.1398719113108,
+    "delegated_hp": 223.685,
+    "total_account_hp": 628.1511896789821,
     "token_balance": 15.889,
     "timestamp": "2025-05-23T14:15:15.000Z",
     "last_vote_date": null,
@@ -190,8 +190,8 @@
   },
   {
     "delegator": "thomashnblum",
-    "delegated_hp": 216.556,
-    "total_account_hp": 598.2727568853596,
+    "delegated_hp": 216.56,
+    "total_account_hp": 598.2835365100408,
     "token_balance": 26.461,
     "timestamp": "2023-04-15T20:46:24.000Z",
     "last_vote_date": null,
@@ -199,8 +199,8 @@
   },
   {
     "delegator": "viniciotricolor",
-    "delegated_hp": 215.304,
-    "total_account_hp": 1043.9123200803606,
+    "delegated_hp": 215.308,
+    "total_account_hp": 1043.9391319162758,
     "token_balance": 27.123,
     "timestamp": "2023-06-26T04:36:27.000Z",
     "last_vote_date": null,
@@ -208,8 +208,8 @@
   },
   {
     "delegator": "syel25",
-    "delegated_hp": 212.938,
-    "total_account_hp": 2122.126943848693,
+    "delegated_hp": 212.942,
+    "total_account_hp": 2122.165180140948,
     "token_balance": 0,
     "timestamp": "2023-11-06T16:28:12.000Z",
     "last_vote_date": null,
@@ -217,8 +217,8 @@
   },
   {
     "delegator": "felipefabar",
-    "delegated_hp": 210.75,
-    "total_account_hp": 969.6542026937675,
+    "delegated_hp": 210.753,
+    "total_account_hp": 969.6716738359099,
     "token_balance": 0,
     "timestamp": "2024-03-14T18:26:15.000Z",
     "last_vote_date": null,
@@ -226,17 +226,17 @@
   },
   {
     "delegator": "wagnertamanaha",
-    "delegated_hp": 200.734,
-    "total_account_hp": 3989.7058201558993,
+    "delegated_hp": 200.738,
+    "total_account_hp": 3989.7777063162407,
     "token_balance": 0,
     "timestamp": "2025-10-25T21:59:12.000Z",
     "last_vote_date": "2025-12-06T00:23:09",
-    "votes_month": 11
+    "votes_month": 9
   },
   {
     "delegator": "lincemarrom",
-    "delegated_hp": 161.379,
-    "total_account_hp": 740.293564337622,
+    "delegated_hp": 161.382,
+    "total_account_hp": 740.3069028804281,
     "token_balance": 26.76524818,
     "timestamp": "2023-07-03T15:50:48.000Z",
     "last_vote_date": null,
@@ -244,8 +244,8 @@
   },
   {
     "delegator": "reibar",
-    "delegated_hp": 155.049,
-    "total_account_hp": 337.85399476776774,
+    "delegated_hp": 155.052,
+    "total_account_hp": 337.86008219063416,
     "token_balance": 25.58,
     "timestamp": "2023-11-12T19:48:36.000Z",
     "last_vote_date": null,
@@ -253,8 +253,8 @@
   },
   {
     "delegator": "sinvistaalsol",
-    "delegated_hp": 154.807,
-    "total_account_hp": 154.97858320810218,
+    "delegated_hp": 154.81,
+    "total_account_hp": 154.9813755982643,
     "token_balance": 0,
     "timestamp": "2025-03-20T15:57:30.000Z",
     "last_vote_date": null,
@@ -262,8 +262,8 @@
   },
   {
     "delegator": "jaopalas",
-    "delegated_hp": 117.141,
-    "total_account_hp": 301.8410898103231,
+    "delegated_hp": 117.143,
+    "total_account_hp": 301.84652835590964,
     "token_balance": 3.261,
     "timestamp": "2025-04-30T15:51:42.000Z",
     "last_vote_date": null,
@@ -271,8 +271,8 @@
   },
   {
     "delegator": "dreloop07",
-    "delegated_hp": 108.903,
-    "total_account_hp": 3135.6285112242495,
+    "delegated_hp": 108.905,
+    "total_account_hp": 3135.6980129910144,
     "token_balance": 0,
     "timestamp": "2023-03-24T18:54:27.000Z",
     "last_vote_date": "2025-12-05T16:09:45",
@@ -280,8 +280,8 @@
   },
   {
     "delegator": "underlock",
-    "delegated_hp": 108.589,
-    "total_account_hp": 9720.12001145041,
+    "delegated_hp": 108.591,
+    "total_account_hp": 9720.295147697836,
     "token_balance": 25.31899872,
     "timestamp": "2023-03-10T21:57:33.000Z",
     "last_vote_date": "2025-12-03T20:09:15",
@@ -289,8 +289,8 @@
   },
   {
     "delegator": "imagemvirtual",
-    "delegated_hp": 108.502,
-    "total_account_hp": 125.70314171931108,
+    "delegated_hp": 108.504,
+    "total_account_hp": 125.70540662720363,
     "token_balance": 0,
     "timestamp": "2023-03-20T21:30:03.000Z",
     "last_vote_date": null,
@@ -298,8 +298,8 @@
   },
   {
     "delegator": "giovanalrico",
-    "delegated_hp": 108.502,
-    "total_account_hp": 122.8745422861925,
+    "delegated_hp": 108.504,
+    "total_account_hp": 122.87675622863507,
     "token_balance": 0,
     "timestamp": "2023-03-20T21:31:24.000Z",
     "last_vote_date": null,
@@ -307,8 +307,8 @@
   },
   {
     "delegator": "mauriciolimax",
-    "delegated_hp": 107.519,
-    "total_account_hp": 1860.9297061036207,
+    "delegated_hp": 107.521,
+    "total_account_hp": 1860.9632361675572,
     "token_balance": 13.611,
     "timestamp": "2023-07-11T05:34:00.000Z",
     "last_vote_date": null,
@@ -316,17 +316,17 @@
   },
   {
     "delegator": "hellene8",
-    "delegated_hp": 101.712,
-    "total_account_hp": 1071.2803865412413,
-    "token_balance": 5.622,
+    "delegated_hp": 101.714,
+    "total_account_hp": 1071.3847051151608,
+    "token_balance": 5.643,
     "timestamp": "2025-05-18T19:45:27.000Z",
     "last_vote_date": null,
     "votes_month": 0
   },
   {
     "delegator": "ogechukwu-martha",
-    "delegated_hp": 101.423,
-    "total_account_hp": 174.97517671678003,
+    "delegated_hp": 101.425,
+    "total_account_hp": 174.97832940376404,
     "token_balance": 0,
     "timestamp": "2025-06-22T17:25:42.000Z",
     "last_vote_date": null,
@@ -334,8 +334,8 @@
   },
   {
     "delegator": "eii",
-    "delegated_hp": 100.381,
-    "total_account_hp": 5174.664713925161,
+    "delegated_hp": 100.383,
+    "total_account_hp": 5174.757950568188,
     "token_balance": 0,
     "timestamp": "2025-10-24T10:50:09.000Z",
     "last_vote_date": null,
@@ -343,8 +343,8 @@
   },
   {
     "delegator": "d35tr0",
-    "delegated_hp": 74.661,
-    "total_account_hp": 167.20748096079285,
+    "delegated_hp": 74.662,
+    "total_account_hp": 167.21049369013394,
     "token_balance": 0,
     "timestamp": "2023-10-16T00:16:06.000Z",
     "last_vote_date": null,
@@ -352,8 +352,8 @@
   },
   {
     "delegator": "arthursiq5",
-    "delegated_hp": 71.9,
-    "total_account_hp": 254.67496105250717,
+    "delegated_hp": 71.901,
+    "total_account_hp": 254.6795497630313,
     "token_balance": 13.915,
     "timestamp": "2023-08-03T20:49:00.000Z",
     "last_vote_date": null,
@@ -361,8 +361,8 @@
   },
   {
     "delegator": "casagrande",
-    "delegated_hp": 60.22,
-    "total_account_hp": 66.5795597825419,
+    "delegated_hp": 60.221,
+    "total_account_hp": 66.58075940705703,
     "token_balance": 5.03961038,
     "timestamp": "2025-10-25T21:41:48.000Z",
     "last_vote_date": null,
@@ -370,8 +370,8 @@
   },
   {
     "delegator": "matheusggr.leo",
-    "delegated_hp": 54.255,
-    "total_account_hp": 134.18063475138396,
+    "delegated_hp": 54.256,
+    "total_account_hp": 134.1830524059829,
     "token_balance": 0,
     "timestamp": "2023-03-20T01:27:27.000Z",
     "last_vote_date": null,
@@ -379,8 +379,8 @@
   },
   {
     "delegator": "zombialien",
-    "delegated_hp": 52.349,
-    "total_account_hp": 316.36648546156874,
+    "delegated_hp": 52.35,
+    "total_account_hp": 316.37218572442663,
     "token_balance": 0,
     "timestamp": "2024-06-03T20:55:39.000Z",
     "last_vote_date": null,
@@ -388,8 +388,8 @@
   },
   {
     "delegator": "captainman",
-    "delegated_hp": 52.238,
-    "total_account_hp": 1178.2183232403058,
+    "delegated_hp": 52.239,
+    "total_account_hp": 1178.3635984746718,
     "token_balance": 0,
     "timestamp": "2024-06-28T21:57:57.000Z",
     "last_vote_date": null,
@@ -397,8 +397,8 @@
   },
   {
     "delegator": "adncabrera",
-    "delegated_hp": 51.316,
-    "total_account_hp": 787.5190413941408,
+    "delegated_hp": 51.317,
+    "total_account_hp": 787.5422338581135,
     "token_balance": 0.501,
     "timestamp": "2025-01-28T01:16:24.000Z",
     "last_vote_date": null,
@@ -406,17 +406,17 @@
   },
   {
     "delegator": "grafvisionsp",
-    "delegated_hp": 50.376,
-    "total_account_hp": 1344.2870915559033,
+    "delegated_hp": 50.377,
+    "total_account_hp": 1344.3113127997156,
     "token_balance": 0,
     "timestamp": "2025-09-11T12:45:39.000Z",
-    "last_vote_date": "2025-11-27T23:16:12",
-    "votes_month": 1
+    "last_vote_date": null,
+    "votes_month": 0
   },
   {
     "delegator": "ladyaryastark",
     "delegated_hp": 50.085,
-    "total_account_hp": 2303.436306746873,
+    "total_account_hp": 2304.7779233345505,
     "token_balance": 0,
     "timestamp": "2025-11-15T22:00:00.000Z",
     "last_vote_date": null,
@@ -424,8 +424,8 @@
   },
   {
     "delegator": "hive-br.leo",
-    "delegated_hp": 44.105,
-    "total_account_hp": 45.17905740179016,
+    "delegated_hp": 44.106,
+    "total_account_hp": 45.17987143397971,
     "token_balance": 0,
     "timestamp": "2023-07-26T03:22:42.000Z",
     "last_vote_date": null,
@@ -433,8 +433,8 @@
   },
   {
     "delegator": "ogepaul1986",
-    "delegated_hp": 34.214,
-    "total_account_hp": 39.2364908764053,
+    "delegated_hp": 34.215,
+    "total_account_hp": 39.23719783596611,
     "token_balance": 0,
     "timestamp": "2025-10-16T21:18:42.000Z",
     "last_vote_date": null,
@@ -442,8 +442,8 @@
   },
   {
     "delegator": "speedtuning",
-    "delegated_hp": 32.081,
-    "total_account_hp": 500.6751011633384,
+    "delegated_hp": 32.082,
+    "total_account_hp": 500.68412228224383,
     "token_balance": 0,
     "timestamp": "2023-09-14T22:47:57.000Z",
     "last_vote_date": null,
@@ -451,8 +451,8 @@
   },
   {
     "delegator": "us3incanada",
-    "delegated_hp": 30.013,
-    "total_account_hp": 49.75912161937322,
+    "delegated_hp": 30.014,
+    "total_account_hp": 49.76001817474758,
     "token_balance": 0,
     "timestamp": "2025-12-02T01:50:39.000Z",
     "last_vote_date": null,
@@ -461,7 +461,7 @@
   {
     "delegator": "boeltermc",
     "delegated_hp": 21.258,
-    "total_account_hp": 3289.3871056766084,
+    "total_account_hp": 3289.4513752569387,
     "token_balance": 0,
     "timestamp": "2023-11-27T22:00:54.000Z",
     "last_vote_date": null,
@@ -470,7 +470,7 @@
   {
     "delegator": "keepkeybr",
     "delegated_hp": 13.88,
-    "total_account_hp": 15.121092499367151,
+    "total_account_hp": 15.121364949850706,
     "token_balance": 0,
     "timestamp": "2023-10-03T15:07:09.000Z",
     "last_vote_date": null,
@@ -478,8 +478,8 @@
   },
   {
     "delegator": "name0",
-    "delegated_hp": 10.449,
-    "total_account_hp": 345.96433354335505,
+    "delegated_hp": 10.45,
+    "total_account_hp": 345.9705670975755,
     "token_balance": 0,
     "timestamp": "2024-06-26T23:01:42.000Z",
     "last_vote_date": null,
@@ -487,8 +487,8 @@
   },
   {
     "delegator": "sieghard1990",
-    "delegated_hp": 10.307,
-    "total_account_hp": 196.3293394547266,
+    "delegated_hp": 10.308,
+    "total_account_hp": 196.33287689909267,
     "token_balance": 0,
     "timestamp": "2024-12-01T13:37:30.000Z",
     "last_vote_date": null,
@@ -497,7 +497,7 @@
   {
     "delegator": "v-36",
     "delegated_hp": 10.127,
-    "total_account_hp": 96.28956951002216,
+    "total_account_hp": 96.29130444681826,
     "token_balance": 0.614,
     "timestamp": "2025-07-10T10:59:54.000Z",
     "last_vote_date": null,
@@ -506,16 +506,16 @@
   {
     "delegator": "manopunkttt",
     "delegated_hp": 10.088,
-    "total_account_hp": 93.1832114583052,
+    "total_account_hp": 93.18489042502154,
     "token_balance": 0,
     "timestamp": "2025-08-26T22:39:30.000Z",
     "last_vote_date": "2025-11-28T13:14:33",
-    "votes_month": 2
+    "votes_month": 1
   },
   {
     "delegator": "emviagem",
     "delegated_hp": 9.497,
-    "total_account_hp": 9.942798226574142,
+    "total_account_hp": 9.942977375017605,
     "token_balance": 0,
     "timestamp": "2025-04-10T10:02:57.000Z",
     "last_vote_date": null,
@@ -524,7 +524,7 @@
   {
     "delegator": "claytonlins",
     "delegated_hp": 6.101,
-    "total_account_hp": 7.257430740165718,
+    "total_account_hp": 7.257561503899531,
     "token_balance": 0,
     "timestamp": "2025-12-02T01:48:33.000Z",
     "last_vote_date": null,
@@ -533,7 +533,7 @@
   {
     "delegator": "jkatrina",
     "delegated_hp": 1.917,
-    "total_account_hp": 20.064746756104707,
+    "total_account_hp": 20.06510828090567,
     "token_balance": 0,
     "timestamp": "2025-12-02T01:51:27.000Z",
     "last_vote_date": null,
@@ -542,7 +542,7 @@
   {
     "delegator": "zulfrontado",
     "delegated_hp": 1.006,
-    "total_account_hp": 2190.1011225504794,
+    "total_account_hp": 2190.1405835953674,
     "token_balance": 0,
     "timestamp": "2025-09-28T17:36:54.000Z",
     "last_vote_date": null,
