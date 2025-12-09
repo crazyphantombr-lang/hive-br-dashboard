@@ -33,7 +33,7 @@
     </div>
 
     <div id="activity-panel" class="activity-container" style="display:none;">
-      <h3 class="section-title">⚡ Últimas Alterações (24h)</h3>
+      <h3 class="section-title">⚡ Últimas Alterações (7 dias)</h3>
       <table class="activity-table">
         <thead>
           <tr>
@@ -57,15 +57,13 @@
           <tr>
             <th class="sticky-col sortable" onclick="handleSort('delegator')">Delegador <span class="sort-icon"></span></th>
             <th class="sortable" onclick="handleSort('delegated_hp')">Delegação<br><small>Hivebr.voter</small> <span class="sort-icon"></span></th>
-            
             <th class="sortable" onclick="handleSort('timestamp')">TEMPO<br><small>(Delegação)</small> <span class="sort-icon"></span></th>
-            
             <th class="sortable" onclick="handleSort('total_account_hp')">HP Próprio<br><small>(Total)</small> <span class="sort-icon"></span></th>
             <th class="sortable" onclick="handleSort('token_balance')">HBR<br><small>(Em Stake)</small> <span class="sort-icon"></span></th>
-            
             <th class="sortable" onclick="handleSort('last_vote_date')">Curadoria<br><small>(Último UTC | 30d)</small> <span class="sort-icon"></span></th>
-            
-            <th class="sortable" onclick="handleSort('delegated_hp')">Bônus de<br>Delegação <span class="sort-icon"></span></th> <th class="sortable" onclick="handleSort('token_balance')">Bônus<br>HBR <span class="sort-icon"></span></th> <th>Histórico de<br>Delegação</th>
+            <th class="sortable" onclick="handleSort('delegated_hp')">Bônus de<br>Delegação <span class="sort-icon"></span></th>
+            <th class="sortable" onclick="handleSort('token_balance')">Bônus<br>HBR <span class="sort-icon"></span></th>
+            <th>Histórico de<br>Delegação</th>
           </tr>
         </thead>
         <tbody id="ranking-body"></tbody>
