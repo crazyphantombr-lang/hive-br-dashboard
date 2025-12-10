@@ -1,7 +1,7 @@
 /**
  * Stylesheet: Hive BR Dashboard Theme
- * Version: 2.0.0
- * Update: Sortable Headers UI
+ * Version: 2.3.0
+ * Update: Project Stats Card Style
  */
 
 :root {
@@ -34,6 +34,44 @@ h1 { font-size: 2.5rem; margin: 10px 0; color: #fff; letter-spacing: 2px; }
 .subtitle { color: var(--text-muted); font-size: 1rem; margin-top: 0; }
 .last-updated { font-size: 0.8rem; color: var(--accent-green); font-family: monospace; margin-bottom: 10px; opacity: 0.8; }
 
+/* --- NOVO CARD DO PROJETO --- */
+.project-stats-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+.project-card {
+    background: linear-gradient(90deg, rgba(157, 78, 255, 0.1), rgba(19, 19, 31, 0.8));
+    border: 1px solid var(--accent-purple);
+    padding: 20px 40px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 20px rgba(157, 78, 255, 0.15);
+}
+.project-icon img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-purple);
+}
+.project-info h3 {
+    margin: 0 0 5px 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.project-info p {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #fff;
+    font-family: monospace;
+}
+
+/* Stats Grid Original */
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
 .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
 .stat-card h3 { margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
@@ -57,7 +95,6 @@ h1 { font-size: 2.5rem; margin: 10px 0; color: #fff; letter-spacing: 2px; }
 .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
 table { width: 100%; min-width: 900px; border-collapse: separate; border-spacing: 0; background: var(--bg-card); }
 
-/* Headers clicáveis */
 th { padding: 16px 20px; text-align: left; color: var(--accent-purple); text-transform: uppercase; font-size: 0.85rem; border-bottom: 2px solid var(--border-color); background-color: #151525; white-space: nowrap; user-select: none; }
 th.sortable { cursor: pointer; transition: background 0.2s; }
 th.sortable:hover { background-color: #1f1c2e; color: #fff; }
