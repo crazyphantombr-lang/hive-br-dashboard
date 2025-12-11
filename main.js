@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.4.0
- * Description: Community Power Calculation (Own + Delegated)
+ * Version: 2.4.1
+ * Description: Fix no cálculo de fidelidade (Ignora dias com saldo 0 no histórico)
  */
 
 let globalDelegations = [];
@@ -35,7 +35,6 @@ async function loadDashboard() {
   }
 }
 
-// --- FUNÇÃO DE ESTATÍSTICAS ATUALIZADA (V2.4.0) ---
 function updateStats(delegations, meta, historyData) {
   const dateEl = document.getElementById("last-updated");
   if (meta && meta.last_updated) {
@@ -43,29 +42,22 @@ function updateStats(delegations, meta, historyData) {
     dateEl.innerText = `Atualizado em: ${dateObj.toLocaleString("pt-BR")}`;
   }
 
-  // 1. Captura os valores brutos
   const projectHp = meta && meta.project_account_hp ? meta.project_account_hp : 0;
   const delegatedHp = delegations.reduce((acc, curr) => acc + curr.delegated_hp, 0);
-  
-  // 2. Calcula a Soma (Poder da Comunidade)
   const communityPower = projectHp + delegatedHp;
 
-  // 3. Renderiza Card Principal (Topo)
   document.getElementById("stat-community-power").innerText = 
     communityPower.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + " HP";
 
-  // 4. Renderiza Grid de Detalhes
   document.getElementById("stat-own-hp").innerText = 
     projectHp.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + " HP";
 
   document.getElementById("stat-delegated-hp").innerText = 
     delegatedHp.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + " HP";
   
-  // Contagem de ativos
   const activeDelegators = delegations.filter(d => d.delegated_hp > 0).length;
   document.getElementById("stat-count").innerText = activeDelegators;
 
-  // Destaque do Mês
   let bestGrower = { name: "—", val: 0 };
   delegations.forEach(user => {
     const hist = historyData[user.delegator];
@@ -84,7 +76,119 @@ function updateStats(delegations, meta, historyData) {
   }
 }
 
-// --- RESTO DO CÓDIGO PERMANECE IGUAL ---
+// --- CORREÇÃO DE FIDELIDADE (V2.4.1) ---
+function calculateLoyalty(username, apiTimestamp, historyData) {
+  // 1. Data base: API Timestamp (Última alteração contratual na Hive)
+  let startDate = apiTimestamp ? new Date(apiTimestamp) : new Date();
+
+  // 2. Se tiver histórico local, tentamos encontrar um "Streak" mais longo
+  if (historyData[username]) {
+    const dates = Object.keys(historyData[username]).sort();
+    
+    let streakStartDate = null;
+    
+    // Percorre o histórico cronologicamente
+    for (const dateStr of dates) {
+      const hp = historyData[username][dateStr];
+      
+      // Se tiver saldo > 1 (margem de segurança para poeira), inicia/mantém streak
+      if (hp > 1) {
+        if (!streakStartDate) streakStartDate = new Date(dateStr);
+      } else {
+        // Se zerou, quebra o streak. A fidelidade reseta.
+        streakStartDate = null;
+      }
+    }
+
+    // Se encontramos um streak válido no histórico que começou ANTES da data da API
+    // (Isso acontece quando a pessoa aumenta a delegação: API reseta, mas histórico lembra)
+    if (streakStartDate && streakStartDate < startDate) {
+      startDate = streakStartDate;
+    }
+  }
+
+  const now = new Date();
+  const diffTime = Math.abs(now - startDate);
+  // Se for muito recente (menos de 24h), mostra 0 ou 1
+  const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  return { days: days, text: `${days} dias` };
+}
+
+function renderTable() {
+  const tbody = document.getElementById("ranking-body");
+  tbody.innerHTML = "";
+
+  globalDelegations.forEach((user, index) => {
+    const rank = index + 1;
+    const tr = document.createElement("tr");
+    tr.classList.add("delegator-row");
+    tr.dataset.name = user.delegator.toLowerCase();
+
+    const canvasId = `chart-${user.delegator}`;
+    
+    // Usa a nova lógica corrigida
+    const loyalty = calculateLoyalty(user.delegator, user.timestamp, globalHistory);
+    let durationHtml = loyalty.text;
+    if (loyalty.days > 365) durationHtml += ` <span class="veteran-badge" title="Veterano (+1 ano)">🎖️</span>`;
+
+    const trueRank = getTrueRank(user.delegator);
+    const ownHp = user.total_account_hp || 0;
+    const hbrStake = user.token_balance || 0;
+    
+    const delegationBonusHtml = getDelegationBonus(trueRank);
+    const hbrBonusHtml = getHbrBonus(hbrStake);
+    const curationHtml = getCurationStatus(user.last_vote_date, user.votes_month, user.last_user_post);
+    const lastPostHtml = getLastPostStatus(user.last_user_post);
+    const hbrStyle = hbrStake > 0 ? "color:#4da6ff; font-weight:bold;" : "color:#444;"; 
+
+    tr.innerHTML = `
+      <td class="sticky-col">
+        <span style="color:#666; margin-right:8px; font-weight:bold;">#${trueRank}</span>
+        <img src="https://images.hive.blog/u/${user.delegator}/avatar/small" 
+             style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:5px;">
+        <a href="https://peakd.com/@${user.delegator}" target="_blank">@${user.delegator}</a>
+      </td>
+      <td style="font-weight:bold; font-family:monospace; font-size:1.1em; color:#4dff91;">
+          ${user.delegated_hp.toLocaleString("pt-BR", { minimumFractionDigits: 3 })}
+      </td>
+      <td style="font-size:0.9em;">${durationHtml}</td>
+      <td style="font-family:monospace; color:#888;">${ownHp.toLocaleString("pt-BR", { maximumFractionDigits: 0 })} HP</td>
+      <td style="font-family:monospace; ${hbrStyle}">${hbrStake.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 3 })}</td>
+      <td>${lastPostHtml}</td>
+      <td>${curationHtml}</td>
+      <td>${delegationBonusHtml}</td>
+      <td>${hbrBonusHtml}</td>
+      <td style="width:140px;">
+          <canvas id="${canvasId}" width="120" height="40"></canvas>
+      </td>
+    `;
+    tbody.appendChild(tr);
+
+    let userHistory = globalHistory[user.delegator] || {};
+    if (Object.keys(userHistory).length === 0) {
+       const today = new Date().toISOString().slice(0, 10);
+       userHistory = { [today]: user.delegated_hp };
+    }
+    renderSparkline(canvasId, userHistory);
+  });
+}
+
+// --- HELPER FUNCTIONS ---
+
+function getLastPostStatus(dateString) {
+    if (!dateString || dateString.startsWith("1970")) {
+        return `<span style="color:#444; font-size:0.85em">Sem posts</span>`;
+    }
+    const daysAgo = calculateDuration(dateString);
+    if (daysAgo === 0) return `<span style="color:#4dff91; font-weight:bold;">Hoje</span>`;
+    if (daysAgo === 1) return `<span style="color:#4dff91;">Ontem</span>`;
+    
+    let color = "#fff";
+    if (daysAgo > 7) color = "#ccc";
+    if (daysAgo > 30) color = "#666";
+    return `<span style="color:${color}; font-size:0.9em;">${daysAgo} dias atrás</span>`;
+}
 
 function handleSort(column) {
   if (currentSort.column === column) {
@@ -173,23 +277,6 @@ function renderRecentActivity(delegations, historyData) {
   });
 }
 
-function calculateLoyalty(username, apiTimestamp, historyData) {
-  let startDate = new Date(); 
-  if (historyData[username]) {
-    const dates = Object.keys(historyData[username]).sort();
-    if (dates.length > 0) {
-      const localFirstSeen = new Date(dates[0]);
-      if (apiTimestamp) {
-        const apiDate = new Date(apiTimestamp);
-        startDate = localFirstSeen < apiDate ? localFirstSeen : apiDate;
-      } else { startDate = localFirstSeen; }
-    }
-  } else if (apiTimestamp) { startDate = new Date(apiTimestamp); }
-  const now = new Date();
-  const diffTime = Math.abs(now - startDate);
-  return { days: Math.ceil(diffTime / (1000 * 60 * 60 * 24)), text: `${Math.ceil(diffTime / (1000 * 60 * 60 * 24))} dias` };
-}
-
 function calculateDuration(dateString) {
   if (!dateString || dateString.startsWith("1970")) return null; 
   const start = new Date(dateString.endsWith("Z") ? dateString : dateString + "Z");
@@ -230,80 +317,9 @@ function getCurationStatus(lastVoteDate, count30d, lastPostDate) {
   return `<span style="color:#ff4d4d; font-weight:bold; font-size:0.85em;">⚠️ Pendente</span><br><span style="font-size:0.7em; color:#888;">(Post: ${postDaysAgo}d atrás)</span>`;
 }
 
-function getLastPostStatus(dateString) {
-    if (!dateString || dateString.startsWith("1970")) {
-        return `<span style="color:#444; font-size:0.85em">Sem posts</span>`;
-    }
-    const daysAgo = calculateDuration(dateString);
-    if (daysAgo === 0) return `<span style="color:#4dff91; font-weight:bold;">Hoje</span>`;
-    if (daysAgo === 1) return `<span style="color:#4dff91;">Ontem</span>`;
-    
-    let color = "#fff";
-    if (daysAgo > 7) color = "#ccc";
-    if (daysAgo > 30) color = "#666";
-    return `<span style="color:${color}; font-size:0.9em;">${daysAgo} dias atrás</span>`;
-}
-
 function getTrueRank(username) {
     const sortedByHp = [...globalDelegations].sort((a, b) => b.delegated_hp - a.delegated_hp);
     return sortedByHp.findIndex(u => u.delegator === username) + 1;
-}
-
-function renderTable() {
-  const tbody = document.getElementById("ranking-body");
-  tbody.innerHTML = "";
-
-  globalDelegations.forEach((user, index) => {
-    const rank = index + 1;
-    const tr = document.createElement("tr");
-    tr.classList.add("delegator-row");
-    tr.dataset.name = user.delegator.toLowerCase();
-
-    const canvasId = `chart-${user.delegator}`;
-    const loyalty = calculateLoyalty(user.delegator, user.timestamp, globalHistory);
-    let durationHtml = loyalty.text;
-    if (loyalty.days > 365) durationHtml += ` <span class="veteran-badge" title="Veterano (+1 ano)">🎖️</span>`;
-
-    const trueRank = getTrueRank(user.delegator);
-    const ownHp = user.total_account_hp || 0;
-    const hbrStake = user.token_balance || 0;
-    
-    const delegationBonusHtml = getDelegationBonus(trueRank);
-    const hbrBonusHtml = getHbrBonus(hbrStake);
-    const curationHtml = getCurationStatus(user.last_vote_date, user.votes_month, user.last_user_post);
-    const lastPostHtml = getLastPostStatus(user.last_user_post);
-    const hbrStyle = hbrStake > 0 ? "color:#4da6ff; font-weight:bold;" : "color:#444;"; 
-
-    tr.innerHTML = `
-      <td class="sticky-col">
-        <span style="color:#666; margin-right:8px; font-weight:bold;">#${trueRank}</span>
-        <img src="https://images.hive.blog/u/${user.delegator}/avatar/small" 
-             style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:5px;">
-        <a href="https://peakd.com/@${user.delegator}" target="_blank">@${user.delegator}</a>
-      </td>
-      <td style="font-weight:bold; font-family:monospace; font-size:1.1em; color:#4dff91;">
-          ${user.delegated_hp.toLocaleString("pt-BR", { minimumFractionDigits: 3 })}
-      </td>
-      <td style="font-size:0.9em;">${durationHtml}</td>
-      <td style="font-family:monospace; color:#888;">${ownHp.toLocaleString("pt-BR", { maximumFractionDigits: 0 })} HP</td>
-      <td style="font-family:monospace; ${hbrStyle}">${hbrStake.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 3 })}</td>
-      <td>${lastPostHtml}</td>
-      <td>${curationHtml}</td>
-      <td>${delegationBonusHtml}</td>
-      <td>${hbrBonusHtml}</td>
-      <td style="width:140px;">
-          <canvas id="${canvasId}" width="120" height="40"></canvas>
-      </td>
-    `;
-    tbody.appendChild(tr);
-
-    let userHistory = globalHistory[user.delegator] || {};
-    if (Object.keys(userHistory).length === 0) {
-       const today = new Date().toISOString().slice(0, 10);
-       userHistory = { [today]: user.delegated_hp };
-    }
-    renderSparkline(canvasId, userHistory);
-  });
 }
 
 function setupSearch() {
