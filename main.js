@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.4.2
- * Description: Fix Crítico de Fidelidade (Contagem reversa de dias consecutivos)
+ * Version: 2.4.3
+ * Description: Stability Counter (Conta dias desde a última alteração do valor)
  */
 
 let globalDelegations = [];
@@ -76,57 +76,22 @@ function updateStats(delegations, meta, historyData) {
   }
 }
 
-// --- FIX FIDELIDADE (Lógica Reversa) ---
+// --- LÓGICA DE ESTABILIDADE (V2.4.3) ---
+// Calcula estritamente o tempo desde a última alteração registrada na blockchain (timestamp)
 function calculateLoyalty(username, apiTimestamp, historyData) {
-  // 1. Data base: API Timestamp (O que a blockchain diz que é o início atual)
-  // Se mudou ontem, a API vai dizer 1 dia.
-  let apiDays = 0;
-  if (apiTimestamp) {
-    const start = new Date(apiTimestamp);
-    const now = new Date();
-    const diff = Math.abs(now - start);
-    apiDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
-  }
+  // Se não houver timestamp (ex: usuário fixo sem delegação), é 0.
+  if (!apiTimestamp) return { days: 0, text: "0 dias" };
 
-  // 2. Histórico Local (O que nós gravamos)
-  // Vamos contar quantos dias CONSECUTIVOS para trás o usuário teve saldo > 1.
-  let historyStreak = 0;
+  const lastChange = new Date(apiTimestamp);
+  const now = new Date();
   
-  if (historyData[username]) {
-    // Ordena do MAIS NOVO para o MAIS ANTIGO (Reverse)
-    const dates = Object.keys(historyData[username]).sort().reverse();
-    
-    // Verifica se o histórico tem dados de "hoje" (ou último update).
-    // Se a primeira data (mais nova) for muito antiga, o streak já quebrou.
-    if (dates.length > 0) {
-        const lastRecordDate = new Date(dates[0]);
-        const today = new Date();
-        const diffLastRecord = Math.abs(today - lastRecordDate) / (1000 * 60 * 60 * 24);
-        
-        // Se o último registro for de mais de 2 dias atrás, o streak quebrou (usuário parou de ser trackeado)
-        if (diffLastRecord <= 2) {
-            for (const dateStr of dates) {
-                const hp = historyData[username][dateStr];
-                if (hp > 1) { // Considera ativo se > 1 HP
-                    historyStreak++;
-                } else {
-                    // Encontrou um dia com 0 (ou <1). O streak acaba aqui.
-                    break; 
-                }
-            }
-        }
-    }
-  }
+  const diffTime = Math.abs(now - lastChange);
+  const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
 
-  // A Lógica Final:
-  // Se a API diz 1 dia (porque resetou ontem ao aumentar saldo), mas o histórico diz 50 dias consecutivos > 0...
-  // Nós queremos honrar os 50 dias (Fidelidade real).
-  // Porém, se o histórico diz 11 dias (com zeros no meio que não vimos antes) e a API diz 1...
-  // A contagem reversa (historyStreak) vai pegar o "buraco" do zero e retornar o valor correto (ex: 1).
-  
-  const finalDays = Math.max(apiDays, historyStreak);
-  
-  return { days: finalDays, text: `${finalDays} dias` };
+  // Exibe "Recente" se for menos de 1 dia, ou o número exato
+  const text = days <= 1 ? "Recente" : `${days} dias`;
+
+  return { days: days, text: text };
 }
 
 function renderTable() {
@@ -142,7 +107,9 @@ function renderTable() {
     const canvasId = `chart-${user.delegator}`;
     const loyalty = calculateLoyalty(user.delegator, user.timestamp, globalHistory);
     let durationHtml = loyalty.text;
-    if (loyalty.days > 365) durationHtml += ` <span class="veteran-badge" title="Veterano (+1 ano)">🎖️</span>`;
+    
+    // Badge de Veterano apenas se mantiver o MESMO valor por 1 ano
+    if (loyalty.days > 365) durationHtml += ` <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>`;
 
     const trueRank = getTrueRank(user.delegator);
     const ownHp = user.total_account_hp || 0;
@@ -164,7 +131,11 @@ function renderTable() {
       <td style="font-weight:bold; font-family:monospace; font-size:1.1em; color:#4dff91;">
           ${user.delegated_hp.toLocaleString("pt-BR", { minimumFractionDigits: 3 })}
       </td>
-      <td style="font-size:0.9em;">${durationHtml}</td>
+      
+      <td style="font-size:0.9em;">
+          ${durationHtml}
+      </td>
+
       <td style="font-family:monospace; color:#888;">${ownHp.toLocaleString("pt-BR", { maximumFractionDigits: 0 })} HP</td>
       <td style="font-family:monospace; ${hbrStyle}">${hbrStake.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 3 })}</td>
       <td>${lastPostHtml}</td>
@@ -185,6 +156,8 @@ function renderTable() {
     renderSparkline(canvasId, userHistory);
   });
 }
+
+// --- HELPER FUNCTIONS ---
 
 function getLastPostStatus(dateString) {
     if (!dateString || dateString.startsWith("1970")) {
