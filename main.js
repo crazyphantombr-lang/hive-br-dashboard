@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.4.1
- * Description: Fix no cálculo de fidelidade (Ignora dias com saldo 0 no histórico)
+ * Version: 2.4.2
+ * Description: Fix Crítico de Fidelidade (Contagem reversa de dias consecutivos)
  */
 
 let globalDelegations = [];
@@ -76,43 +76,57 @@ function updateStats(delegations, meta, historyData) {
   }
 }
 
-// --- CORREÇÃO DE FIDELIDADE (V2.4.1) ---
+// --- FIX FIDELIDADE (Lógica Reversa) ---
 function calculateLoyalty(username, apiTimestamp, historyData) {
-  // 1. Data base: API Timestamp (Última alteração contratual na Hive)
-  let startDate = apiTimestamp ? new Date(apiTimestamp) : new Date();
+  // 1. Data base: API Timestamp (O que a blockchain diz que é o início atual)
+  // Se mudou ontem, a API vai dizer 1 dia.
+  let apiDays = 0;
+  if (apiTimestamp) {
+    const start = new Date(apiTimestamp);
+    const now = new Date();
+    const diff = Math.abs(now - start);
+    apiDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
+  }
 
-  // 2. Se tiver histórico local, tentamos encontrar um "Streak" mais longo
+  // 2. Histórico Local (O que nós gravamos)
+  // Vamos contar quantos dias CONSECUTIVOS para trás o usuário teve saldo > 1.
+  let historyStreak = 0;
+  
   if (historyData[username]) {
-    const dates = Object.keys(historyData[username]).sort();
+    // Ordena do MAIS NOVO para o MAIS ANTIGO (Reverse)
+    const dates = Object.keys(historyData[username]).sort().reverse();
     
-    let streakStartDate = null;
-    
-    // Percorre o histórico cronologicamente
-    for (const dateStr of dates) {
-      const hp = historyData[username][dateStr];
-      
-      // Se tiver saldo > 1 (margem de segurança para poeira), inicia/mantém streak
-      if (hp > 1) {
-        if (!streakStartDate) streakStartDate = new Date(dateStr);
-      } else {
-        // Se zerou, quebra o streak. A fidelidade reseta.
-        streakStartDate = null;
-      }
-    }
-
-    // Se encontramos um streak válido no histórico que começou ANTES da data da API
-    // (Isso acontece quando a pessoa aumenta a delegação: API reseta, mas histórico lembra)
-    if (streakStartDate && streakStartDate < startDate) {
-      startDate = streakStartDate;
+    // Verifica se o histórico tem dados de "hoje" (ou último update).
+    // Se a primeira data (mais nova) for muito antiga, o streak já quebrou.
+    if (dates.length > 0) {
+        const lastRecordDate = new Date(dates[0]);
+        const today = new Date();
+        const diffLastRecord = Math.abs(today - lastRecordDate) / (1000 * 60 * 60 * 24);
+        
+        // Se o último registro for de mais de 2 dias atrás, o streak quebrou (usuário parou de ser trackeado)
+        if (diffLastRecord <= 2) {
+            for (const dateStr of dates) {
+                const hp = historyData[username][dateStr];
+                if (hp > 1) { // Considera ativo se > 1 HP
+                    historyStreak++;
+                } else {
+                    // Encontrou um dia com 0 (ou <1). O streak acaba aqui.
+                    break; 
+                }
+            }
+        }
     }
   }
 
-  const now = new Date();
-  const diffTime = Math.abs(now - startDate);
-  // Se for muito recente (menos de 24h), mostra 0 ou 1
-  const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // A Lógica Final:
+  // Se a API diz 1 dia (porque resetou ontem ao aumentar saldo), mas o histórico diz 50 dias consecutivos > 0...
+  // Nós queremos honrar os 50 dias (Fidelidade real).
+  // Porém, se o histórico diz 11 dias (com zeros no meio que não vimos antes) e a API diz 1...
+  // A contagem reversa (historyStreak) vai pegar o "buraco" do zero e retornar o valor correto (ex: 1).
   
-  return { days: days, text: `${days} dias` };
+  const finalDays = Math.max(apiDays, historyStreak);
+  
+  return { days: finalDays, text: `${finalDays} dias` };
 }
 
 function renderTable() {
@@ -126,8 +140,6 @@ function renderTable() {
     tr.dataset.name = user.delegator.toLowerCase();
 
     const canvasId = `chart-${user.delegator}`;
-    
-    // Usa a nova lógica corrigida
     const loyalty = calculateLoyalty(user.delegator, user.timestamp, globalHistory);
     let durationHtml = loyalty.text;
     if (loyalty.days > 365) durationHtml += ` <span class="veteran-badge" title="Veterano (+1 ano)">🎖️</span>`;
@@ -174,8 +186,6 @@ function renderTable() {
   });
 }
 
-// --- HELPER FUNCTIONS ---
-
 function getLastPostStatus(dateString) {
     if (!dateString || dateString.startsWith("1970")) {
         return `<span style="color:#444; font-size:0.85em">Sem posts</span>`;
@@ -183,7 +193,6 @@ function getLastPostStatus(dateString) {
     const daysAgo = calculateDuration(dateString);
     if (daysAgo === 0) return `<span style="color:#4dff91; font-weight:bold;">Hoje</span>`;
     if (daysAgo === 1) return `<span style="color:#4dff91;">Ontem</span>`;
-    
     let color = "#fff";
     if (daysAgo > 7) color = "#ccc";
     if (daysAgo > 30) color = "#666";
