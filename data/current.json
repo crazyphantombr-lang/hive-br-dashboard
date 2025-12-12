@@ -1,613 +1,674 @@
 [
   {
     "delegator": "matheusggr",
-    "delegated_hp": 10234.367,
-    "total_account_hp": 28967.91730955037,
+    "delegated_hp": 10234.447,
+    "total_account_hp": 28968.143693709077,
     "last_user_post": "2023-07-11T21:49:54",
     "token_balance": 2428.449,
     "timestamp": "2025-03-08T15:25:27.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "wiseagent",
-    "delegated_hp": 6753.372,
-    "total_account_hp": 75795.82235851091,
-    "last_user_post": "2025-12-12T13:46:36",
+    "delegated_hp": 6753.424,
+    "total_account_hp": 75796.41470256157,
+    "last_user_post": "2025-12-12T15:08:00",
     "token_balance": 200,
     "timestamp": "2025-12-05T14:29:03.000Z",
     "last_vote_date": "2025-12-12T00:29:48",
-    "votes_month": 30
+    "votes_month": 30,
+    "in_curation_trail": false
   },
   {
     "delegator": "rimurutempest",
-    "delegated_hp": 4501.176,
-    "total_account_hp": 8828.36212027691,
+    "delegated_hp": 4501.212,
+    "total_account_hp": 8828.431113891813,
     "last_user_post": "2025-12-10T22:42:36",
     "token_balance": 200.20995677,
     "timestamp": "2025-12-08T22:40:48.000Z",
     "last_vote_date": "2025-12-10T23:34:15",
-    "votes_month": 25
+    "votes_month": 25,
+    "in_curation_trail": true
   },
   {
     "delegator": "tfranzini",
-    "delegated_hp": 3118.917,
-    "total_account_hp": 3958.165760915378,
+    "delegated_hp": 3118.941,
+    "total_account_hp": 3958.1966939650774,
     "last_user_post": "2025-11-05T00:59:06",
     "token_balance": 514.893,
     "timestamp": "2025-10-01T22:54:21.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "mengao",
-    "delegated_hp": 2018.127,
-    "total_account_hp": 33006.34114539726,
+    "delegated_hp": 2018.143,
+    "total_account_hp": 33008.653310404734,
     "last_user_post": "2025-12-05T16:38:45",
     "token_balance": 200.80588465,
     "timestamp": "2025-08-27T17:56:09.000Z",
     "last_vote_date": "2025-11-04T02:43:00",
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "michupa",
-    "delegated_hp": 1070.399,
-    "total_account_hp": 14158.267145690808,
+    "delegated_hp": 1070.408,
+    "total_account_hp": 14158.684894105692,
     "last_user_post": "2025-12-12T11:03:18",
     "token_balance": 125.78072422,
     "timestamp": "2025-04-24T15:14:03.000Z",
     "last_vote_date": "2025-12-12T11:03:09",
-    "votes_month": 28
+    "votes_month": 28,
+    "in_curation_trail": true
   },
   {
     "delegator": "gwajnberg",
-    "delegated_hp": 1033.048,
-    "total_account_hp": 17656.985416851316,
+    "delegated_hp": 1033.056,
+    "total_account_hp": 17661.33834353618,
     "last_user_post": "2025-12-12T04:07:09",
     "token_balance": 91.40700001,
     "timestamp": "2025-11-05T21:52:12.000Z",
     "last_vote_date": "2025-12-11T21:21:24",
-    "votes_month": 15
+    "votes_month": 15,
+    "in_curation_trail": false
   },
   {
     "delegator": "kaibagt",
-    "delegated_hp": 1022.342,
-    "total_account_hp": 6719.420282411084,
+    "delegated_hp": 1022.35,
+    "total_account_hp": 6719.4727946539015,
     "last_user_post": "2025-06-19T18:48:24",
     "token_balance": 100.61831016,
     "timestamp": "2025-04-12T16:32:00.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "josiva",
-    "delegated_hp": 1020.586,
-    "total_account_hp": 4052.850654451878,
+    "delegated_hp": 1020.594,
+    "total_account_hp": 4052.8823274636443,
     "last_user_post": "2025-12-10T12:55:03",
     "token_balance": 64.486,
     "timestamp": "2025-05-30T00:49:18.000Z",
     "last_vote_date": "2025-12-10T12:39:24",
-    "votes_month": 24
+    "votes_month": 23,
+    "in_curation_trail": true
   },
   {
     "delegator": "elderdark",
-    "delegated_hp": 1018.317,
-    "total_account_hp": 10558.567784922136,
+    "delegated_hp": 1018.325,
+    "total_account_hp": 10558.650300087435,
     "last_user_post": "2025-12-10T23:45:09",
     "token_balance": 130.47239327,
     "timestamp": "2025-05-08T02:36:12.000Z",
     "last_vote_date": "2025-12-06T03:50:24",
-    "votes_month": 10
+    "votes_month": 10,
+    "in_curation_trail": true
   },
   {
     "delegator": "blessskateshop",
-    "delegated_hp": 1005.09,
-    "total_account_hp": 2505.689581477615,
+    "delegated_hp": 1005.098,
+    "total_account_hp": 2506.9345683588745,
     "last_user_post": "2025-12-10T01:55:03",
     "token_balance": 0,
     "timestamp": "2025-10-13T18:54:15.000Z",
     "last_vote_date": "2025-12-09T04:10:36",
-    "votes_month": 9
+    "votes_month": 9,
+    "in_curation_trail": true
   },
   {
     "delegator": "shiftrox",
-    "delegated_hp": 1001.126,
-    "total_account_hp": 21125.340464774363,
-    "last_user_post": "2025-12-12T10:00:06",
+    "delegated_hp": 1001.134,
+    "total_account_hp": 21128.009384119367,
+    "last_user_post": "2025-12-12T14:12:54",
     "token_balance": 150.333,
     "timestamp": "2025-11-26T19:53:03.000Z",
     "last_vote_date": "2025-12-12T10:00:33",
-    "votes_month": 25
+    "votes_month": 25,
+    "in_curation_trail": true
   },
   {
     "delegator": "pablito.saldo",
-    "delegated_hp": 618.61,
-    "total_account_hp": 3039.427590561331,
+    "delegated_hp": 618.615,
+    "total_account_hp": 3039.580386887482,
     "last_user_post": "2025-11-16T16:01:09",
     "token_balance": 51.915,
     "timestamp": "2024-12-02T00:41:12.000Z",
     "last_vote_date": "2025-10-26T00:17:45",
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "ricestrela",
-    "delegated_hp": 610.2,
-    "total_account_hp": 2042.208454634399,
+    "delegated_hp": 610.205,
+    "total_account_hp": 2042.243420846981,
     "last_user_post": "2025-12-11T12:02:12",
     "token_balance": 60.33272072,
     "timestamp": "2025-06-09T13:27:48.000Z",
     "last_vote_date": "2025-12-11T10:05:00",
-    "votes_month": 6
+    "votes_month": 6,
+    "in_curation_trail": true
   },
   {
     "delegator": "xvlad",
-    "delegated_hp": 537.864,
-    "total_account_hp": 5771.192427312735,
-    "last_user_post": "2025-12-11T00:15:00",
+    "delegated_hp": 537.868,
+    "total_account_hp": 5771.46060291885,
+    "last_user_post": "2025-12-12T13:54:54",
     "token_balance": 0,
     "timestamp": "2023-07-08T22:07:09.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "legalizabrazil",
-    "delegated_hp": 536.83,
-    "total_account_hp": 695.7517221057736,
+    "delegated_hp": 536.834,
+    "total_account_hp": 695.7571594027182,
     "last_user_post": "2024-11-24T13:51:27",
     "token_balance": 0,
     "timestamp": "2023-08-01T15:46:45.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "lobaobh",
-    "delegated_hp": 411.144,
-    "total_account_hp": 686.4842607794794,
+    "delegated_hp": 411.147,
+    "total_account_hp": 686.4926266579245,
     "last_user_post": "2025-04-17T05:12:48",
     "token_balance": 57.858,
     "timestamp": "2025-01-11T17:39:45.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "coyotelation",
-    "delegated_hp": 408.718,
-    "total_account_hp": 3437.8643703446937,
-    "last_user_post": "2025-12-12T06:41:30",
+    "delegated_hp": 408.721,
+    "total_account_hp": 3437.8912372410923,
+    "last_user_post": "2025-12-12T15:48:09",
     "token_balance": 31.038,
     "timestamp": "2025-03-27T23:04:48.000Z",
     "last_vote_date": "2025-12-12T05:17:45",
-    "votes_month": 28
+    "votes_month": 28,
+    "in_curation_trail": true
   },
   {
     "delegator": "crazyphantombr",
-    "delegated_hp": 227.017,
-    "total_account_hp": 14883.94236085238,
-    "last_user_post": "2025-12-11T22:32:39",
+    "delegated_hp": 227.019,
+    "total_account_hp": 14907.46644809871,
+    "last_user_post": "2025-12-12T15:59:00",
     "token_balance": 297.70217843,
     "timestamp": "2025-12-11T12:09:39.000Z",
     "last_vote_date": "2025-12-11T22:14:21",
-    "votes_month": 30
+    "votes_month": 30,
+    "in_curation_trail": true
   },
   {
     "delegator": "markitoelias",
-    "delegated_hp": 226.438,
-    "total_account_hp": 264.5012741017997,
+    "delegated_hp": 226.439,
+    "total_account_hp": 264.5033411782062,
     "last_user_post": "2025-11-29T10:35:30",
     "token_balance": 0,
     "timestamp": "2025-10-05T22:33:33.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "nane-qts",
-    "delegated_hp": 223.75,
-    "total_account_hp": 628.334087004692,
+    "delegated_hp": 223.752,
+    "total_account_hp": 628.3389974330862,
     "last_user_post": "2024-01-03T02:35:03",
     "token_balance": 15.889,
     "timestamp": "2025-05-23T14:15:15.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "thomashnblum",
-    "delegated_hp": 216.623,
-    "total_account_hp": 598.4577373404172,
+    "delegated_hp": 216.625,
+    "total_account_hp": 598.4624142852574,
     "last_user_post": "2025-11-20T03:32:48",
     "token_balance": 26.461,
     "timestamp": "2023-04-15T20:46:24.000Z",
     "last_vote_date": "2025-11-20T03:32:15",
-    "votes_month": 2
+    "votes_month": 2,
+    "in_curation_trail": true
   },
   {
     "delegator": "viniciotricolor",
-    "delegated_hp": 215.371,
-    "total_account_hp": 1044.4331833765661,
+    "delegated_hp": 215.372,
+    "total_account_hp": 1044.445346942958,
     "last_user_post": "2025-10-04T01:50:24",
     "token_balance": 27.123,
     "timestamp": "2023-06-26T04:36:27.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "syel25",
-    "delegated_hp": 213.004,
-    "total_account_hp": 2122.783086056817,
+    "delegated_hp": 213.005,
+    "total_account_hp": 2122.7996755982026,
     "last_user_post": "2024-06-30T14:50:33",
     "token_balance": 0,
     "timestamp": "2023-11-06T16:28:12.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "felipefabar",
-    "delegated_hp": 210.815,
-    "total_account_hp": 969.9540108892744,
+    "delegated_hp": 210.816,
+    "total_account_hp": 969.9615910760168,
     "last_user_post": "2024-06-24T13:13:27",
     "token_balance": 0,
     "timestamp": "2024-03-14T18:26:15.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "wagnertamanaha",
-    "delegated_hp": 200.796,
-    "total_account_hp": 4042.8127462339803,
+    "delegated_hp": 200.798,
+    "total_account_hp": 4042.8443407995337,
     "last_user_post": "2025-12-12T02:37:09",
     "token_balance": 12,
     "timestamp": "2025-10-25T21:59:12.000Z",
     "last_vote_date": "2025-12-12T02:37:39",
-    "votes_month": 33
+    "votes_month": 33,
+    "in_curation_trail": false
   },
   {
     "delegator": "lincemarrom",
-    "delegated_hp": 161.429,
-    "total_account_hp": 740.52245632515,
+    "delegated_hp": 161.43,
+    "total_account_hp": 740.5282435052047,
     "last_user_post": "2025-04-26T21:09:51",
     "token_balance": 26.76524818,
     "timestamp": "2023-07-03T15:50:48.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "reibar",
-    "delegated_hp": 155.097,
-    "total_account_hp": 337.9584561275337,
+    "delegated_hp": 155.098,
+    "total_account_hp": 337.9610972715259,
     "last_user_post": "2025-10-15T23:50:03",
     "token_balance": 25.58,
     "timestamp": "2023-11-12T19:48:36.000Z",
     "last_vote_date": "2025-10-16T00:05:27",
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "sinvistaalsol",
-    "delegated_hp": 154.855,
-    "total_account_hp": 155.02650116611727,
+    "delegated_hp": 154.856,
+    "total_account_hp": 155.0277126976081,
     "last_user_post": "2020-12-27T19:35:18",
     "token_balance": 0,
     "timestamp": "2025-03-20T15:57:30.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "jaopalas",
-    "delegated_hp": 117.177,
-    "total_account_hp": 301.93441630982625,
+    "delegated_hp": 117.178,
+    "total_account_hp": 301.9367759260904,
     "last_user_post": "2025-11-20T17:04:42",
     "token_balance": 3.261,
     "timestamp": "2025-04-30T15:51:42.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "dreloop07",
     "delegated_hp": 108.937,
-    "total_account_hp": 3158.7495802517083,
+    "total_account_hp": 3203.2759629683633,
     "last_user_post": "2025-12-05T14:27:36",
     "token_balance": 0,
     "timestamp": "2023-03-24T18:54:27.000Z",
     "last_vote_date": "2025-12-05T16:09:45",
-    "votes_month": 7
+    "votes_month": 7,
+    "in_curation_trail": false
   },
   {
     "delegator": "underlock",
     "delegated_hp": 108.623,
-    "total_account_hp": 9791.368955074222,
+    "total_account_hp": 9791.559511966274,
     "last_user_post": "2025-12-10T20:55:33",
     "token_balance": 25.31899872,
     "timestamp": "2023-03-10T21:57:33.000Z",
     "last_vote_date": "2025-12-10T20:56:00",
-    "votes_month": 10
+    "votes_month": 10,
+    "in_curation_trail": true
   },
   {
     "delegator": "imagemvirtual",
-    "delegated_hp": 108.536,
-    "total_account_hp": 125.74200797903926,
+    "delegated_hp": 108.537,
+    "total_account_hp": 125.74299065233215,
     "last_user_post": "2019-05-30T15:46:30",
     "token_balance": 0,
     "timestamp": "2023-03-20T21:30:03.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "giovanalrico",
-    "delegated_hp": 108.536,
-    "total_account_hp": 122.91253396889157,
+    "delegated_hp": 108.537,
+    "total_account_hp": 122.91349452985632,
     "last_user_post": "2019-04-23T00:46:03",
     "token_balance": 0,
     "timestamp": "2023-03-20T21:31:24.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "mauriciolimax",
-    "delegated_hp": 107.552,
-    "total_account_hp": 1865.210970106254,
+    "delegated_hp": 107.553,
+    "total_account_hp": 1865.2255467225768,
     "last_user_post": "2025-09-27T15:39:54",
     "token_balance": 13.611,
     "timestamp": "2023-07-11T05:34:00.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "hellene8",
-    "delegated_hp": 101.744,
-    "total_account_hp": 1071.8537350265647,
+    "delegated_hp": 101.745,
+    "total_account_hp": 1071.8621115592464,
     "last_user_post": "2025-10-23T17:30:09",
     "token_balance": 5.664,
     "timestamp": "2025-05-18T19:45:27.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "ogechukwu-martha",
-    "delegated_hp": 101.454,
-    "total_account_hp": 175.77901153828932,
+    "delegated_hp": 101.455,
+    "total_account_hp": 175.78038525056627,
     "last_user_post": "2025-11-26T09:23:36",
     "token_balance": 0,
     "timestamp": "2025-06-22T17:25:42.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "eii",
-    "delegated_hp": 100.412,
-    "total_account_hp": 5176.26467284446,
+    "delegated_hp": 100.413,
+    "total_account_hp": 5176.305125332317,
     "last_user_post": "2025-12-12T07:23:09",
     "token_balance": 0,
     "timestamp": "2025-10-24T10:50:09.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "d35tr0",
-    "delegated_hp": 74.684,
-    "total_account_hp": 167.259179981952,
+    "delegated_hp": 74.685,
+    "total_account_hp": 167.26048711177918,
     "last_user_post": "2025-10-31T03:20:36",
     "token_balance": 0,
     "timestamp": "2023-10-16T00:16:06.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "arthursiq5",
-    "delegated_hp": 71.922,
-    "total_account_hp": 254.75370421713416,
+    "delegated_hp": 71.923,
+    "total_account_hp": 254.7556951163207,
     "last_user_post": "2025-04-16T15:40:24",
     "token_balance": 13.915,
     "timestamp": "2023-08-03T20:49:00.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "casagrande",
     "delegated_hp": 60.239,
-    "total_account_hp": 66.60014557242513,
+    "total_account_hp": 66.60066605229825,
     "last_user_post": "2025-11-27T20:22:06",
     "token_balance": 5.03961038,
     "timestamp": "2025-10-25T21:41:48.000Z",
     "last_vote_date": "2025-11-26T02:09:45",
-    "votes_month": 2
+    "votes_month": 2,
+    "in_curation_trail": true
   },
   {
     "delegator": "matheusggr.leo",
-    "delegated_hp": 54.272,
-    "total_account_hp": 134.22212217428694,
+    "delegated_hp": 54.273,
+    "total_account_hp": 134.22317111963858,
     "last_user_post": "2025-10-14T11:49:42",
     "token_balance": 0,
     "timestamp": "2023-03-20T01:27:27.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "zombialien",
-    "delegated_hp": 52.365,
-    "total_account_hp": 316.46630440200397,
+    "delegated_hp": 52.366,
+    "total_account_hp": 316.4687775849158,
     "last_user_post": "2025-07-29T17:26:45",
     "token_balance": 0,
     "timestamp": "2024-06-03T20:55:39.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "captainman",
-    "delegated_hp": 52.254,
-    "total_account_hp": 1178.9788512490516,
+    "delegated_hp": 52.255,
+    "total_account_hp": 1178.988064964091,
     "last_user_post": "2025-11-29T21:11:42",
     "token_balance": 0,
     "timestamp": "2024-06-28T21:57:57.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "adncabrera",
     "delegated_hp": 51.332,
-    "total_account_hp": 790.8211421406522,
+    "total_account_hp": 790.8433276496631,
     "last_user_post": "2025-12-12T03:42:06",
     "token_balance": 0.501,
     "timestamp": "2025-01-28T01:16:24.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "grafvisionsp",
-    "delegated_hp": 50.391,
-    "total_account_hp": 1344.7027328082622,
+    "delegated_hp": 50.392,
+    "total_account_hp": 1344.713241654778,
     "last_user_post": "2025-12-01T15:53:30",
     "token_balance": 0,
     "timestamp": "2025-09-11T12:45:39.000Z",
     "last_vote_date": "2025-11-27T23:16:12",
-    "votes_month": 1
+    "votes_month": 1,
+    "in_curation_trail": false
   },
   {
     "delegator": "ladyaryastark",
     "delegated_hp": 50.1,
-    "total_account_hp": 2316.7608246639916,
+    "total_account_hp": 2317.9169772521186,
     "last_user_post": "2025-12-11T23:27:42",
     "token_balance": 0,
     "timestamp": "2025-11-15T22:00:00.000Z",
     "last_vote_date": "2025-10-24T15:23:51",
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "hive-br.leo",
-    "delegated_hp": 44.118,
-    "total_account_hp": 45.19302635240854,
+    "delegated_hp": 44.119,
+    "total_account_hp": 45.193379535729974,
     "last_user_post": "2023-07-15T22:43:27",
     "token_balance": 0,
     "timestamp": "2023-07-26T03:22:42.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "ogepaul1986",
     "delegated_hp": 34.225,
-    "total_account_hp": 39.24862243989978,
+    "total_account_hp": 39.24892916772826,
     "last_user_post": "2025-08-29T15:44:45",
     "token_balance": 0,
     "timestamp": "2025-10-16T21:18:42.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "speedtuning",
     "delegated_hp": 32.091,
-    "total_account_hp": 500.8299053174359,
+    "total_account_hp": 500.8338193011566,
     "last_user_post": "2025-11-12T14:31:39",
     "token_balance": 0,
     "timestamp": "2023-09-14T22:47:57.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "us3incanada",
     "delegated_hp": 30.023,
-    "total_account_hp": 49.77450668388516,
+    "total_account_hp": 49.77489567145718,
     "last_user_post": "2025-08-05T00:44:33",
     "token_balance": 0,
     "timestamp": "2025-12-02T01:50:39.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "boeltermc",
     "delegated_hp": 21.264,
-    "total_account_hp": 3300.1795155407467,
+    "total_account_hp": 3300.223312460262,
     "last_user_post": "2025-07-28T01:37:42",
     "token_balance": 0,
     "timestamp": "2023-11-27T22:00:54.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "keepkeybr",
     "delegated_hp": 13.884,
-    "total_account_hp": 15.125767802628596,
+    "total_account_hp": 15.125886010443894,
     "last_user_post": "2023-08-20T19:24:33",
     "token_balance": 0,
     "timestamp": "2023-10-03T15:07:09.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "name0",
     "delegated_hp": 10.453,
-    "total_account_hp": 346.0713025455635,
+    "total_account_hp": 346.0740070914183,
     "last_user_post": "2025-11-19T00:01:27",
     "token_balance": 0,
     "timestamp": "2024-06-26T23:01:42.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "sieghard1990",
     "delegated_hp": 10.311,
-    "total_account_hp": 196.4310625299312,
+    "total_account_hp": 196.43659898135218,
     "last_user_post": "2025-10-22T09:40:48",
     "token_balance": 0,
     "timestamp": "2024-12-01T13:37:30.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "v-36",
     "delegated_hp": 10.13,
-    "total_account_hp": 96.3193413627102,
+    "total_account_hp": 96.32009409798037,
     "last_user_post": "2025-11-05T17:18:57",
     "token_balance": 0.614,
     "timestamp": "2025-07-10T10:59:54.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "manopunkttt",
     "delegated_hp": 10.091,
-    "total_account_hp": 98.17541404436467,
+    "total_account_hp": 98.17618128483547,
     "last_user_post": "2025-11-28T13:44:18",
     "token_balance": 0,
     "timestamp": "2025-08-26T22:39:30.000Z",
     "last_vote_date": "2025-11-28T13:14:33",
-    "votes_month": 5
+    "votes_month": 5,
+    "in_curation_trail": false
   },
   {
     "delegator": "emviagem",
     "delegated_hp": 9.5,
-    "total_account_hp": 9.945872448689942,
+    "total_account_hp": 9.945950175643622,
     "last_user_post": "2025-08-05T00:43:51",
     "token_balance": 0,
     "timestamp": "2025-04-10T10:02:57.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "claytonlins",
     "delegated_hp": 6.103,
-    "total_account_hp": 7.259674671258042,
+    "total_account_hp": 7.259731405586761,
     "last_user_post": "2024-11-04T01:35:42",
     "token_balance": 0,
     "timestamp": "2025-12-02T01:48:33.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "jkatrina",
     "delegated_hp": 1.917,
-    "total_account_hp": 20.070950591968607,
+    "total_account_hp": 20.07110744636776,
     "last_user_post": "2024-10-16T19:30:48",
     "token_balance": 0,
     "timestamp": "2025-12-02T01:51:27.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "zulfrontado",
     "delegated_hp": 1.006,
-    "total_account_hp": 2145.1561334961293,
+    "total_account_hp": 2145.172897882792,
     "last_user_post": "2025-12-11T23:07:21",
     "token_balance": 0,
     "timestamp": "2025-09-28T17:36:54.000Z",
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "abandeira",
@@ -615,79 +676,87 @@
     "total_account_hp": 0,
     "last_user_post": "2024-02-04T14:45:45",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "aiuna",
     "delegated_hp": 0,
-    "total_account_hp": 11.52953679186739,
+    "total_account_hp": 11.529626895151623,
     "last_user_post": "2025-06-25T23:55:15",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "aiyumi",
     "delegated_hp": 0,
-    "total_account_hp": 1939.638193379796,
+    "total_account_hp": 1939.6533516445727,
     "last_user_post": "2022-01-27T20:53:30",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "ale-rio",
     "delegated_hp": 0,
-    "total_account_hp": 7.266868640669298,
+    "total_account_hp": 7.266925431218859,
     "last_user_post": "2025-05-15T00:59:48",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "alexandrefeliz",
     "delegated_hp": 0,
-    "total_account_hp": 162.55035260932783,
+    "total_account_hp": 162.5516229396878,
     "last_user_post": "2025-12-05T21:39:12",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "alina97",
     "delegated_hp": 0,
-    "total_account_hp": 603.4476168739332,
+    "total_account_hp": 603.4523328146621,
     "last_user_post": "2025-12-12T00:54:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "alinequeiroz",
     "delegated_hp": 0,
-    "total_account_hp": 22.713937400009847,
+    "total_account_hp": 22.714114909340406,
     "last_user_post": "2024-12-17T23:12:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "alucardy",
     "delegated_hp": 0,
-    "total_account_hp": 5.0662668124937005,
+    "total_account_hp": 5.066306405348717,
     "last_user_post": "2025-02-27T14:40:15",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "alyxmijaresda",
@@ -695,79 +764,87 @@
     "total_account_hp": 0,
     "last_user_post": "2024-04-04T22:16:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "anacvv05",
     "delegated_hp": 0,
-    "total_account_hp": 517.9559426433792,
+    "total_account_hp": 517.9599904670137,
     "last_user_post": "2025-05-22T11:01:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "anafenalli",
     "delegated_hp": 0,
-    "total_account_hp": 0.2272058689582005,
+    "total_account_hp": 0.2272076445711639,
     "last_user_post": "2024-05-01T02:14:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "anazn",
     "delegated_hp": 0,
-    "total_account_hp": 7.38772785621088,
+    "total_account_hp": 7.3877855912747314,
     "last_user_post": "2025-11-14T20:46:42",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "aphiel",
     "delegated_hp": 0,
-    "total_account_hp": 62.114132640208794,
+    "total_account_hp": 62.11461806190866,
     "last_user_post": "2023-03-22T16:15:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "avedorada",
     "delegated_hp": 0,
-    "total_account_hp": 0.8699660285987169,
+    "total_account_hp": 0.8699728273797748,
     "last_user_post": "2024-10-16T19:07:24",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "avel692",
     "delegated_hp": 0,
-    "total_account_hp": 173.45000019460429,
+    "total_account_hp": 173.45135570566686,
     "last_user_post": "2020-02-29T19:02:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "ayummi",
     "delegated_hp": 0,
-    "total_account_hp": 15.731223528354619,
+    "total_account_hp": 15.731346467804007,
     "last_user_post": "2025-07-02T03:19:39",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "badge-182654",
@@ -775,69 +852,76 @@
     "total_account_hp": 0,
     "last_user_post": "1970-01-01T00:00:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "barizon",
     "delegated_hp": 0,
-    "total_account_hp": 62.4565921488093,
+    "total_account_hp": 62.46008123891437,
     "last_user_post": "2022-11-22T14:38:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "bastter",
     "delegated_hp": 0,
-    "total_account_hp": 122.28788451189781,
+    "total_account_hp": 122.28884019122954,
     "last_user_post": "2021-02-21T00:08:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "bergmannadv",
     "delegated_hp": 0,
-    "total_account_hp": 6.522865334960749,
+    "total_account_hp": 6.5229163111274335,
     "last_user_post": "2024-09-25T00:01:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "bernardonassar",
     "delegated_hp": 0,
-    "total_account_hp": 109.46456551859224,
+    "total_account_hp": 109.46542098373696,
     "last_user_post": "2024-05-29T23:24:06",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "boba1961",
     "delegated_hp": 0,
-    "total_account_hp": 0.04988651923628926,
+    "total_account_hp": 0.049886909099238944,
     "last_user_post": "2024-03-07T12:18:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "bodhi.rio",
     "delegated_hp": 0,
-    "total_account_hp": 52.43627356196743,
+    "total_account_hp": 52.436683351237036,
     "last_user_post": "2024-05-24T01:48:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "borajogar",
@@ -845,149 +929,164 @@
     "total_account_hp": 0,
     "last_user_post": "2025-01-14T06:26:21",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "brancarosamel",
     "delegated_hp": 0,
-    "total_account_hp": 17.157867970099733,
+    "total_account_hp": 17.158002058769767,
     "last_user_post": "2022-11-28T00:46:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "brazilians",
     "delegated_hp": 0,
-    "total_account_hp": 126.00904195773283,
+    "total_account_hp": 126.01002671789522,
     "last_user_post": "2024-02-12T03:46:48",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "caaio",
     "delegated_hp": 0,
-    "total_account_hp": 29.050043123739723,
+    "total_account_hp": 29.05027014971135,
     "last_user_post": "2021-10-31T18:11:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "canellov",
     "delegated_hp": 0,
-    "total_account_hp": 20.446639454915168,
+    "total_account_hp": 20.44679924532129,
     "last_user_post": "2024-09-05T17:31:45",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "capuah-iruet",
     "delegated_hp": 0,
-    "total_account_hp": 0.14051738735896646,
+    "total_account_hp": 0.14051848550179052,
     "last_user_post": "2024-11-02T04:37:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "carlosro",
     "delegated_hp": 0,
-    "total_account_hp": 84.44523691616192,
+    "total_account_hp": 84.44589685535298,
     "last_user_post": "2024-02-29T09:49:21",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "carolramos",
     "delegated_hp": 0,
-    "total_account_hp": 33.232286289098155,
+    "total_account_hp": 33.2325459992835,
     "last_user_post": "2025-04-21T22:12:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "christiantatsch",
     "delegated_hp": 0,
-    "total_account_hp": 147.86622740368304,
+    "total_account_hp": 147.86738297766286,
     "last_user_post": "2024-05-28T20:38:12",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "cleateles1",
     "delegated_hp": 0,
-    "total_account_hp": 7.339211070005083,
+    "total_account_hp": 7.3392684259104435,
     "last_user_post": "2025-01-01T12:55:42",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "coiotes",
     "delegated_hp": 0,
-    "total_account_hp": 11.768725087567022,
+    "total_account_hp": 11.768817060106835,
     "last_user_post": "2025-01-03T01:28:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "coyote.sports",
     "delegated_hp": 0,
-    "total_account_hp": 8.978710035943575,
+    "total_account_hp": 8.978780204526842,
     "last_user_post": "2021-03-11T04:55:12",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "cril692003",
     "delegated_hp": 0,
-    "total_account_hp": 9.13792390622584,
+    "total_account_hp": 9.13799531906487,
     "last_user_post": "2024-11-29T23:07:39",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "crisciacm",
     "delegated_hp": 0,
-    "total_account_hp": 1020.5178268703703,
+    "total_account_hp": 1020.5258022131337,
     "last_user_post": "2025-05-15T20:55:27",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "cryptoshaman007",
     "delegated_hp": 0,
-    "total_account_hp": 5.206424044738983,
+    "total_account_hp": 5.206464732922213,
     "last_user_post": "2022-05-31T01:14:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "david0808",
@@ -995,29 +1094,32 @@
     "total_account_hp": 0,
     "last_user_post": "2024-09-04T19:31:18",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "deividluchi",
     "delegated_hp": 0,
-    "total_account_hp": 156.91591287244748,
+    "total_account_hp": 156.9171391696833,
     "last_user_post": "2018-08-10T16:21:06",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "diegoguerra",
     "delegated_hp": 0,
-    "total_account_hp": 180.0305136421763,
+    "total_account_hp": 180.0319205799253,
     "last_user_post": "2023-12-05T17:09:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "diogenesrm",
@@ -1025,219 +1127,241 @@
     "total_account_hp": 0,
     "last_user_post": "2025-01-01T19:40:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "discernente",
     "delegated_hp": 0,
-    "total_account_hp": 408.6903881691707,
+    "total_account_hp": 408.6935820829309,
     "last_user_post": "2025-11-26T19:04:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "disruptivas",
     "delegated_hp": 0,
-    "total_account_hp": 179.30453963598177,
+    "total_account_hp": 179.3059409002468,
     "last_user_post": "2018-10-18T21:49:45",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "doblershiva",
     "delegated_hp": 0,
-    "total_account_hp": 191.17603689435634,
+    "total_account_hp": 191.17953159024498,
     "last_user_post": "2025-09-17T03:08:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "dolandoteiro",
     "delegated_hp": 0,
-    "total_account_hp": 6.21174057705735,
+    "total_account_hp": 6.211789121785286,
     "last_user_post": "2025-09-21T03:06:18",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "donamona",
     "delegated_hp": 0,
-    "total_account_hp": 14.840048378250737,
+    "total_account_hp": 14.840164353169868,
     "last_user_post": "2024-06-18T23:51:30",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "dstampede",
     "delegated_hp": 0,
-    "total_account_hp": 77.78931156655491,
+    "total_account_hp": 77.78991948971583,
     "last_user_post": "2025-11-26T11:04:21",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "dudutaulois",
     "delegated_hp": 0,
-    "total_account_hp": 2067.0731513518917,
+    "total_account_hp": 2067.1103126643325,
     "last_user_post": "2023-02-14T16:54:42",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "dunatos",
     "delegated_hp": 0,
-    "total_account_hp": 25.04733059991129,
+    "total_account_hp": 25.04752634470044,
     "last_user_post": "2020-08-26T20:20:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "edufecchio",
     "delegated_hp": 0,
-    "total_account_hp": 3.1646831875708235,
+    "total_account_hp": 3.164707919557364,
     "last_user_post": "2017-11-22T19:22:24",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "edvamfilho",
     "delegated_hp": 0,
-    "total_account_hp": 2.091105418576446,
+    "total_account_hp": 2.091121760556986,
     "last_user_post": "2024-02-26T12:38:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "ehvinho",
     "delegated_hp": 0,
-    "total_account_hp": 29.41737114928088,
+    "total_account_hp": 29.417601045919564,
     "last_user_post": "2025-02-15T14:19:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "eijibr",
     "delegated_hp": 0,
-    "total_account_hp": 0.0015379503269898848,
+    "total_account_hp": 0.0015379623460655813,
     "last_user_post": "2024-02-01T01:59:18",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "elcoachjesus",
     "delegated_hp": 0,
-    "total_account_hp": 25.350872179542105,
+    "total_account_hp": 25.351070296507494,
     "last_user_post": "2024-11-11T00:50:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "emanueledornelas",
     "delegated_hp": 0,
-    "total_account_hp": 277.41703172779154,
+    "total_account_hp": 277.4191997407926,
     "last_user_post": "2025-05-26T22:58:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "endrius",
     "delegated_hp": 0,
-    "total_account_hp": 6.6972440537261715,
+    "total_account_hp": 6.697296392661849,
     "last_user_post": "2023-01-04T21:32:42",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "ericpso",
     "delegated_hp": 0,
-    "total_account_hp": 191.9159570604794,
+    "total_account_hp": 191.91745688292153,
     "last_user_post": "2025-09-18T10:08:12",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "escadas",
     "delegated_hp": 0,
-    "total_account_hp": 35.77704035831249,
+    "total_account_hp": 35.777319955740786,
     "last_user_post": "2023-09-07T02:47:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "estourefugiado",
     "delegated_hp": 0,
-    "total_account_hp": 29.001136805907212,
+    "total_account_hp": 29.001363449676155,
     "last_user_post": "2018-06-26T21:46:27",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "eujotave",
     "delegated_hp": 0,
-    "total_account_hp": 0.00041727060687625776,
+    "total_account_hp": 0.0004172738678443931,
     "last_user_post": "2024-11-09T02:47:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "f0rtunate",
     "delegated_hp": 0,
-    "total_account_hp": 3.1675914301451744,
+    "total_account_hp": 3.167616184859619,
     "last_user_post": "2025-02-17T10:44:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "fabiocola",
     "delegated_hp": 0,
-    "total_account_hp": 35.941561721844806,
+    "total_account_hp": 35.9418426050069,
     "last_user_post": "2020-03-01T00:33:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "fabiosoares",
@@ -1245,249 +1369,274 @@
     "total_account_hp": 0,
     "last_user_post": "2024-04-11T00:07:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "felipefortes",
     "delegated_hp": 0,
-    "total_account_hp": 19.225631807313754,
+    "total_account_hp": 19.22578205554996,
     "last_user_post": "2019-04-30T20:28:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "feliperochatv",
     "delegated_hp": 0,
-    "total_account_hp": 124.54239205487772,
+    "total_account_hp": 124.54336535317695,
     "last_user_post": "2024-02-13T01:20:30",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "fernandosoder",
     "delegated_hp": 0,
-    "total_account_hp": 1418.0901343686014,
+    "total_account_hp": 1418.1012167373688,
     "last_user_post": "2025-12-11T19:43:27",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": "2025-10-31T21:30:45",
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "fireguardian",
     "delegated_hp": 0,
-    "total_account_hp": 109.00976395849948,
+    "total_account_hp": 109.01061586937182,
     "last_user_post": "2023-04-11T20:35:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "fireguardian.spt",
     "delegated_hp": 0,
-    "total_account_hp": 0.40849113486109884,
+    "total_account_hp": 0.40849432721769524,
     "last_user_post": "2021-06-15T16:55:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "floressenciarte",
     "delegated_hp": 0,
-    "total_account_hp": 6.220388177225333,
+    "total_account_hp": 6.22043678953423,
     "last_user_post": "2024-10-07T21:03:30",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "fmajuniorphoto",
     "delegated_hp": 0,
-    "total_account_hp": 797.6791101355955,
+    "total_account_hp": 797.6853439946727,
     "last_user_post": "2025-04-17T11:01:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "frankrey11",
     "delegated_hp": 0,
-    "total_account_hp": 143.09176872687914,
+    "total_account_hp": 143.09288698848337,
     "last_user_post": "2025-10-09T03:17:06",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "fredsilva007",
     "delegated_hp": 0,
-    "total_account_hp": 1.8033505286834577,
+    "total_account_hp": 1.8033646218606763,
     "last_user_post": "2021-05-13T15:40:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "g4tzbr",
     "delegated_hp": 0,
-    "total_account_hp": 41.56023683252411,
+    "total_account_hp": 41.56056162560988,
     "last_user_post": "2024-10-01T20:04:39",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "gabrielmilego",
     "delegated_hp": 0,
-    "total_account_hp": 0.0006175450103010098,
+    "total_account_hp": 0.0006175498364128124,
     "last_user_post": "1970-01-01T00:00:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "game3x3",
     "delegated_hp": 0,
-    "total_account_hp": 15.141040136848597,
+    "total_account_hp": 15.141158464017124,
     "last_user_post": "2025-10-20T18:47:15",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "greengineer",
     "delegated_hp": 0,
-    "total_account_hp": 62.123259570683366,
+    "total_account_hp": 62.12374506371015,
     "last_user_post": "2022-10-28T09:23:45",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "gtpacheko17",
     "delegated_hp": 0,
-    "total_account_hp": 214.08117019549704,
+    "total_account_hp": 214.08284323899179,
     "last_user_post": "2025-12-11T21:20:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "handrehermann",
     "delegated_hp": 0,
-    "total_account_hp": 104.93793023186484,
+    "total_account_hp": 104.93875032137278,
     "last_user_post": "2024-06-19T16:15:24",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "hevelyn.jeeh",
     "delegated_hp": 0,
-    "total_account_hp": 5.164415521692129,
+    "total_account_hp": 5.164455881578917,
     "last_user_post": "2024-06-03T18:38:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "hive-br",
     "delegated_hp": 0,
-    "total_account_hp": 14186.885163603722,
+    "total_account_hp": 14186.996034054924,
     "last_user_post": "2025-12-01T21:26:42",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": "2025-12-07T18:21:06",
-    "votes_month": 4
+    "votes_month": 4,
+    "in_curation_trail": true
   },
   {
     "delegator": "hivebr.spt",
     "delegated_hp": 0,
-    "total_account_hp": 28.087969574154148,
+    "total_account_hp": 28.088189081524803,
     "last_user_post": "2022-06-07T13:24:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "hive-br.voter",
     "delegated_hp": 0,
-    "total_account_hp": 986.803395958051,
+    "total_account_hp": 987.9064781082399,
     "last_user_post": "2025-12-12T11:03:06",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "hranhuk",
     "delegated_hp": 0,
-    "total_account_hp": 201.84035320843316,
+    "total_account_hp": 201.84193058999176,
     "last_user_post": "2025-02-28T15:12:42",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "ismaelrd04",
     "delegated_hp": 0,
-    "total_account_hp": 498.9926646248537,
+    "total_account_hp": 498.99656425054576,
     "last_user_post": "2025-12-12T00:38:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "iuriomagico",
     "delegated_hp": 0,
-    "total_account_hp": 141.75559168261728,
+    "total_account_hp": 141.75669950200322,
     "last_user_post": "2024-07-17T09:00:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "j377e",
     "delegated_hp": 0,
-    "total_account_hp": 18.819132731797666,
+    "total_account_hp": 18.819279803245212,
     "last_user_post": "2025-01-10T17:04:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "jacalf",
     "delegated_hp": 0,
-    "total_account_hp": 31.385048677772378,
+    "total_account_hp": 31.38529395180313,
     "last_user_post": "2018-03-09T13:11:21",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "jaquevital",
@@ -1495,209 +1644,230 @@
     "total_account_hp": 0,
     "last_user_post": "2024-08-23T18:36:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "jarmeson",
     "delegated_hp": 0,
-    "total_account_hp": 43.921454701630005,
+    "total_account_hp": 43.921797947624036,
     "last_user_post": "2025-08-02T23:37:30",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "jeffparajiujitsu",
     "delegated_hp": 0,
-    "total_account_hp": 8.099665779188843,
+    "total_account_hp": 8.099729078044735,
     "last_user_post": "2022-07-17T22:43:48",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "jklio123",
     "delegated_hp": 0,
-    "total_account_hp": 132.54985410589612,
+    "total_account_hp": 132.55088998247945,
     "last_user_post": "2025-04-16T17:00:15",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "joaophelip",
     "delegated_hp": 0,
-    "total_account_hp": 56.204973795048936,
+    "total_account_hp": 56.20541303669589,
     "last_user_post": "2024-07-18T18:49:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "joaoprobst",
     "delegated_hp": 0,
-    "total_account_hp": 48.864516618450956,
+    "total_account_hp": 48.86489849445424,
     "last_user_post": "2018-12-13T17:38:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "jontv",
     "delegated_hp": 0,
-    "total_account_hp": 124.15595439638373,
+    "total_account_hp": 124.15692467467419,
     "last_user_post": "2024-08-23T08:11:06",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "jose.music",
     "delegated_hp": 0,
-    "total_account_hp": 15.643775710484798,
+    "total_account_hp": 15.643897966529838,
     "last_user_post": "2022-02-27T19:38:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "jsaez",
     "delegated_hp": 0,
-    "total_account_hp": 81.48179792165251,
+    "total_account_hp": 81.48243470157962,
     "last_user_post": "2024-05-29T19:11:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "jsantana",
     "delegated_hp": 0,
-    "total_account_hp": 15.038796294078592,
+    "total_account_hp": 15.038913822211896,
     "last_user_post": "2025-11-25T18:34:21",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "jucabala",
     "delegated_hp": 0,
-    "total_account_hp": 216.09067143133132,
+    "total_account_hp": 216.0943608349899,
     "last_user_post": "2025-12-06T15:43:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "juliasantos",
     "delegated_hp": 0,
-    "total_account_hp": 8.143131591607998,
+    "total_account_hp": 8.143195230149042,
     "last_user_post": "2024-08-08T13:10:24",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "jullyette",
     "delegated_hp": 0,
-    "total_account_hp": 5.110569208483863,
+    "total_account_hp": 5.110609147561927,
     "last_user_post": "2024-01-10T19:19:24",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "kat.eli",
     "delegated_hp": 0,
-    "total_account_hp": 120.50176582731845,
+    "total_account_hp": 120.50270754813975,
     "last_user_post": "2024-09-05T13:59:39",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "kaveira",
     "delegated_hp": 0,
-    "total_account_hp": 55.75736605301418,
+    "total_account_hp": 55.75780179660841,
     "last_user_post": "2025-02-06T22:57:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "kelday666",
     "delegated_hp": 0,
-    "total_account_hp": 323.0268403290644,
+    "total_account_hp": 323.0293647825385,
     "last_user_post": "2023-11-04T16:43:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "kevbest",
     "delegated_hp": 0,
-    "total_account_hp": 4.446853028284562,
+    "total_account_hp": 4.446887780423315,
     "last_user_post": "2024-12-18T01:17:21",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "kingforceblack",
     "delegated_hp": 0,
-    "total_account_hp": 1.0921099023352308,
+    "total_account_hp": 1.0921184371697794,
     "last_user_post": "2025-12-06T21:36:12",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "kojiri",
     "delegated_hp": 0,
-    "total_account_hp": 607.8053629426081,
+    "total_account_hp": 607.8101129391052,
     "last_user_post": "2024-06-13T13:11:27",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "laribf",
     "delegated_hp": 0,
-    "total_account_hp": 2.085399941015162,
+    "total_account_hp": 2.0854162384074177,
     "last_user_post": "2024-07-31T21:22:45",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "laurasoares",
     "delegated_hp": 0,
-    "total_account_hp": 29.22017254317656,
+    "total_account_hp": 29.22140122879624,
     "last_user_post": "2019-05-29T20:38:18",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "leo.marques",
@@ -1705,119 +1875,131 @@
     "total_account_hp": 0,
     "last_user_post": "2024-08-09T13:48:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "lesulzbacher",
     "delegated_hp": 0,
-    "total_account_hp": 407.739781853807,
+    "total_account_hp": 407.7429683385826,
     "last_user_post": "2025-02-25T01:27:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "lipe100dedos",
     "delegated_hp": 0,
-    "total_account_hp": 5.081315401005797,
+    "total_account_hp": 5.081355111465472,
     "last_user_post": "2025-03-18T01:44:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "liquideity",
     "delegated_hp": 0,
-    "total_account_hp": 5.98985676834075,
+    "total_account_hp": 5.989903579047602,
     "last_user_post": "2024-03-17T22:44:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "litekoiner",
     "delegated_hp": 0,
-    "total_account_hp": 19.587519706736472,
+    "total_account_hp": 19.58767278312518,
     "last_user_post": "2024-03-29T01:18:15",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "luanaecard",
     "delegated_hp": 0,
-    "total_account_hp": 0.11654618068621202,
+    "total_account_hp": 0.11654709149415116,
     "last_user_post": "2024-12-14T14:26:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "ludgero",
     "delegated_hp": 0,
-    "total_account_hp": 0.32337722439169775,
+    "total_account_hp": 0.3233797515834219,
     "last_user_post": "2024-11-06T19:03:24",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "luidimarg",
     "delegated_hp": 0,
-    "total_account_hp": 337.3586508949783,
+    "total_account_hp": 337.36128735149504,
     "last_user_post": "2022-07-17T16:41:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "luizeba",
     "delegated_hp": 0,
-    "total_account_hp": 178.08275855133485,
+    "total_account_hp": 178.08715124062778,
     "last_user_post": "2025-08-15T18:09:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "luizhadad",
     "delegated_hp": 0,
-    "total_account_hp": 363.77925552245125,
+    "total_account_hp": 363.7820984558882,
     "last_user_post": "2025-02-14T02:03:48",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "maismau",
     "delegated_hp": 0,
-    "total_account_hp": 62.91669400284277,
+    "total_account_hp": 62.91718569655649,
     "last_user_post": "2022-11-08T19:29:42",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "marianaemilia",
     "delegated_hp": 0,
-    "total_account_hp": 259.2766136515798,
+    "total_account_hp": 259.2786398972856,
     "last_user_post": "2025-09-02T11:59:12",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "marzukiali",
@@ -1825,9 +2007,10 @@
     "total_account_hp": 0,
     "last_user_post": "2024-10-05T02:24:27",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "matheusluciano",
@@ -1835,49 +2018,54 @@
     "total_account_hp": 0,
     "last_user_post": "1970-01-01T00:00:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "mathfb",
     "delegated_hp": 0,
-    "total_account_hp": 5.245574840122109,
+    "total_account_hp": 5.245615834268649,
     "last_user_post": "2023-06-22T15:00:27",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "megamariano",
     "delegated_hp": 0,
-    "total_account_hp": 59.83206078784889,
+    "total_account_hp": 59.83252837516629,
     "last_user_post": "2024-06-21T01:43:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "meinickenutri",
     "delegated_hp": 0,
-    "total_account_hp": 0.5093725290081516,
+    "total_account_hp": 0.5093765097524424,
     "last_user_post": "2024-04-27T05:24:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "micloop",
     "delegated_hp": 0,
-    "total_account_hp": 136.57272571640394,
+    "total_account_hp": 136.5737930317129,
     "last_user_post": "2019-07-09T11:30:09",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "milery",
@@ -1885,99 +2073,109 @@
     "total_account_hp": 0,
     "last_user_post": "2024-12-17T18:30:18",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "mrprofessor",
     "delegated_hp": 0,
-    "total_account_hp": 1.7424202610414146,
+    "total_account_hp": 1.7424338780488335,
     "last_user_post": "2025-04-22T21:42:48",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "mrprofessordaily",
     "delegated_hp": 0,
-    "total_account_hp": 0.0009065099932206236,
+    "total_account_hp": 0.00090651707759262,
     "last_user_post": "2024-02-15T00:28:24",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "naoebemumcanal",
     "delegated_hp": 0,
-    "total_account_hp": 12.218177243536884,
+    "total_account_hp": 12.21827272854351,
     "last_user_post": "2024-07-02T22:21:09",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "nascimentoab",
     "delegated_hp": 0,
-    "total_account_hp": 855.6784868526829,
+    "total_account_hp": 855.7141838488609,
     "last_user_post": "2025-06-27T21:49:06",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "nascimentocb",
     "delegated_hp": 0,
-    "total_account_hp": 49.3994829577357,
+    "total_account_hp": 49.3998690144988,
     "last_user_post": "2021-03-20T15:24:45",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "nathylieth",
     "delegated_hp": 0,
-    "total_account_hp": 134.6174961523627,
+    "total_account_hp": 134.6185481875604,
     "last_user_post": "2023-11-23T20:35:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "nayha23",
     "delegated_hp": 0,
-    "total_account_hp": 46.599918027156065,
+    "total_account_hp": 46.60028220533035,
     "last_user_post": "2022-02-10T02:13:09",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "nichollasrdo",
     "delegated_hp": 0,
-    "total_account_hp": 10.849930846712539,
+    "total_account_hp": 10.85001563887901,
     "last_user_post": "2024-06-21T02:57:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "norseland",
     "delegated_hp": 0,
-    "total_account_hp": 162.75684992274014,
+    "total_account_hp": 162.7581218668758,
     "last_user_post": "2023-06-07T11:04:21",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "officialjag",
@@ -1985,29 +2183,32 @@
     "total_account_hp": 0,
     "last_user_post": "2024-08-04T20:53:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "oficialversatil",
     "delegated_hp": 0,
-    "total_account_hp": 7.446944781233889,
+    "total_account_hp": 7.447002979077775,
     "last_user_post": "2024-09-08T16:17:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "orozcorobetson",
     "delegated_hp": 0,
-    "total_account_hp": 2.610736157370301,
+    "total_account_hp": 2.6107565602630007,
     "last_user_post": "2024-06-22T03:36:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "papoprodutivo",
@@ -2015,69 +2216,76 @@
     "total_account_hp": 0,
     "last_user_post": "2024-12-30T18:11:06",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "paradaleticia",
     "delegated_hp": 0,
-    "total_account_hp": 617.722221793602,
+    "total_account_hp": 617.7270492903116,
     "last_user_post": "2024-08-12T17:01:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "pataty69",
     "delegated_hp": 0,
-    "total_account_hp": 205.27215677066434,
+    "total_account_hp": 205.6648920320741,
     "last_user_post": "2025-02-16T12:52:45",
     "token_balance": 18.66,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "pedagogia",
     "delegated_hp": 0,
-    "total_account_hp": 0.017402704915985712,
+    "total_account_hp": 0.017402840918055506,
     "last_user_post": "2024-06-21T00:02:39",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "pedrocanella",
     "delegated_hp": 0,
-    "total_account_hp": 28.830421908292518,
+    "total_account_hp": 28.830647217925215,
     "last_user_post": "2021-04-05T11:52:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "perfilbrasil",
     "delegated_hp": 0,
-    "total_account_hp": 667.4575947211988,
+    "total_account_hp": 668.8608201231599,
     "last_user_post": "2025-11-19T12:27:45",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "phgnomo",
     "delegated_hp": 0,
-    "total_account_hp": 1566.961154177986,
+    "total_account_hp": 1567.0204159194668,
     "last_user_post": "2023-01-16T18:13:18",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "phsaeta",
@@ -2085,99 +2293,109 @@
     "total_account_hp": 0,
     "last_user_post": "2024-09-27T00:24:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "pirulito.zoado",
     "delegated_hp": 0,
-    "total_account_hp": 5.756351154820918,
+    "total_account_hp": 5.7563961406823285,
     "last_user_post": "2024-09-03T13:01:39",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "pythomaster",
     "delegated_hp": 0,
-    "total_account_hp": 57.30360770249792,
+    "total_account_hp": 57.3040555299645,
     "last_user_post": "2024-03-11T20:10:09",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "qyses",
     "delegated_hp": 0,
-    "total_account_hp": 120.27643497665413,
+    "total_account_hp": 120.27737493651571,
     "last_user_post": "2022-09-07T22:59:06",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "raistling",
     "delegated_hp": 0,
-    "total_account_hp": 273.85826933640925,
+    "total_account_hp": 273.86040953769634,
     "last_user_post": "2025-04-05T06:12:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "rdabrasil",
     "delegated_hp": 0,
-    "total_account_hp": 1.4277042294346467,
+    "total_account_hp": 1.4277153869375288,
     "last_user_post": "2025-02-16T21:31:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "reas63",
     "delegated_hp": 0,
-    "total_account_hp": 0.43803388361615164,
+    "total_account_hp": 0.4380373068492122,
     "last_user_post": "2025-05-18T00:54:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "renatacristiane",
     "delegated_hp": 0,
-    "total_account_hp": 1.3822620807821238,
+    "total_account_hp": 1.3822728831547946,
     "last_user_post": "2025-02-01T19:58:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "rhommar",
     "delegated_hp": 0,
-    "total_account_hp": 41.17290621349689,
+    "total_account_hp": 41.1732279795954,
     "last_user_post": "2025-01-31T20:49:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "rimasx",
     "delegated_hp": 0,
-    "total_account_hp": 5.229331617282709,
+    "total_account_hp": 5.229372484488526,
     "last_user_post": "2024-06-21T00:17:06",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "robspiercer",
@@ -2185,19 +2403,21 @@
     "total_account_hp": 0,
     "last_user_post": "2025-01-19T13:55:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "rodrigojmelo",
     "delegated_hp": 0,
-    "total_account_hp": 0.05737389028689453,
+    "total_account_hp": 0.05737433866361923,
     "last_user_post": "2020-02-13T18:34:18",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "rounan.soares",
@@ -2205,49 +2425,54 @@
     "total_account_hp": 0,
     "last_user_post": "2025-08-30T05:31:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "rphspinheiro",
     "delegated_hp": 0,
-    "total_account_hp": 6.425113305031585,
+    "total_account_hp": 6.425163517266544,
     "last_user_post": "2023-01-17T19:20:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "sandranunes",
     "delegated_hp": 0,
-    "total_account_hp": 3.52542406390406,
+    "total_account_hp": 3.525451615079116,
     "last_user_post": "2024-02-07T06:21:12",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "santana37",
     "delegated_hp": 0,
-    "total_account_hp": 35.13257728180046,
+    "total_account_hp": 35.132851842752366,
     "last_user_post": "2024-03-16T02:33:39",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "santinhos",
     "delegated_hp": 0,
-    "total_account_hp": 54.96630925293579,
+    "total_account_hp": 54.96673881442427,
     "last_user_post": "2018-02-26T20:56:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "seabet",
@@ -2255,109 +2480,120 @@
     "total_account_hp": 0,
     "last_user_post": "2024-04-13T07:59:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "selhomarlopes",
     "delegated_hp": 0,
-    "total_account_hp": 12.724568131541137,
+    "total_account_hp": 12.724667573990542,
     "last_user_post": "2025-09-26T01:09:15",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "silviamaria",
     "delegated_hp": 0,
-    "total_account_hp": 483.16869905827,
+    "total_account_hp": 483.172475019734,
     "last_user_post": "2025-12-11T15:48:24",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "sintropia",
     "delegated_hp": 0,
-    "total_account_hp": 0.31221920001907283,
+    "total_account_hp": 0.3122216400108808,
     "last_user_post": "2025-07-08T17:04:00",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "sistemabusiness",
     "delegated_hp": 0,
-    "total_account_hp": 77.63676486272803,
-    "last_user_post": "2025-12-05T15:02:18",
+    "total_account_hp": 77.63737159373706,
+    "last_user_post": "2025-12-12T15:01:45",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "skaters",
     "delegated_hp": 0,
-    "total_account_hp": 347.298236940076,
+    "total_account_hp": 347.30095107441815,
     "last_user_post": "2025-12-08T20:23:18",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "sktbr",
     "delegated_hp": 0,
-    "total_account_hp": 397.2270534394926,
+    "total_account_hp": 397.2301577673374,
     "last_user_post": "2024-01-30T21:20:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "sousafrc",
     "delegated_hp": 0,
-    "total_account_hp": 55.38546617550232,
+    "total_account_hp": 55.38589901270049,
     "last_user_post": "2024-06-23T13:14:42",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "splinter100dedos",
     "delegated_hp": 0,
-    "total_account_hp": 331.9627306766202,
+    "total_account_hp": 331.9653249640419,
     "last_user_post": "2024-01-27T06:04:51",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "surfgurupro",
     "delegated_hp": 0,
-    "total_account_hp": 70.28581027132928,
+    "total_account_hp": 70.28635955465737,
     "last_user_post": "2025-08-14T20:42:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "surflimpo",
     "delegated_hp": 0,
-    "total_account_hp": 155.29332698484174,
+    "total_account_hp": 155.29454060157528,
     "last_user_post": "2024-04-19T21:23:06",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "tankulo",
@@ -2365,59 +2601,65 @@
     "total_account_hp": 0,
     "last_user_post": "2024-08-25T06:47:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "tatianest",
     "delegated_hp": 0,
-    "total_account_hp": 0.21777574750987405,
+    "total_account_hp": 0.21777744942647584,
     "last_user_post": "2024-02-28T20:56:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "tatylayla",
     "delegated_hp": 0,
-    "total_account_hp": 91.82625288376413,
+    "total_account_hp": 91.83297251283496,
     "last_user_post": "2020-03-03T22:06:39",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "teteuzinho",
     "delegated_hp": 0,
-    "total_account_hp": 1.2469928294497874,
+    "total_account_hp": 1.2470025746937965,
     "last_user_post": "2023-05-16T01:46:33",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "teu",
     "delegated_hp": 0,
-    "total_account_hp": 9.714850275945206,
+    "total_account_hp": 9.714926197461525,
     "last_user_post": "2024-02-23T20:09:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "thaliaperez",
     "delegated_hp": 0,
-    "total_account_hp": 45.66482706038838,
+    "total_account_hp": 45.66518393083047,
     "last_user_post": "2025-10-14T09:55:15",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "totomusic",
@@ -2425,9 +2667,10 @@
     "total_account_hp": 0,
     "last_user_post": "2025-11-22T16:33:12",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "triptamine555",
@@ -2435,39 +2678,43 @@
     "total_account_hp": 0,
     "last_user_post": "2024-05-28T00:26:54",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "tucacheias",
     "delegated_hp": 0,
-    "total_account_hp": 9.804379912330026,
+    "total_account_hp": 9.804456533520097,
     "last_user_post": "2024-04-10T18:30:21",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "ukyron3",
     "delegated_hp": 0,
-    "total_account_hp": 0.000599311501198773,
+    "total_account_hp": 0.0005993161848157744,
     "last_user_post": "2025-02-12T22:06:18",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "unhurried",
     "delegated_hp": 0,
-    "total_account_hp": 146.79763846793227,
+    "total_account_hp": 146.79978601854972,
     "last_user_post": "2022-11-08T16:25:30",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "unten1995",
@@ -2475,109 +2722,120 @@
     "total_account_hp": 0,
     "last_user_post": "2024-03-29T00:52:21",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "usergabs",
     "delegated_hp": 0,
-    "total_account_hp": 5.486387260252323,
+    "total_account_hp": 5.4864301363469705,
     "last_user_post": "2024-05-14T18:48:18",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "vaipraonde",
     "delegated_hp": 0,
-    "total_account_hp": 5169.061263503578,
+    "total_account_hp": 5169.649841387035,
     "last_user_post": "2025-12-12T01:35:03",
     "token_balance": 65.03256277,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": "2025-10-25T21:54:21",
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "vanessabarrostec",
     "delegated_hp": 0,
-    "total_account_hp": 6.68512489602926,
+    "total_account_hp": 6.685177140253768,
     "last_user_post": "2024-08-16T13:01:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "vcorioh",
     "delegated_hp": 0,
-    "total_account_hp": 2.7502626555970315,
+    "total_account_hp": 2.750284148888761,
     "last_user_post": "2021-08-10T15:15:42",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "vempromundo",
     "delegated_hp": 0,
-    "total_account_hp": 8692.2978543479,
+    "total_account_hp": 8692.365784621104,
     "last_user_post": "2025-12-01T19:57:12",
     "token_balance": 200,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": "2025-11-28T23:55:12",
-    "votes_month": 3
+    "votes_month": 3,
+    "in_curation_trail": true
   },
   {
     "delegator": "ventrinidad",
     "delegated_hp": 0,
-    "total_account_hp": 16.57264164163297,
+    "total_account_hp": 16.572771156761572,
     "last_user_post": "2024-06-19T15:13:45",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "vicvondoom",
     "delegated_hp": 0,
-    "total_account_hp": 0.0012300078333965054,
+    "total_account_hp": 0.0012300174459028378,
     "last_user_post": "2024-07-31T16:16:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "vini0",
     "delegated_hp": 0,
-    "total_account_hp": 0.0007112114042276786,
+    "total_account_hp": 0.0007112169623419776,
     "last_user_post": "2024-11-26T22:47:09",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "vitoragnelli",
     "delegated_hp": 0,
-    "total_account_hp": 23.45279926340732,
+    "total_account_hp": 23.45298254694041,
     "last_user_post": "2022-05-30T03:30:15",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "vonlecram",
     "delegated_hp": 0,
-    "total_account_hp": 79.35383964042914,
+    "total_account_hp": 79.35445979037073,
     "last_user_post": "2025-09-28T21:26:36",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "wallabra",
@@ -2585,39 +2843,43 @@
     "total_account_hp": 0,
     "last_user_post": "2024-04-10T13:59:39",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "wallabra-wallet",
     "delegated_hp": 0,
-    "total_account_hp": 3.151405938545364,
+    "total_account_hp": 3.151430566770256,
     "last_user_post": "2025-10-04T20:30:12",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "wasye",
     "delegated_hp": 0,
-    "total_account_hp": 138.32068400237839,
+    "total_account_hp": 138.32176497797445,
     "last_user_post": "2025-07-15T21:13:48",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "wellingt556",
     "delegated_hp": 0,
-    "total_account_hp": 2.1689796783028066,
+    "total_account_hp": 2.168996628870377,
     "last_user_post": "2024-10-27T12:48:57",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "wilkersk8zn",
@@ -2625,68 +2887,75 @@
     "total_account_hp": 0,
     "last_user_post": "2024-08-04T17:43:03",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "wlfreitas",
     "delegated_hp": 0,
-    "total_account_hp": 12.632847383175166,
+    "total_account_hp": 12.632946108827287,
     "last_user_post": "2025-09-26T20:11:12",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   },
   {
     "delegator": "xgoivo",
     "delegated_hp": 0,
-    "total_account_hp": 33.51679704219749,
+    "total_account_hp": 33.517058975833244,
     "last_user_post": "2022-04-10T15:57:45",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "xlety",
     "delegated_hp": 0,
-    "total_account_hp": 4091.5162103056573,
+    "total_account_hp": 4091.615207484693,
     "last_user_post": "2025-11-25T21:47:12",
     "token_balance": 51.43796971,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": "2025-11-25T21:48:24",
-    "votes_month": 6
+    "votes_month": 6,
+    "in_curation_trail": true
   },
   {
     "delegator": "xtryhard",
     "delegated_hp": 0,
-    "total_account_hp": 0.0014683551799864975,
+    "total_account_hp": 0.0014683666551763967,
     "last_user_post": "2022-03-25T14:22:48",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "yungbresciani",
     "delegated_hp": 0,
-    "total_account_hp": 339.32880723368606,
+    "total_account_hp": 339.3334597428865,
     "last_user_post": "2025-10-27T19:43:48",
     "token_balance": 0,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": false
   },
   {
     "delegator": "zallin",
     "delegated_hp": 0,
-    "total_account_hp": 3544.3857581851616,
+    "total_account_hp": 3544.4134575457833,
     "last_user_post": "2025-07-11T13:09:12",
     "token_balance": 60.546,
-    "timestamp": "2025-12-12T13:46:49.636Z",
+    "timestamp": null,
     "last_vote_date": null,
-    "votes_month": 0
+    "votes_month": 0,
+    "in_curation_trail": true
   }
 ]
