@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.5.1
- * Description: Simplified Curation Status (Removes Pending/Inactive logic)
+ * Version: 2.6.0
+ * Description: Added Curation Trail Column Logic
  */
 
 let globalDelegations = [];
@@ -92,6 +92,14 @@ function calculateLoyalty(username, apiTimestamp, historyData) {
   return { days: diffDays, text: text };
 }
 
+// --- FUNÇÃO TRILHA (V2.6.0) ---
+function getTrailBonus(inTrail) {
+    if (inTrail) {
+        return `<span class="bonus-tag bonus-trail">+5%</span>`;
+    }
+    return `<span style="opacity:0.3; font-size:0.8em">—</span>`;
+}
+
 function renderTable() {
   const tbody = document.getElementById("ranking-body");
   tbody.innerHTML = "";
@@ -114,10 +122,10 @@ function renderTable() {
     
     const delegationBonusHtml = getDelegationBonus(trueRank);
     const hbrBonusHtml = getHbrBonus(hbrStake);
-    
-    // Curadoria Simplificada (Sem Pendente/Inativo)
+    // Novo Bônus Trilha
+    const trailBonusHtml = getTrailBonus(user.in_curation_trail);
+
     const curationHtml = getCurationStatus(user.last_vote_date, user.votes_month);
-    
     const lastPostHtml = getLastPostStatus(user.last_user_post);
     const hbrStyle = hbrStake > 0 ? "color:#4da6ff; font-weight:bold;" : "color:#444;"; 
 
@@ -138,6 +146,9 @@ function renderTable() {
       <td>${curationHtml}</td>
       <td>${delegationBonusHtml}</td>
       <td>${hbrBonusHtml}</td>
+      
+      <td>${trailBonusHtml}</td>
+      
       <td style="width:140px;">
           <canvas id="${canvasId}" width="120" height="40"></canvas>
       </td>
@@ -155,7 +166,6 @@ function renderTable() {
 
 // --- HELPER FUNCTIONS ---
 
-// Função Simplificada para Curadoria (V2.5.1)
 function getCurationStatus(lastVoteDate, count30d) {
   if (lastVoteDate) {
     const daysAgo = calculateDuration(lastVoteDate);
@@ -167,8 +177,6 @@ function getCurationStatus(lastVoteDate, count30d) {
     const daysText = daysAgo === 0 ? "Hoje" : daysAgo === 1 ? "Ontem" : `${daysAgo}d atrás`;
     return `<div style="line-height:1.2;"><span style="color:${color}; font-weight:bold;">${icon} ${daysText}</span><br><span style="font-size:0.8em; color:#888;">(${count30d} votos/mês)</span></div>`;
   }
-  
-  // Se não tem voto, mostra apenas "SEM DADOS" discreto
   return `<span style="color:#666; font-size:0.8em; opacity:0.5; font-weight:bold;">SEM DADOS</span>`;
 }
 
