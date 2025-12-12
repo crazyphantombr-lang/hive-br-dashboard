@@ -1,7 +1,7 @@
 /**
- * Script: Fetch Delegations (Deep History 12k)
- * Version: 2.5.0
- * Update: Histórico de votos aumentado para 12.000 operações
+ * Script: Fetch Delegations (Curation Trail Update)
+ * Version: 2.6.0
+ * Update: Adiciona verificação de seguidores da Trilha de Curadoria (HiveVote)
  */
 
 const fetch = require("node-fetch");
@@ -43,7 +43,23 @@ const FIXED_USERS = [
   "wagnertamanaha", "wallabra", "wallabra-wallet", "wasye", "wellingt556", "wilkersk8zn", "wiseagent", "wlfreitas",
   "xgoivo", "xlety", "xtryhard", "yungbresciani", "zallin", "zombialien"
 ];
-// -------------------------------
+
+// --- LISTA DA TRILHA DE CURADORIA (Extraída do HiveVote) ---
+const CURATION_TRAIL_USERS = [
+  "hive-br", "kaibagt", "matheusggr.leo", "matheusggr", "elderdark", "shiftrox", "zallin", "vempromundo", 
+  "syel25", "arthursiq5", "lucasqz", "luizeba", "crazyphantombr", "nane-qts", "us3incanada", "lilico", 
+  "kedleona", "adamferrari", "ayummi", "fireguardian", "portugalzin", "wlffreitas", "lincemarrom", 
+  "thomashnblum", "hive-182654", "badge-182654", "lobaobh", "rafasete", "d35tr0", "casagrande", "mariale07", 
+  "jarmeson", "underlock", "vempromundo.pob", "pablito.saldo", "thayavlis", "emviagem", "tfranzini", 
+  "preciousplastes", "claytonlins", "rimurutempest", "ativosgarantem", "cassia.nails", "dwarven", "ifhy", 
+  "jkatrina", "josiva", "kaveira", "abreusplinter", "spidersilk", "lucianaabrao", "xlety", "blackleg", 
+  "coyotelation", "lemurians", "captainman", "joaophelip", "blessskateshop", "devferri", "vortac", 
+  "xeraifuma", "michupa", "bradleyarrow", "game3x3", "pixbee", "wlfreitas", "ricestrela", "treasure.hoard", 
+  "coiotes", "alinequeiroz", "preciouz-01", "kevbest", "jsantana", "cheryl291021", "jaopalas", "jhonpa5808", 
+  "chuchochucho", "sofia.perola", "scumflowerboy", "itznur", "luizvitao", "reibar", "geovanna-gg", 
+  "xeraixupa", "skaters"
+];
+// ------------------------------------------------------------
 
 const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=300`;
 const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
@@ -67,7 +83,7 @@ async function hiveRpc(method, params) {
         method: "POST",
         body: JSON.stringify({ jsonrpc: "2.0", method: method, params: params, id: 1 }),
         headers: { "Content-Type": "application/json" },
-        timeout: 15000 // Timeout aumentado para suportar muitas requisições
+        timeout: 15000 
       });
       
       if (!response.ok) throw new Error(`Status ${response.status}`);
@@ -107,21 +123,17 @@ async function fetchVoteHistory(voterAccount) {
   let fullHistory = [];
   let start = -1; 
   const batchSize = 1000; 
-  const maxBatches = 12; // AUMENTADO PARA 12.000
+  const maxBatches = 12;
 
   for (let i = 0; i < maxBatches; i++) {
     const batch = await hiveRpc("condenser_api.get_account_history", [voterAccount, start, batchSize]);
     if (!batch || batch.length === 0) break;
 
     fullHistory = fullHistory.concat(batch);
-    // Pega o ID do item mais antigo
     const firstItem = batch[0];
     const firstId = firstItem[0];
     start = firstId - 1;
-    
-    // Log de progresso a cada lote
     console.log(`   Batch ${i+1}/${maxBatches}: Recebidos ${batch.length}. Próximo ID: ${start}`);
-
     if (start < 0) break;
   }
 
@@ -161,7 +173,7 @@ async function run() {
     const currentDelegators = new Set(delegationsData.map(d => d.delegator));
     FIXED_USERS.forEach(fixedUser => {
       if (!currentDelegators.has(fixedUser)) {
-        delegationsData.push({ delegator: fixedUser, hp_equivalent: 0, timestamp: new Date().toISOString() });
+        delegationsData.push({ delegator: fixedUser, hp_equivalent: 0, timestamp: null }); // Timestamp null para fixos
       }
     });
 
@@ -207,7 +219,9 @@ async function run() {
           token_balance: tokenMap[item.delegator] || 0,
           timestamp: item.timestamp,
           last_vote_date: voteInfo.last_vote_ts,
-          votes_month: voteInfo.count_30d
+          votes_month: voteInfo.count_30d,
+          // Verifica se está na lista de curadoria (TRILHA)
+          in_curation_trail: CURATION_TRAIL_USERS.includes(item.delegator)
         };
       })
       .sort((a, b) => b.delegated_hp - a.delegated_hp);
@@ -223,7 +237,7 @@ async function run() {
     };
     fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
 
-    console.log("✅ Dados salvos com sucesso (12k ops)!");
+    console.log("✅ Dados salvos (Trilha de Curadoria atualizada)!");
 
   } catch (err) {
     console.error("❌ Erro fatal:", err.message);
