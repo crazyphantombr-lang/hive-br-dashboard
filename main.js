@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.4.3
- * Description: Stability Counter (Conta dias desde a última alteração do valor)
+ * Version: 2.5.0
+ * Description: Precision Time & UI Fixes
  */
 
 let globalDelegations = [];
@@ -76,22 +76,23 @@ function updateStats(delegations, meta, historyData) {
   }
 }
 
-// --- LÓGICA DE ESTABILIDADE (V2.4.3) ---
-// Calcula estritamente o tempo desde a última alteração registrada na blockchain (timestamp)
+// --- LÓGICA DE TEMPO PRECISA (V2.5.0) ---
 function calculateLoyalty(username, apiTimestamp, historyData) {
-  // Se não houver timestamp (ex: usuário fixo sem delegação), é 0.
-  if (!apiTimestamp) return { days: 0, text: "0 dias" };
+  if (!apiTimestamp) return { days: 0, text: "—" }; // Se não tem data, mostra traço
 
   const lastChange = new Date(apiTimestamp);
   const now = new Date();
   
   const diffTime = Math.abs(now - lastChange);
-  const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  // Usamos Math.floor para dias COMPLETOS passados.
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
 
-  // Exibe "Recente" se for menos de 1 dia, ou o número exato
-  const text = days <= 1 ? "Recente" : `${days} dias`;
+  let text = "";
+  if (diffDays === 0) text = "Hoje";
+  else if (diffDays === 1) text = "1 dia";
+  else text = `${diffDays} dias`;
 
-  return { days: days, text: text };
+  return { days: diffDays, text: text };
 }
 
 function renderTable() {
@@ -108,7 +109,6 @@ function renderTable() {
     const loyalty = calculateLoyalty(user.delegator, user.timestamp, globalHistory);
     let durationHtml = loyalty.text;
     
-    // Badge de Veterano apenas se mantiver o MESMO valor por 1 ano
     if (loyalty.days > 365) durationHtml += ` <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>`;
 
     const trueRank = getTrueRank(user.delegator);
@@ -166,6 +166,7 @@ function getLastPostStatus(dateString) {
     const daysAgo = calculateDuration(dateString);
     if (daysAgo === 0) return `<span style="color:#4dff91; font-weight:bold;">Hoje</span>`;
     if (daysAgo === 1) return `<span style="color:#4dff91;">Ontem</span>`;
+    
     let color = "#fff";
     if (daysAgo > 7) color = "#ccc";
     if (daysAgo > 30) color = "#666";
