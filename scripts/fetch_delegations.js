@@ -1,7 +1,7 @@
 /**
- * Script: Fetch Delegations (Cumulative Update)
- * Version: 2.6.3
- * Update: Contagem de votos por dias únicos (Max 1/dia) + Listas Fixas
+ * Script: Fetch Delegations (Power Down Monitor)
+ * Version: 2.7.0
+ * Update: Captura dados de Power Down (to_withdraw, next_withdrawal)
  */
 
 const fetch = require("node-fetch");
@@ -206,8 +206,20 @@ async function run() {
     if (accounts) {
         accounts.forEach(acc => {
             const hp = parseFloat(acc.vesting_shares) * vestToHp;
+            
+            // LÓGICA POWER DOWN (V2.7.0)
+            const toWithdraw = parseFloat(acc.to_withdraw || 0);
+            const withdrawn = parseFloat(acc.withdrawn || 0);
+            const isPowerDown = toWithdraw > withdrawn;
+            const nextWithdrawal = isPowerDown ? acc.next_vesting_withdrawal : null;
+
             if (acc.name === PROJECT_ACCOUNT) projectHp = hp;
-            accountDetails[acc.name] = { hp: hp, last_post: acc.last_post };
+            
+            accountDetails[acc.name] = { 
+                hp: hp, 
+                last_post: acc.last_post,
+                next_withdrawal: nextWithdrawal 
+            };
         });
     }
 
@@ -222,13 +234,14 @@ async function run() {
     const finalData = delegationsData
       .map(item => {
         const voteInfo = curationMap[item.delegator] || { count_30d: 0, last_vote_ts: null };
-        const accInfo = accountDetails[item.delegator] || { hp: 0, last_post: null };
+        const accInfo = accountDetails[item.delegator] || { hp: 0, last_post: null, next_withdrawal: null };
 
         return {
           delegator: item.delegator,
           delegated_hp: parseFloat(item.hp_equivalent),
           total_account_hp: accInfo.hp,
-          last_user_post: accInfo.last_post, 
+          last_user_post: accInfo.last_post,
+          next_withdrawal: accInfo.next_withdrawal, // NOVO CAMPO
           token_balance: tokenMap[item.delegator] || 0,
           timestamp: item.timestamp,
           last_vote_date: voteInfo.last_vote_ts,
@@ -249,7 +262,7 @@ async function run() {
     };
     fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
 
-    console.log("✅ Dados salvos (Versão 2.6.3)!");
+    console.log("✅ Dados salvos (Versão 2.7.0)!");
 
   } catch (err) {
     console.error("❌ Erro fatal:", err.message);
