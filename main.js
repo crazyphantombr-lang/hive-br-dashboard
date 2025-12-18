@@ -1,13 +1,12 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.7.2
- * Description: Renamed variables & defensive coding to bypass SES/Browser conflicts
+ * Version: 2.8.0
+ * Description: Nationality Flags (BR/PT) implemented
  */
 
-;(function() { // Ponto e vírgula defensivo
+;(function() { 
   "use strict";
 
-  // Renomeando variáveis para evitar conflito de cache/memória
   var dashboardData = []; 
   var dashboardHistory = {};
   var dashboardSort = { column: 'delegated_hp', direction: 'desc' };
@@ -124,16 +123,20 @@
       const ownHp = user.total_account_hp || 0;
       const hbrStake = user.token_balance || 0;
       
-      // --- LÓGICA POWER DOWN ---
+      // Power Down
       const pdDate = user.next_withdrawal;
       let ownHpStyle = "font-family:monospace; color:#888;";
       let pdHtml = `<span style="opacity:0.2">—</span>`;
-
       if (pdDate && !pdDate.startsWith("1969") && !pdDate.startsWith("1970")) {
           ownHpStyle = "font-family:monospace; color:#ff4d4d; font-weight:bold;"; 
           const dateObj = new Date(pdDate);
           pdHtml = `<span style="color:#ff4d4d; font-size:0.85em;">📉 ${dateObj.toLocaleDateString("pt-BR")}</span>`;
       }
+
+      // Bandeira de Nacionalidade
+      let flagHtml = "";
+      if (user.country_code === "BR") flagHtml = `<span title="Brasil" style="margin-left:5px; font-size:1.1em;">🇧🇷</span>`;
+      if (user.country_code === "PT") flagHtml = `<span title="Portugal" style="margin-left:5px; font-size:1.1em;">🇵🇹</span>`;
 
       const delegationBonusHtml = getDelegationBonus(trueRank);
       const hbrBonusHtml = getHbrBonus(hbrStake);
@@ -149,6 +152,7 @@
           <img src="https://images.hive.blog/u/${user.delegator}/avatar/small" 
                style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:5px;">
           <a href="https://peakd.com/@${user.delegator}" target="_blank">@${user.delegator}</a>
+          ${flagHtml}
         </td>
         <td style="font-weight:bold; font-family:monospace; font-size:1.1em; color:#4dff91;">
             ${user.delegated_hp.toLocaleString("pt-BR", { minimumFractionDigits: 3 })}
