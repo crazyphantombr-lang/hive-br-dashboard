@@ -1,7 +1,7 @@
 /**
- * Script: Fetch Delegations (Nationality Update)
- * Version: 2.8.0
- * Update: Detecção de Nacionalidade (BR/PT) e Listas Manuais
+ * Script: Fetch Delegations (Refactored)
+ * Version: 2.9.0
+ * Update: Externalização de listas (lists.json) e limpeza de código
  */
 
 const fetch = require("node-fetch");
@@ -12,70 +12,34 @@ const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
 const TOKEN_SYMBOL = "HBR";
 
-// --- LISTAS MANUAIS DE NACIONALIDADE ---
-// Adicione aqui usuários conhecidos que não declararam local no perfil
-const MANUAL_BR_LIST = [
-  "hive-br", "hive-br.voter", "hive-br.leo" // Exemplo: contas do projeto são BR
-];
+const CONFIG_PATH = path.join("config", "lists.json");
+const DATA_DIR = "data";
 
-const MANUAL_PT_LIST = [
-  "biologistbrito", "portugalzin" // Exemplos de usuários de Portugal
-];
+// --- CARREGAMENTO DE LISTAS EXTERNAS ---
+let listConfig = { manual_br: [], manual_pt: [], watchlist: [], curation_trail: [] };
 
-// --- LISTA DE USUÁRIOS FIXOS (WATCHLIST) ---
-// Usuários que devem aparecer mesmo sem delegação ativa
-const FIXED_USERS = [
-  "biologistbrito", // Adicionado conforme solicitado
-  "abandeira", "aiuna", "aiyumi", "ale-rio", "alexandrefeliz", "alina97", "alinequeiroz", "alucardy", "alyxmijaresda",
-  "anacvv05", "anafenalli", "anazn", "aphiel", "avedorada", "avel692", "ayummi", "badge-182654", "barizon", "bastter",
-  "bergmannadv", "bernardonassar", "blessskateshop", "boba1961", "bodhi.rio", "borajogar", "brancarosamel", "brazilians",
-  "caaio", "canellov", "capuah-iruet", "carlosro", "carolramos", "casagrande", "christiantatsch", "claytonlins", "cleateles1",
-  "coiotes", "coyote.sports", "coyotelation", "crazyphantombr", "cril692003", "crisciacm", "cryptoshaman007", "david0808",
-  "deividluchi", "diegoguerra", "diogenesrm", "discernente", "disruptivas", "doblershiva", "dolandoteiro", "donamona",
-  "dreloop07", "dstampede", "dudutaulois", "dunatos", "edufecchio", "edvamfilho", "ehvinho", "eijibr", "elcoachjesus",
-  "elderdark", "emanueledornelas", "emviagem", "endrius", "ericpso", "escadas", "estourefugiado", "eujotave", "f0rtunate",
-  "fabiocola", "fabiosoares", "felipefortes", "feliperochatv", "fernandosoder", "fireguardian", "fireguardian.spt",
-  "floressenciarte", "fmajuniorphoto", "frankrey11", "fredsilva007", "g4tzbr", "gabrielmilego", "game3x3", "greengineer",
-  "gtpacheko17", "handrehermann", "hevelyn.jeeh", "hive-br", "hive-br.leo", "hivebr.spt", "hive-br.voter", "hranhuk",
-  "imagemvirtual", "ismaelrd04", "iuriomagico", "j377e", "jacalf", "jaopalas", "jaquevital", "jarmeson", "jeffparajiujitsu",
-  "jkatrina", "jklio123", "joaophelip", "joaoprobst", "jontv", "jose.music", "josiva", "jsaez", "jsantana", "jucabala",
-  "juliasantos", "jullyette", "kaibagt", "kat.eli", "kaveira", "kelday666", "kevbest", "kingforceblack", "kojiri", "laribf",
-  "laurasoares", "legalizabrazil", "leo.marques", "lesulzbacher", "lincemarrom", "lipe100dedos", "liquideity", "litekoiner",
-  "lobaobh", "luanaecard", "ludgero", "luidimarg", "luizeba", "luizhadad", "maismau", "marianaemilia", "markitoelias",
-  "marzukiali", "matheusggr", "matheusggr.leo", "matheusluciano", "mathfb", "mauriciolimax", "megamariano", "meinickenutri",
-  "mengao", "michupa", "micloop", "milery", "mrprofessor", "mrprofessordaily", "nane-qts", "naoebemumcanal", "nascimentoab",
-  "nascimentocb", "nathylieth", "nayha23", "nichollasrdo", "norseland", "officialjag", "oficialversatil", "orozcorobetson",
-  "pablito.saldo", "papoprodutivo", "paradaleticia", "pataty69", "pedagogia", "pedrocanella", "perfilbrasil", "phgnomo",
-  "phsaeta", "pirulito.zoado", "pythomaster", "qyses", "raistling", "rdabrasil", "reas63", "renatacristiane", "rhommar",
-  "rimasx", "robspiercer", "rodrigojmelo", "rounan.soares", "rphspinheiro", "sandranunes", "santana37", "santinhos", "seabet",
-  "selhomarlopes", "shiftrox", "silviamaria", "sintropia", "sistemabusiness", "skaters", "sktbr", "sousafrc", "splinter100dedos",
-  "surfgurupro", "surflimpo", "tankulo", "tatianest", "tatylayla", "teteuzinho", "teu", "thaliaperez", "thomashnblum",
-  "totomusic", "triptamine555", "tucacheias", "ukyron3", "underlock", "unhurried", "unten1995", "usergabs", "vaipraonde",
-  "vanessabarrostec", "vcorioh", "vempromundo", "ventrinidad", "vicvondoom", "vini0", "vitoragnelli", "vonlecram",
-  "wagnertamanaha", "wallabra", "wallabra-wallet", "wasye", "wellingt556", "wilkersk8zn", "wiseagent", "wlfreitas",
-  "xgoivo", "xlety", "xtryhard", "yungbresciani", "zallin", "zombialien"
-];
+try {
+  if (fs.existsSync(CONFIG_PATH)) {
+    const rawData = fs.readFileSync(CONFIG_PATH);
+    listConfig = JSON.parse(rawData);
+    console.log("✅ Configuração (lists.json) carregada com sucesso.");
+  } else {
+    console.warn("⚠️ Arquivo config/lists.json não encontrado. Usando listas vazias.");
+  }
+} catch (err) {
+  console.error("❌ Erro ao ler config/lists.json:", err.message);
+  process.exit(1); 
+}
 
-// --- LISTA DA TRILHA DE CURADORIA ---
-const CURATION_TRAIL_USERS = [
-  "hive-br", "kaibagt", "matheusggr.leo", "matheusggr", "elderdark", "shiftrox", "zallin", "vempromundo", 
-  "syel25", "arthursiq5", "lucasqz", "luizeba", "crazyphantombr", "nane-qts", "us3incanada", "lilico", 
-  "kedleona", "adamferrari", "ayummi", "fireguardian", "portugalzin", "wlffreitas", "lincemarrom", 
-  "thomashnblum", "hive-182654", "badge-182654", "lobaobh", "rafasete", "d35tr0", "casagrande", "mariale07", 
-  "jarmeson", "underlock", "vempromundo.pob", "pablito.saldo", "thayavlis", "emviagem", "tfranzini", 
-  "preciousplastes", "claytonlins", "rimurutempest", "ativosgarantem", "cassia.nails", "dwarven", "ifhy", 
-  "jkatrina", "josiva", "kaveira", "abreusplinter", "spidersilk", "lucianaabrao", "xlety", "blackleg", 
-  "coyotelation", "lemurians", "captainman", "joaophelip", "blessskateshop", "devferri", "vortac", 
-  "xeraifuma", "michupa", "bradleyarrow", "game3x3", "pixbee", "wlfreitas", "ricestrela", "treasure.hoard", 
-  "coiotes", "alinequeiroz", "preciouz-01", "kevbest", "jsantana", "cheryl291021", "jaopalas", "jhonpa5808", 
-  "chuchochucho", "sofia.perola", "scumflowerboy", "itznur", "luizvitao", "reibar", "geovanna-gg", 
-  "xeraixupa", "skaters"
-];
+const MANUAL_BR_LIST = listConfig.manual_br || [];
+const MANUAL_PT_LIST = listConfig.manual_pt || [];
+const FIXED_USERS = listConfig.watchlist || [];
+const CURATION_TRAIL_USERS = listConfig.curation_trail || [];
 
+// --- CONSTANTES DE API ---
 const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=300`;
 const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 const RPC_NODES = ["https://api.hive.blog", "https://api.deathwing.me", "https://api.openhive.network"];
-const DATA_DIR = "data";
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
@@ -107,13 +71,10 @@ async function fetchHiveEngineBalances(accounts, symbol) {
   } catch (err) { console.error("❌ Erro Hive-Engine:", err.message); return []; }
 }
 
-// --- LÓGICA DE NACIONALIDADE ---
 function detectNationality(username, jsonMetadata) {
-    // 1. Checagem Manual (Prioridade Total)
     if (MANUAL_BR_LIST.includes(username)) return "BR";
     if (MANUAL_PT_LIST.includes(username)) return "PT";
 
-    // 2. Extração de Metadata
     let location = "";
     if (jsonMetadata) {
         try {
@@ -121,11 +82,9 @@ function detectNationality(username, jsonMetadata) {
             if (meta && meta.profile && meta.profile.location) {
                 location = meta.profile.location.toLowerCase();
             }
-        } catch (e) { /* Metadata inválido ou vazio */ }
+        } catch (e) { }
     }
     if (!location) return null;
-
-    // 3. Detecção Automática (Regex)
     
     // PT - Portugal
     if (location.includes("portugal") || location.includes("lisboa") || location.includes("lisbon") || 
@@ -135,34 +94,23 @@ function detectNationality(username, jsonMetadata) {
     }
 
     // BR - Brasil
-    // Lista de termos seguros (evita falsos positivos como 'Bristol')
     const brTerms = [
         "brasil", "brazil", "são paulo", "sao paulo", "rio de janeiro", "minas gerais", "paraná", "parana", 
         "santa catarina", "rio grande do sul", "bahia", "pernambuco", "ceará", "ceara", "distrito federal", 
         "curitiba", "floripa", "florianópolis", "florianopolis", "belo horizonte", "brasília", "brasilia", 
         "salvador", "recife", "fortaleza", "manaus", "goiânia", "goiania", "porto alegre"
     ];
-    
-    // Verificação de termos compostos
-    for (const term of brTerms) {
-        if (location.includes(term)) return "BR";
-    }
+    for (const term of brTerms) { if (location.includes(term)) return "BR"; }
 
-    // Verificação de Siglas de Estado (deve ser exata ou cercada por espaços/vírgulas)
-    // Regex procura por: " PR ", " PR,", ",PR", "SP" no fim da string, etc.
     const stateSiglas = ["sp", "rj", "mg", "pr", "sc", "rs", "ba", "pe", "ce", "df", "go", "es"];
     for (const sigla of stateSiglas) {
-        // Regex: \b garante "boundary" (fronteira de palavra). Evita pegar "SPRING" ao buscar "PR"
         const regex = new RegExp(`\\b${sigla}\\b`, 'i'); 
         if (regex.test(location)) return "BR";
     }
-
     return null;
 }
 
-async function fetchVoteHistory(voterAccount) { /* ... Mantido igual v2.7 ... */
-  // (Código resumido aqui para economizar espaço, mas deve ser mantido completo na compilação real)
-  // Como não houve alteração na lógica de voto, vou focar nas mudanças de nacionalidade abaixo
+async function fetchVoteHistory(voterAccount) {
   let fullHistory = [];
   let start = -1; 
   const batchSize = 1000; 
@@ -236,18 +184,10 @@ async function run() {
             const withdrawn = parseFloat(acc.withdrawn || 0);
             const isPowerDown = toWithdraw > withdrawn;
             const nextWithdrawal = isPowerDown ? acc.next_vesting_withdrawal : null;
-            
-            // DETECÇÃO DE NACIONALIDADE
             const country = detectNationality(acc.name, acc.posting_json_metadata);
-
             if (acc.name === PROJECT_ACCOUNT) projectHp = hp;
             
-            accountDetails[acc.name] = { 
-                hp: hp, 
-                last_post: acc.last_post,
-                next_withdrawal: nextWithdrawal,
-                country_code: country // Novo Campo
-            };
+            accountDetails[acc.name] = { hp: hp, last_post: acc.last_post, next_withdrawal: nextWithdrawal, country_code: country };
         });
     }
 
@@ -263,14 +203,13 @@ async function run() {
       .map(item => {
         const voteInfo = curationMap[item.delegator] || { count_30d: 0, last_vote_ts: null };
         const accInfo = accountDetails[item.delegator] || { hp: 0, last_post: null, next_withdrawal: null, country_code: null };
-
         return {
           delegator: item.delegator,
           delegated_hp: parseFloat(item.hp_equivalent),
           total_account_hp: accInfo.hp,
           last_user_post: accInfo.last_post,
           next_withdrawal: accInfo.next_withdrawal,
-          country_code: accInfo.country_code, // Passando para o JSON final
+          country_code: accInfo.country_code,
           token_balance: tokenMap[item.delegator] || 0,
           timestamp: item.timestamp,
           last_vote_date: voteInfo.last_vote_ts,
@@ -282,7 +221,6 @@ async function run() {
 
     fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(finalData, null, 2));
     
-    // Meta data mantido
     const metaData = {
       last_updated: new Date().toISOString(),
       total_delegators: finalData.filter(d => d.delegated_hp > 0).length,
@@ -291,9 +229,7 @@ async function run() {
       project_account_hp: projectHp
     };
     fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
-
-    console.log("✅ Dados salvos (Versão 2.8.0)!");
-
+    console.log("✅ Dados salvos (Versão 2.9.0)!");
   } catch (err) {
     console.error("❌ Erro fatal:", err.message);
     process.exit(1);
