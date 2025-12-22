@@ -1,9 +1,11 @@
 {
-  "last_updated": "2025-12-22T20:17:26.549Z",
+  "last_updated": "2025-12-22T20:33:51.208Z",
   "total_delegators": 61,
-  "total_hp": 41362.99600000001,
+  "total_hp": 41363.02999999999,
   "total_hbr_staked": 5323.236557990001,
-  "project_account_hp": 14232.818733579355,
-  "votes_month": 254,
-  "votes_24h": 19
+  "project_account_hp": 14232.83059065875,
+  "votes_24h": 19,
+  "votes_month_current": 254,
+  "votes_month_prev1": 405,
+  "votes_month_prev2": 438
 }
