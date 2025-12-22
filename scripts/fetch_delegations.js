@@ -1,7 +1,7 @@
 /**
- * Script: Fetch Delegations (Refactored)
- * Version: 2.9.0
- * Update: Externalização de listas (lists.json) e limpeza de código
+ * Script: Fetch Delegations (Stats Update)
+ * Version: 2.10.0
+ * Update: Contagem de Votos (Mês Corrente e 24h)
  */
 
 const fetch = require("node-fetch");
@@ -22,12 +22,12 @@ try {
   if (fs.existsSync(CONFIG_PATH)) {
     const rawData = fs.readFileSync(CONFIG_PATH);
     listConfig = JSON.parse(rawData);
-    console.log("✅ Configuração (lists.json) carregada com sucesso.");
+    console.log("✅ Configuração (lists.json) carregada.");
   } else {
-    console.warn("⚠️ Arquivo config/lists.json não encontrado. Usando listas vazias.");
+    console.warn("⚠️ config/lists.json não encontrado. Usando listas vazias.");
   }
 } catch (err) {
-  console.error("❌ Erro ao ler config/lists.json:", err.message);
+  console.error("❌ Erro config:", err.message);
   process.exit(1); 
 }
 
@@ -36,7 +36,6 @@ const MANUAL_PT_LIST = listConfig.manual_pt || [];
 const FIXED_USERS = listConfig.watchlist || [];
 const CURATION_TRAIL_USERS = listConfig.curation_trail || [];
 
-// --- CONSTANTES DE API ---
 const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=300`;
 const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 const RPC_NODES = ["https://api.hive.blog", "https://api.deathwing.me", "https://api.openhive.network"];
@@ -86,20 +85,13 @@ function detectNationality(username, jsonMetadata) {
     }
     if (!location) return null;
     
-    // PT - Portugal
     if (location.includes("portugal") || location.includes("lisboa") || location.includes("lisbon") || 
         location.includes("porto") || location.includes("coimbra") || location.includes("braga") || 
-        location.includes("algarve") || location.includes("madeira") || location.includes("açores") || location.includes("azores")) {
+        location.includes("algarve") || location.includes("madeira") || location.includes("açores")) {
         return "PT";
     }
 
-    // BR - Brasil
-    const brTerms = [
-        "brasil", "brazil", "são paulo", "sao paulo", "rio de janeiro", "minas gerais", "paraná", "parana", 
-        "santa catarina", "rio grande do sul", "bahia", "pernambuco", "ceará", "ceara", "distrito federal", 
-        "curitiba", "floripa", "florianópolis", "florianopolis", "belo horizonte", "brasília", "brasilia", 
-        "salvador", "recife", "fortaleza", "manaus", "goiânia", "goiania", "porto alegre"
-    ];
+    const brTerms = ["brasil", "brazil", "são paulo", "sao paulo", "rio de janeiro", "minas gerais", "paraná", "parana", "santa catarina", "rio grande do sul", "bahia", "pernambuco", "ceará", "ceara", "distrito federal", "curitiba", "floripa", "florianópolis", "florianopolis", "belo horizonte", "brasília", "brasilia", "salvador", "recife", "fortaleza", "manaus", "goiânia", "goiania", "porto alegre"];
     for (const term of brTerms) { if (location.includes(term)) return "BR"; }
 
     const stateSiglas = ["sp", "rj", "mg", "pr", "sc", "rs", "ba", "pe", "ce", "df", "go", "es"];
@@ -114,7 +106,7 @@ async function fetchVoteHistory(voterAccount) {
   let fullHistory = [];
   let start = -1; 
   const batchSize = 1000; 
-  const maxBatches = 12;
+  const maxBatches = 15; // Aumentado um pouco para garantir cobertura do início do mês
 
   for (let i = 0; i < maxBatches; i++) {
     const batch = await hiveRpc("condenser_api.get_account_history", [voterAccount, start, batchSize]);
@@ -126,18 +118,37 @@ async function fetchVoteHistory(voterAccount) {
     if (start < 0) break;
   }
 
+  const now = new Date();
+  
+  // Datas de Corte
   const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const voteStats = {}; 
+  thirtyDaysAgo.setDate(now.getDate() - 30);
+  
+  const oneDayAgo = new Date();
+  oneDayAgo.setDate(now.getDate() - 1); // 24h atrás
+
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // Dia 1 do mês atual
+
+  const voteStats = {};
+  let globalVotesMonth = 0;
+  let globalVotes24h = 0;
 
   fullHistory.forEach(tx => {
     const op = tx[1].op;
     const timestamp = tx[1].timestamp;
+    
     if (op[0] === 'vote' && op[1].voter === voterAccount) {
+      const voteDate = new Date(timestamp + (timestamp.endsWith("Z") ? "" : "Z"));
+      
+      // Contadores Globais
+      if (voteDate >= startOfMonth) globalVotesMonth++;
+      if (voteDate >= oneDayAgo) globalVotes24h++;
+
+      // Estatísticas por Autor (Mantendo lógica de 30 dias para a tabela)
       const author = op[1].author;
       if (!voteStats[author]) { voteStats[author] = { count_30d: 0, last_vote_ts: null, unique_days: new Set() }; }
       if (!voteStats[author].last_vote_ts || timestamp > voteStats[author].last_vote_ts) { voteStats[author].last_vote_ts = timestamp; }
-      const voteDate = new Date(timestamp + (timestamp.endsWith("Z") ? "" : "Z"));
+      
       if (voteDate >= thirtyDaysAgo) {
           const dayKey = voteDate.toISOString().slice(0, 10);
           if (!voteStats[author].unique_days.has(dayKey)) {
@@ -147,7 +158,8 @@ async function fetchVoteHistory(voterAccount) {
       }
     }
   });
-  return voteStats;
+  
+  return { stats: voteStats, global_month: globalVotesMonth, global_24h: globalVotes24h };
 }
 
 async function run() {
@@ -166,7 +178,7 @@ async function run() {
 
     const userNames = delegationsData.map(d => d.delegator);
 
-    console.log(`2. 🌍 Hive RPC (Contas + Nacionalidade)...`);
+    console.log(`2. 🌍 Hive RPC...`);
     const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
     let vestToHp = 0.0005; 
     if (globals) vestToHp = parseFloat(globals.total_vesting_fund_hive) / parseFloat(globals.total_vesting_shares);
@@ -197,7 +209,8 @@ async function run() {
     heBalances.forEach(b => { tokenMap[b.account] = parseFloat(b.stake || 0); });
 
     console.log(`4. 🗳️ Curadoria...`);
-    const curationMap = await fetchVoteHistory(VOTER_ACCOUNT);
+    const voteData = await fetchVoteHistory(VOTER_ACCOUNT);
+    const curationMap = voteData.stats;
 
     const finalData = delegationsData
       .map(item => {
@@ -221,15 +234,18 @@ async function run() {
 
     fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(finalData, null, 2));
     
+    // META DATA com novos campos de Votos
     const metaData = {
       last_updated: new Date().toISOString(),
       total_delegators: finalData.filter(d => d.delegated_hp > 0).length,
       total_hp: finalData.reduce((acc, curr) => acc + curr.delegated_hp, 0),
       total_hbr_staked: finalData.reduce((acc, curr) => acc + curr.token_balance, 0),
-      project_account_hp: projectHp
+      project_account_hp: projectHp,
+      votes_month: voteData.global_month,
+      votes_24h: voteData.global_24h
     };
     fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
-    console.log("✅ Dados salvos (Versão 2.9.0)!");
+    console.log("✅ Dados salvos (Versão 2.10.0)!");
   } catch (err) {
     console.error("❌ Erro fatal:", err.message);
     process.exit(1);
