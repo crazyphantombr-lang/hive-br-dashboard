@@ -43,21 +43,13 @@
         <p id="stat-count">0</p>
       </div>
       <div class="stat-card">
-        <h3>Votos (24h)</h3>
-        <p id="stat-votes-24h" style="color:#ffcc00;">0</p>
-      </div>
-      <div class="stat-card">
-        <h3>Votos (Mês)</h3>
-        <p id="stat-votes-month" style="color:#ffcc00;">0</p>
-      </div>
-      <div class="stat-card">
-        <h3>Destaque do Mês</h3>
+        <h3>Delegador Destaque do Mês</h3>
         <p id="stat-growth">—</p>
       </div>
     </div>
 
     <div id="activity-panel" class="activity-container" style="display:none;">
-      <h3 class="section-title">⚡ Últimas Alterações (7 dias)</h3>
+      <h3 class="section-title">⚡ Últimas Alterações nas Delegações (7 dias)</h3>
       <table class="activity-table">
         <thead>
           <tr>
@@ -69,6 +61,35 @@
         </thead>
         <tbody id="activity-body"></tbody>
       </table>
+    </div>
+
+    <div style="margin-top: 50px; margin-bottom: 20px;">
+        <div class="project-stats-container">
+            <div class="project-card" style="border-color: #ffcc00; background: linear-gradient(90deg, rgba(255, 204, 0, 0.1), rgba(19, 19, 31, 0.8));">
+                <div class="project-icon">
+                    <span style="font-size: 3rem;">🗳️</span>
+                </div>
+                <div class="project-info">
+                    <h3 id="lbl-votes-current">VOTOS NO MÊS ATUAL</h3>
+                    <p id="stat-votes-current" style="color: #ffcc00;">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Votos (24h)</h3>
+                <p id="stat-votes-24h" style="color:#ffcc00;">0</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="lbl-votes-m1">Mês Anterior</h3>
+                <p id="stat-votes-m1" style="color:#a3a3cc;">0</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="lbl-votes-m2">2 Meses Atrás</h3>
+                <p id="stat-votes-m2" style="color:#a3a3cc;">0</p>
+            </div>
+        </div>
     </div>
 
     <div class="search-container">
