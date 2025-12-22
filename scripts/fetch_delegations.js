@@ -1,7 +1,7 @@
 /**
- * Script: Fetch Delegations (Stats Update)
- * Version: 2.10.0
- * Update: Contagem de Votos (Mês Corrente e 24h)
+ * Script: Fetch Delegations (History Buckets)
+ * Version: 2.11.0
+ * Update: Contagem de votos separada por meses (Atual, M-1, M-2)
  */
 
 const fetch = require("node-fetch");
@@ -17,19 +17,11 @@ const DATA_DIR = "data";
 
 // --- CARREGAMENTO DE LISTAS EXTERNAS ---
 let listConfig = { manual_br: [], manual_pt: [], watchlist: [], curation_trail: [] };
-
 try {
   if (fs.existsSync(CONFIG_PATH)) {
-    const rawData = fs.readFileSync(CONFIG_PATH);
-    listConfig = JSON.parse(rawData);
-    console.log("✅ Configuração (lists.json) carregada.");
-  } else {
-    console.warn("⚠️ config/lists.json não encontrado. Usando listas vazias.");
+    listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH));
   }
-} catch (err) {
-  console.error("❌ Erro config:", err.message);
-  process.exit(1); 
-}
+} catch (err) { console.error(err); }
 
 const MANUAL_BR_LIST = listConfig.manual_br || [];
 const MANUAL_PT_LIST = listConfig.manual_pt || [];
@@ -67,38 +59,20 @@ async function fetchHiveEngineBalances(accounts, symbol) {
     });
     const json = await response.json();
     return json.result || [];
-  } catch (err) { console.error("❌ Erro Hive-Engine:", err.message); return []; }
+  } catch (err) { return []; }
 }
 
 function detectNationality(username, jsonMetadata) {
     if (MANUAL_BR_LIST.includes(username)) return "BR";
     if (MANUAL_PT_LIST.includes(username)) return "PT";
-
     let location = "";
-    if (jsonMetadata) {
-        try {
-            const meta = JSON.parse(jsonMetadata);
-            if (meta && meta.profile && meta.profile.location) {
-                location = meta.profile.location.toLowerCase();
-            }
-        } catch (e) { }
-    }
+    if (jsonMetadata) { try { location = JSON.parse(jsonMetadata).profile.location.toLowerCase(); } catch (e) {} }
     if (!location) return null;
-    
-    if (location.includes("portugal") || location.includes("lisboa") || location.includes("lisbon") || 
-        location.includes("porto") || location.includes("coimbra") || location.includes("braga") || 
-        location.includes("algarve") || location.includes("madeira") || location.includes("açores")) {
-        return "PT";
-    }
-
-    const brTerms = ["brasil", "brazil", "são paulo", "sao paulo", "rio de janeiro", "minas gerais", "paraná", "parana", "santa catarina", "rio grande do sul", "bahia", "pernambuco", "ceará", "ceara", "distrito federal", "curitiba", "floripa", "florianópolis", "florianopolis", "belo horizonte", "brasília", "brasilia", "salvador", "recife", "fortaleza", "manaus", "goiânia", "goiania", "porto alegre"];
+    if (location.includes("portugal") || location.includes("lisboa") || location.includes("lisbon") || location.includes("porto") || location.includes("coimbra") || location.includes("braga")) return "PT";
+    const brTerms = ["brasil", "brazil", "são paulo", "rio de janeiro", "minas gerais", "paraná", "sul", "bahia", "curitiba", "floripa", "brasilia", "salvador", "recife", "fortaleza", "manaus", "goiania"];
     for (const term of brTerms) { if (location.includes(term)) return "BR"; }
-
     const stateSiglas = ["sp", "rj", "mg", "pr", "sc", "rs", "ba", "pe", "ce", "df", "go", "es"];
-    for (const sigla of stateSiglas) {
-        const regex = new RegExp(`\\b${sigla}\\b`, 'i'); 
-        if (regex.test(location)) return "BR";
-    }
+    for (const sigla of stateSiglas) { if (new RegExp(`\\b${sigla}\\b`, 'i').test(location)) return "BR"; }
     return null;
 }
 
@@ -106,7 +80,7 @@ async function fetchVoteHistory(voterAccount) {
   let fullHistory = [];
   let start = -1; 
   const batchSize = 1000; 
-  const maxBatches = 15; // Aumentado um pouco para garantir cobertura do início do mês
+  const maxBatches = 20; // Aumentado para cobrir 3 meses
 
   for (let i = 0; i < maxBatches; i++) {
     const batch = await hiveRpc("condenser_api.get_account_history", [voterAccount, start, batchSize]);
@@ -120,18 +94,25 @@ async function fetchVoteHistory(voterAccount) {
 
   const now = new Date();
   
-  // Datas de Corte
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(now.getDate() - 30);
-  
+  // Marcos Temporais
   const oneDayAgo = new Date();
-  oneDayAgo.setDate(now.getDate() - 1); // 24h atrás
+  oneDayAgo.setDate(now.getDate() - 1);
 
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // Dia 1 do mês atual
+  // Meses (0 = Atual, 1 = Passado, 2 = Retrasado)
+  const month0_Start = new Date(now.getFullYear(), now.getMonth(), 1);
+  const month1_Start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const month2_Start = new Date(now.getFullYear(), now.getMonth() - 2, 1);
 
   const voteStats = {};
-  let globalVotesMonth = 0;
-  let globalVotes24h = 0;
+  
+  let votes_24h = 0;
+  let votes_month0 = 0;
+  let votes_month1 = 0;
+  let votes_month2 = 0;
+
+  // 30 dias para a tabela de delegação
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(now.getDate() - 30);
 
   fullHistory.forEach(tx => {
     const op = tx[1].op;
@@ -140,11 +121,19 @@ async function fetchVoteHistory(voterAccount) {
     if (op[0] === 'vote' && op[1].voter === voterAccount) {
       const voteDate = new Date(timestamp + (timestamp.endsWith("Z") ? "" : "Z"));
       
-      // Contadores Globais
-      if (voteDate >= startOfMonth) globalVotesMonth++;
-      if (voteDate >= oneDayAgo) globalVotes24h++;
+      // Contadores de Tempo
+      if (voteDate >= oneDayAgo) votes_24h++;
+      
+      // Lógica de Meses (Buckets)
+      if (voteDate >= month0_Start) {
+        votes_month0++;
+      } else if (voteDate >= month1_Start && voteDate < month0_Start) {
+        votes_month1++;
+      } else if (voteDate >= month2_Start && voteDate < month1_Start) {
+        votes_month2++;
+      }
 
-      // Estatísticas por Autor (Mantendo lógica de 30 dias para a tabela)
+      // Stats para Tabela
       const author = op[1].author;
       if (!voteStats[author]) { voteStats[author] = { count_30d: 0, last_vote_ts: null, unique_days: new Set() }; }
       if (!voteStats[author].last_vote_ts || timestamp > voteStats[author].last_vote_ts) { voteStats[author].last_vote_ts = timestamp; }
@@ -159,7 +148,13 @@ async function fetchVoteHistory(voterAccount) {
     }
   });
   
-  return { stats: voteStats, global_month: globalVotesMonth, global_24h: globalVotes24h };
+  return { 
+      stats: voteStats, 
+      votes_24h, 
+      votes_month0, 
+      votes_month1, 
+      votes_month2 
+  };
 }
 
 async function run() {
@@ -171,9 +166,7 @@ async function run() {
 
     const currentDelegators = new Set(delegationsData.map(d => d.delegator));
     FIXED_USERS.forEach(fixedUser => {
-      if (!currentDelegators.has(fixedUser)) {
-        delegationsData.push({ delegator: fixedUser, hp_equivalent: 0, timestamp: null });
-      }
+      if (!currentDelegators.has(fixedUser)) delegationsData.push({ delegator: fixedUser, hp_equivalent: 0, timestamp: null });
     });
 
     const userNames = delegationsData.map(d => d.delegator);
@@ -183,23 +176,17 @@ async function run() {
     let vestToHp = 0.0005; 
     if (globals) vestToHp = parseFloat(globals.total_vesting_fund_hive) / parseFloat(globals.total_vesting_shares);
 
-    const allAccountsToFetch = [...userNames, PROJECT_ACCOUNT];
-    const accounts = await hiveRpc("condenser_api.get_accounts", [allAccountsToFetch]);
-    
+    const accounts = await hiveRpc("condenser_api.get_accounts", [[...userNames, PROJECT_ACCOUNT]]);
     const accountDetails = {};
     let projectHp = 0;
 
     if (accounts) {
         accounts.forEach(acc => {
             const hp = parseFloat(acc.vesting_shares) * vestToHp;
-            const toWithdraw = parseFloat(acc.to_withdraw || 0);
-            const withdrawn = parseFloat(acc.withdrawn || 0);
-            const isPowerDown = toWithdraw > withdrawn;
-            const nextWithdrawal = isPowerDown ? acc.next_vesting_withdrawal : null;
+            const isPowerDown = parseFloat(acc.to_withdraw) > parseFloat(acc.withdrawn);
             const country = detectNationality(acc.name, acc.posting_json_metadata);
             if (acc.name === PROJECT_ACCOUNT) projectHp = hp;
-            
-            accountDetails[acc.name] = { hp: hp, last_post: acc.last_post, next_withdrawal: nextWithdrawal, country_code: country };
+            accountDetails[acc.name] = { hp, last_post: acc.last_post, next_withdrawal: isPowerDown ? acc.next_vesting_withdrawal : null, country_code: country };
         });
     }
 
@@ -212,8 +199,7 @@ async function run() {
     const voteData = await fetchVoteHistory(VOTER_ACCOUNT);
     const curationMap = voteData.stats;
 
-    const finalData = delegationsData
-      .map(item => {
+    const finalData = delegationsData.map(item => {
         const voteInfo = curationMap[item.delegator] || { count_30d: 0, last_vote_ts: null };
         const accInfo = accountDetails[item.delegator] || { hp: 0, last_post: null, next_withdrawal: null, country_code: null };
         return {
@@ -229,23 +215,25 @@ async function run() {
           votes_month: voteInfo.count_30d,
           in_curation_trail: CURATION_TRAIL_USERS.includes(item.delegator)
         };
-      })
-      .sort((a, b) => b.delegated_hp - a.delegated_hp);
+      }).sort((a, b) => b.delegated_hp - a.delegated_hp);
 
     fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(finalData, null, 2));
     
-    // META DATA com novos campos de Votos
+    // META DATA com Histórico de Votos
     const metaData = {
       last_updated: new Date().toISOString(),
       total_delegators: finalData.filter(d => d.delegated_hp > 0).length,
       total_hp: finalData.reduce((acc, curr) => acc + curr.delegated_hp, 0),
       total_hbr_staked: finalData.reduce((acc, curr) => acc + curr.token_balance, 0),
       project_account_hp: projectHp,
-      votes_month: voteData.global_month,
-      votes_24h: voteData.global_24h
+      // Novos campos
+      votes_24h: voteData.votes_24h,
+      votes_month_current: voteData.votes_month0,
+      votes_month_prev1: voteData.votes_month1,
+      votes_month_prev2: voteData.votes_month2
     };
     fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
-    console.log("✅ Dados salvos (Versão 2.10.0)!");
+    console.log("✅ Dados salvos (Versão 2.11.0)!");
   } catch (err) {
     console.error("❌ Erro fatal:", err.message);
     process.exit(1);
