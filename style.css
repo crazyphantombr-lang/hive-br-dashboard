@@ -209,6 +209,13 @@ td {
   background-color: var(--card-bg);
   z-index: 2;
   border-right: 1px solid #2a2a35;
+  
+  /* NOVAS REGRAS PARA EVITAR QUEBRA DE LINHA */
+  white-space: nowrap;      /* Impede quebra de texto */
+  min-width: 250px;         /* Garante espaço suficiente para nomes longos + bandeira */
+  max-width: 300px;         /* Opcional: evita que fique excessivamente largo */
+  overflow: hidden;         /* Segurança para nomes gigantes não vazarem */
+  text-overflow: ellipsis;  /* Adiciona "..." se o nome for absurdamente longo */
 }
 
 /* LINKS */
