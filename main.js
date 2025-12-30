@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.11.0
- * Description: Separated Curation Stats & Dynamic Month Names
+ * Version: 2.13.0
+ * Description: Certified vs Pending Nationality Flags (Grayscale Logic)
  */
 
 ;(function() { 
@@ -42,9 +42,7 @@
   function getMonthName(subtractMonths) {
       const d = new Date();
       d.setMonth(d.getMonth() - subtractMonths);
-      // Retorna nome do mês em PT-BR (ex: "dezembro", "novembro")
       const monthName = d.toLocaleString('pt-BR', { month: 'long' });
-      // Capitaliza a primeira letra
       return monthName.charAt(0).toUpperCase() + monthName.slice(1);
   }
 
@@ -71,24 +69,20 @@
     const activeDelegators = delegations.filter(d => d.delegated_hp > 0).length;
     document.getElementById("stat-count").innerText = activeDelegators;
 
-    // --- ESTATÍSTICAS DE CURADORIA (VOTOS) ---
     const v24h = meta && meta.votes_24h ? meta.votes_24h : 0;
     const vCurr = meta && meta.votes_month_current ? meta.votes_month_current : 0;
     const vM1   = meta && meta.votes_month_prev1 ? meta.votes_month_prev1 : 0;
     const vM2   = meta && meta.votes_month_prev2 ? meta.votes_month_prev2 : 0;
 
-    // Textos Dinâmicos dos Meses
     document.getElementById("lbl-votes-current").innerText = `VOTOS DISTRIBUÍDOS EM ${getMonthName(0).toUpperCase()}`;
     document.getElementById("lbl-votes-m1").innerText = `Votos em ${getMonthName(1)}`;
     document.getElementById("lbl-votes-m2").innerText = `Votos em ${getMonthName(2)}`;
 
-    // Valores
     document.getElementById("stat-votes-current").innerText = vCurr;
     document.getElementById("stat-votes-24h").innerText = v24h;
     document.getElementById("stat-votes-m1").innerText = vM1;
     document.getElementById("stat-votes-m2").innerText = vM2;
 
-    // --- DELEGADOR DESTAQUE ---
     let bestGrower = { name: "—", val: 0 };
     delegations.forEach(user => {
       const hist = historyData[user.delegator];
@@ -154,9 +148,20 @@
           pdHtml = `<span style="color:#ff4d4d; font-size:0.85em;">📉 ${dateObj.toLocaleDateString("pt-BR")}</span>`;
       }
 
+      // --- LÓGICA DE BANDEIRAS ---
       let flagHtml = "";
-      if (user.country_code === "BR") flagHtml = `<span title="Brasil" style="margin-left:5px; font-size:1.1em;">🇧🇷</span>`;
-      if (user.country_code === "PT") flagHtml = `<span title="Portugal" style="margin-left:5px; font-size:1.1em;">🇵🇹</span>`;
+      if (user.country_code === "BR_CERT") {
+        flagHtml = `<span title="Brasileiro certificado" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>`;
+      } 
+      else if (user.country_code === "BR") {
+        flagHtml = `<span class="flag-bw" title="Pendente de verificação" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>`;
+      } 
+      else if (user.country_code === "PT_CERT") {
+        flagHtml = `<span title="Português certificado" style="margin-left:5px; font-size:1.1em; cursor:help;">🇵🇹</span>`;
+      } 
+      else if (user.country_code === "PT") {
+        flagHtml = `<span class="flag-bw" title="Pendente de verificação" style="margin-left:5px; font-size:1.1em; cursor:help;">🇵🇹</span>`;
+      }
 
       const delegationBonusHtml = getDelegationBonus(trueRank);
       const hbrBonusHtml = getHbrBonus(hbrStake);
