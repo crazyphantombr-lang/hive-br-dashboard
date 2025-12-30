@@ -1,12 +1,16 @@
 {
-  "manual_br": [
-    "hive-br", "hive-br.voter", "hive-br.leo", "crazyphantombr",  "casagrande", "discernente", "edufecchio",  "elderdark", "fernandosoder", "jaopalas", "josiva", "kaibagt", "legalizabrazil", "lincemarrom", "lipe100dedos",
-     "lobaobh", "luizeba","matheusggr", "matheusggr.leo", "mathfb",  "mengao", "michupa", "pablito.saldo", "perfilbrasil", "rimurutempest", "shiftrox", "tfranzini", "underlock", "vaipraonde", "vempromundo", "xlety", "zallin"
+  "verificado_br": [
+    "wiseagent",
+    "hive-br", "hive-br.voter", "hive-br.leo", "crazyphantombr", "casagrande", "discernente", "edufecchio", "elderdark", "fernandosoder", "jaopalas", "josiva", "kaibagt", "legalizabrazil", "lincemarrom", "lipe100dedos",
+    "lobaobh", "luizeba", "matheusggr", "matheusggr.leo", "mathfb", "mengao", "michupa", "pablito.saldo", "perfilbrasil", "rimurutempest", "shiftrox", "tfranzini", "underlock", "vaipraonde", "vempromundo", "xlety", "zallin"
   ],
-  "manual_pt": [
-    "biologistbrito",
-    "portugalzin"
+  "pendente_br": [
+     "elisangelapa"    
   ],
+  "verificado_pt": [
+    "biologistbrito", "portugalzin"
+  ],
+  "pendente_pt": [],
   "watchlist": [
     "biologistbrito", "abandeira", "aiuna", "aiyumi", "ale-rio", "alexandrefeliz", "alina97", "alinequeiroz", "alucardy", "alyxmijaresda",
     "anacvv05", "anafenalli", "anazn", "aphiel", "avedorada", "avel692", "ayummi", "badge-182654", "barizon", "bastter",
