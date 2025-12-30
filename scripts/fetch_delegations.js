@@ -1,7 +1,7 @@
 /**
- * Script: Fetch Delegations (Nationality Certification)
- * Version: 2.13.0
- * Update: Distinção entre BR/PT Manual (Certificado) e Automático
+ * Script: Fetch Delegations (Refined Lists)
+ * Version: 2.14.0
+ * Update: Estrutura Verificado/Pendente
  */
 
 const fetch = require("node-fetch");
@@ -15,16 +15,18 @@ const TOKEN_SYMBOL = "HBR";
 const CONFIG_PATH = path.join("config", "lists.json");
 const DATA_DIR = "data";
 
-// --- CARREGAMENTO DE LISTAS EXTERNAS ---
-let listConfig = { manual_br: [], manual_pt: [], watchlist: [], curation_trail: [] };
+let listConfig = { verificado_br: [], pendente_br: [], verificado_pt: [], pendente_pt: [], watchlist: [], curation_trail: [] };
 try {
   if (fs.existsSync(CONFIG_PATH)) {
     listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH));
   }
 } catch (err) { console.error(err); }
 
-const MANUAL_BR_LIST = listConfig.manual_br || [];
-const MANUAL_PT_LIST = listConfig.manual_pt || [];
+// Novas Constantes de Lista
+const VERIFICADO_BR = listConfig.verificado_br || [];
+const PENDENTE_BR = listConfig.pendente_br || [];
+const VERIFICADO_PT = listConfig.verificado_pt || [];
+const PENDENTE_PT = listConfig.pendente_pt || [];
 const FIXED_USERS = listConfig.watchlist || [];
 const CURATION_TRAIL_USERS = listConfig.curation_trail || [];
 
@@ -63,11 +65,15 @@ async function fetchHiveEngineBalances(accounts, symbol) {
 }
 
 function detectNationality(username, jsonMetadata) {
-    // 1. Checagem Manual (Retorna código CERTIFICADO)
-    if (MANUAL_BR_LIST.includes(username)) return "BR_CERT";
-    if (MANUAL_PT_LIST.includes(username)) return "PT_CERT";
+    // 1. Verificados (Colorido)
+    if (VERIFICADO_BR.includes(username)) return "BR_CERT";
+    if (VERIFICADO_PT.includes(username)) return "PT_CERT";
 
-    // 2. Extração de Metadata
+    // 2. Pendentes Manuais (Cinza)
+    if (PENDENTE_BR.includes(username)) return "BR";
+    if (PENDENTE_PT.includes(username)) return "PT";
+
+    // 3. Detecção Automática (Cinza)
     let location = "";
     if (jsonMetadata) { 
         try { 
@@ -79,7 +85,6 @@ function detectNationality(username, jsonMetadata) {
     }
     if (!location) return null;
 
-    // 3. Detecção Automática (Retorna código PADRÃO)
     if (location.includes("portugal") || location.includes("lisboa") || location.includes("lisbon") || 
         location.includes("porto") || location.includes("coimbra") || location.includes("braga") || 
         location.includes("algarve") || location.includes("madeira") || location.includes("açores")) {
@@ -225,7 +230,7 @@ async function run() {
       votes_month_prev2: voteData.votes_month2
     };
     fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
-    console.log("✅ Dados salvos (Versão 2.13.0)!");
+    console.log("✅ Dados salvos (Versão 2.14.0)!");
   } catch (err) {
     console.error("❌ Erro fatal:", err.message);
     process.exit(1);
