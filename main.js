@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.16.0
- * Update: Tooltip text updates ("Reconhecido" / "Apresentação")
+ * Version: 2.17.0
+ * Update: Tooltip text updates + Curation Trail Card
  */
 
 ;(function() { 
@@ -73,6 +73,9 @@
     const vCurr = meta && meta.votes_month_current ? meta.votes_month_current : 0;
     const vM1   = meta && meta.votes_month_prev1 ? meta.votes_month_prev1 : 0;
     const vM2   = meta && meta.votes_month_prev2 ? meta.votes_month_prev2 : 0;
+    
+    // NOVO DADO: Trilha
+    const trailCount = meta && meta.curation_trail_count ? meta.curation_trail_count : 0;
 
     document.getElementById("lbl-votes-current").innerText = `VOTOS DISTRIBUÍDOS EM ${getMonthName(0).toUpperCase()}`;
     document.getElementById("lbl-votes-m1").innerText = `Votos em ${getMonthName(1)}`;
@@ -82,6 +85,9 @@
     document.getElementById("stat-votes-24h").innerText = v24h;
     document.getElementById("stat-votes-m1").innerText = vM1;
     document.getElementById("stat-votes-m2").innerText = vM2;
+    
+    // ATUALIZA CARD DA TRILHA
+    document.getElementById("stat-trail-count").innerText = trailCount;
 
     let bestGrower = { name: "—", val: 0 };
     delegations.forEach(user => {
