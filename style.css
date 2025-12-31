@@ -1,3 +1,9 @@
+/*
+  File: style.css
+  Version: 2.15.0
+  Update: Fix User Column Width & Mobile Activity Table
+*/
+
 :root {
   --bg-color: #0e0e12;
   --card-bg: #191923;
@@ -116,6 +122,10 @@ h1 {
   border-radius: 12px;
   margin-bottom: 30px;
   border-left: 4px solid var(--accent-green);
+  
+  /* RESPONSIVIDADE MOBILE (V2.15.0) */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .section-title {
@@ -131,6 +141,7 @@ h1 {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+  min-width: 400px; /* Garante largura mínima para forçar scroll se necessário */
 }
 .activity-table th, .activity-table td {
   text-align: left;
@@ -210,12 +221,12 @@ td {
   z-index: 2;
   border-right: 1px solid #2a2a35;
   
-  /* NOVAS REGRAS PARA EVITAR QUEBRA DE LINHA */
-  white-space: nowrap;      /* Impede quebra de texto */
-  min-width: 250px;         /* Garante espaço suficiente para nomes longos + bandeira */
-  max-width: 300px;         /* Opcional: evita que fique excessivamente largo */
-  overflow: hidden;         /* Segurança para nomes gigantes não vazarem */
-  text-overflow: ellipsis;  /* Adiciona "..." se o nome for absurdamente longo */
+  /* LARGURA E QUEBRA DE LINHA (V2.15.0) */
+  white-space: nowrap;
+  min-width: 230px;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* LINKS */
