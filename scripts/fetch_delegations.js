@@ -1,7 +1,7 @@
 /**
- * Script: Fetch Delegations (Refined Lists)
- * Version: 2.14.0
- * Update: Estrutura Verificado/Pendente
+ * Script: Fetch Delegations
+ * Version: 2.17.0
+ * Update: Export Curation Trail Count
  */
 
 const fetch = require("node-fetch");
@@ -22,7 +22,6 @@ try {
   }
 } catch (err) { console.error(err); }
 
-// Novas Constantes de Lista
 const VERIFICADO_BR = listConfig.verificado_br || [];
 const PENDENTE_BR = listConfig.pendente_br || [];
 const VERIFICADO_PT = listConfig.verificado_pt || [];
@@ -65,15 +64,11 @@ async function fetchHiveEngineBalances(accounts, symbol) {
 }
 
 function detectNationality(username, jsonMetadata) {
-    // 1. Verificados (Colorido)
     if (VERIFICADO_BR.includes(username)) return "BR_CERT";
     if (VERIFICADO_PT.includes(username)) return "PT_CERT";
-
-    // 2. Pendentes Manuais (Cinza)
     if (PENDENTE_BR.includes(username)) return "BR";
     if (PENDENTE_PT.includes(username)) return "PT";
 
-    // 3. Detecção Automática (Cinza)
     let location = "";
     if (jsonMetadata) { 
         try { 
@@ -227,10 +222,11 @@ async function run() {
       votes_24h: voteData.votes_24h,
       votes_month_current: voteData.votes_month0,
       votes_month_prev1: voteData.votes_month1,
-      votes_month_prev2: voteData.votes_month2
+      votes_month_prev2: voteData.votes_month2,
+      curation_trail_count: CURATION_TRAIL_USERS.length // NOVO DADO
     };
     fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
-    console.log("✅ Dados salvos (Versão 2.14.0)!");
+    console.log("✅ Dados salvos (Versão 2.17.0)!");
   } catch (err) {
     console.error("❌ Erro fatal:", err.message);
     process.exit(1);
