@@ -1,61 +1,97 @@
 /**
- * Script: AI Report Diagnostic
- * Version: 2.19.6
- * Description: Lists available models directly via HTTP Request to debug 404 errors.
+ * Script: AI Report Generator
+ * Version: 2.19.7
+ * Description: Generates blog post using the available Gemini 2.5 Flash model.
  */
 
-const fetch = require("node-fetch"); // Usando fetch direto para pular o SDK
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs");
 const path = require("path");
 
+// Configurações
+const DATA_DIR = "data";
 const REPORT_DIR = "reports";
-if (!fs.existsSync(REPORT_DIR)) fs.mkdirSync(REPORT_DIR, { recursive: true });
+const META_FILE = path.join(DATA_DIR, "meta.json");
+const HISTORY_FILE = path.join(DATA_DIR, "monthly_stats.json");
+const MODEL_NAME = "gemini-2.5-flash"; // Modelo confirmado via diagnóstico
+
+// Garante que a pasta de relatórios existe
+if (!fs.existsSync(REPORT_DIR)) {
+    fs.mkdirSync(REPORT_DIR, { recursive: true });
+}
 
 async function run() {
     const apiKey = process.env.GEMINI_API_KEY;
-    
     if (!apiKey) {
-        console.error("❌ ERRO: Sem API Key.");
+        console.error("❌ Erro: GEMINI_API_KEY ausente.");
         process.exit(1);
     }
 
-    console.log(`🔑 Chave detectada (início): ${apiKey.substring(0, 4)}...`);
-    console.log("📡 Consultando catálogo de modelos do Google via HTTP...");
-
     try {
-        // Endpoint oficial para listar modelos
-        const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+        console.log("📂 Lendo dados do dashboard...");
+        const meta = JSON.parse(fs.readFileSync(META_FILE));
         
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (data.error) {
-            console.error("❌ O Google retornou um erro:");
-            console.error(JSON.stringify(data.error, null, 2));
-            
-            // Dica baseada no erro comum
-            if (data.error.message && data.error.message.includes("API has not been used")) {
-                console.log("\n💡 DICA DE SOLUÇÃO: A API 'Generative Language API' não está ativada no seu console.");
-                console.log("   Acesse o link que aparece na mensagem de erro acima e clique em 'ENABLE'.");
-            }
-        } else if (data.models) {
-            console.log("\n✅ SUCESSO! Modelos disponíveis para sua chave:");
-            console.log("------------------------------------------------");
-            data.models.forEach(m => {
-                // Filtra apenas os modelos de geração de texto (gemini)
-                if (m.name.includes("gemini")) {
-                    console.log(`- ${m.name} (Versão: ${m.version})`);
-                }
-            });
-            console.log("------------------------------------------------");
-            console.log("Se a lista acima estiver vazia, sua chave não tem acesso aos modelos Gemini.");
-        } else {
-            console.log("⚠️ Resposta estranha (sem erro, mas sem modelos):");
-            console.log(JSON.stringify(data, null, 2));
+        let history = [];
+        if (fs.existsSync(HISTORY_FILE)) {
+            history = JSON.parse(fs.readFileSync(HISTORY_FILE));
         }
 
-    } catch (err) {
-        console.error("❌ Erro de conexão:", err.message);
+        const today = new Date().toLocaleDateString("pt-BR");
+        
+        // Lógica de comparação histórica
+        const lastMonthData = history.length >= 2 ? history[history.length - 2] : null;
+        const comparisonText = lastMonthData 
+            ? `Comparação com mês anterior: Antes tínhamos ${lastMonthData.total_power.toFixed(0)} HP e ${lastMonthData.delegators_count} delegadores.` 
+            : "Sem dados históricos suficientes para comparação direta.";
+
+        const prompt = `
+        Você é o **Analista de Dados e Redator Oficial da Comunidade Hive BR** (ano atual: 2026).
+        Sua tarefa é escrever um relatório de performance (post para blog) com base nos dados abaixo.
+
+        --- DADOS ATUAIS (${today}) ---
+        - Total de Poder (Comunidade): ${meta.total_hp.toFixed(0)} HP
+        - HP Próprio do Projeto: ${meta.project_account_hp.toFixed(0)} HP
+        - Total de Delegadores Ativos: ${meta.total_delegators}
+        - Seguidores da Trilha de Curadoria: ${meta.curation_trail_count}
+        - Votos distribuídos neste mês: ${meta.votes_month_current}
+        - Total de HBR em Stake: ${meta.total_hbr_staked.toFixed(0)}
+        
+        --- CONTEXTO HISTÓRICO ---
+        ${comparisonText}
+
+        --- DIRETRIZES DE ESTILO ---
+        1. **Tom de Voz:** Profissional, motivador, entusiasta e comunitário.
+        2. **Formatação:** Use Markdown (Títulos ##, negrito **, listas -).
+        3. **Estrutura:**
+           - Título criativo para o relatório (Ex: "Relatório Hive BR - Janeiro 2026").
+           - Introdução celebrando o crescimento.
+           - Destaques dos números (HP, Delegadores, Trilha).
+           - Breve análise sobre a curadoria (votos).
+           - Chamada para ação (Call to Action): Convide para delegar para @hive-br.voter e seguir a trilha.
+        4. **Idioma:** Português do Brasil.
+        
+        Escreva o relatório agora.
+        `;
+
+        console.log(`🤖 Gerando texto com ${MODEL_NAME}...`);
+        
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+        
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+
+        // Salva o arquivo
+        const filename = `relatorio_${new Date().toISOString().slice(0, 10)}.md`;
+        const filepath = path.join(REPORT_DIR, filename);
+        
+        fs.writeFileSync(filepath, text);
+        console.log(`✅ SUCESSO! Relatório gerado em: ${filepath}`);
+
+    } catch (error) {
+        console.error("❌ Falha na geração:", error.message);
+        process.exit(1);
     }
 }
 
