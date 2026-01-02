@@ -1,8 +1,7 @@
 /**
  * Script: AI Report Generator
- * Version: 2.19.3
- * Description: Reads stats and uses Gemini API to write a blog post.
- * Fix: Uses specific stable model version (gemini-1.5-flash-001)
+ * Version: 2.19.4
+ * Description: Robust Model Hunter - Tries multiple model names until one works.
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -14,6 +13,15 @@ const DATA_DIR = "data";
 const REPORT_DIR = "reports";
 const META_FILE = path.join(DATA_DIR, "meta.json");
 const HISTORY_FILE = path.join(DATA_DIR, "monthly_stats.json");
+
+// Lista de modelos para tentar (em ordem de preferência)
+const CANDIDATE_MODELS = [
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-latest",
+    "gemini-1.5-pro",
+    "gemini-1.0-pro",
+    "gemini-pro"
+];
 
 // Garante que a pasta de relatórios existe
 if (!fs.existsSync(REPORT_DIR)) {
@@ -29,7 +37,6 @@ async function run() {
     }
 
     try {
-        // 2. Lê os dados
         console.log("📂 Lendo dados do dashboard...");
         const meta = JSON.parse(fs.readFileSync(META_FILE));
         
@@ -38,10 +45,7 @@ async function run() {
             history = JSON.parse(fs.readFileSync(HISTORY_FILE));
         }
 
-        // 3. Prepara o contexto para a IA
         const today = new Date().toLocaleDateString("pt-BR");
-        
-        // Pega o mês anterior para comparação (se existir)
         const lastMonthData = history.length >= 2 ? history[history.length - 2] : null;
         const comparisonText = lastMonthData 
             ? `Comparação com mês anterior: Antes tínhamos ${lastMonthData.total_power.toFixed(0)} HP e ${lastMonthData.delegators_count} delegadores.` 
@@ -76,28 +80,39 @@ async function run() {
         Escreva o relatório agora.
         `;
 
-        // 4. Chama o Gemini (CORRIGIDO PARA VERSÃO ESTÁVEL)
-        console.log("🤖 Consultando a IA (Gemini 1.5 Flash 001)...");
         const genAI = new GoogleGenerativeAI(apiKey);
         
-        // USANDO O NOME ESPECÍFICO DA VERSÃO
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001"});
+        // --- LOOP DE TENTATIVAS (MODEL HUNTER) ---
+        let generatedText = null;
         
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        for (const modelName of CANDIDATE_MODELS) {
+            console.log(`🤖 Tentando modelo: ${modelName}...`);
+            try {
+                const model = genAI.getGenerativeModel({ model: modelName });
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                generatedText = response.text();
+                
+                console.log(`✨ SUCESSO com o modelo: ${modelName}`);
+                break; // Sai do loop se der certo
+            } catch (err) {
+                console.warn(`⚠️ Falha com ${modelName}: ${err.message.split('[')[0]}... (Tentando próximo)`);
+            }
+        }
+
+        if (!generatedText) {
+            throw new Error("Todos os modelos falharam. Verifique se a API Key tem a API 'Generative Language' habilitada no Google Cloud Console.");
+        }
 
         // 5. Salva o arquivo
         const filename = `relatorio_${new Date().toISOString().slice(0, 10)}.md`;
         const filepath = path.join(REPORT_DIR, filename);
         
-        fs.writeFileSync(filepath, text);
-        console.log(`✅ Relatório gerado com sucesso: ${filepath}`);
+        fs.writeFileSync(filepath, generatedText);
+        console.log(`✅ Relatório salvo em: ${filepath}`);
 
     } catch (error) {
-        console.error("❌ Falha ao gerar relatório:", error);
-        // Em caso de erro, lista os modelos disponíveis para debug
-        console.log("Dica: Verifique se a API Key tem permissão para 'gemini-1.5-flash-001'");
+        console.error("❌ Erro fatal:", error.message);
         process.exit(1);
     }
 }
