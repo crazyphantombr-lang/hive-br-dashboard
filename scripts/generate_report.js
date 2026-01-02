@@ -1,62 +1,61 @@
 /**
- * Script: AI Report Generator
- * Version: 2.19.5
- * Description: Debug Mode - Shows FULL error details.
+ * Script: AI Report Diagnostic
+ * Version: 2.19.6
+ * Description: Lists available models directly via HTTP Request to debug 404 errors.
  */
 
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const fetch = require("node-fetch"); // Usando fetch direto para pular o SDK
 const fs = require("fs");
 const path = require("path");
 
-const DATA_DIR = "data";
 const REPORT_DIR = "reports";
-const META_FILE = path.join(DATA_DIR, "meta.json");
-const HISTORY_FILE = path.join(DATA_DIR, "monthly_stats.json");
-
-// Apenas um modelo para teste de conexão agora
-const MODEL_NAME = "gemini-1.5-flash";
-
 if (!fs.existsSync(REPORT_DIR)) fs.mkdirSync(REPORT_DIR, { recursive: true });
 
 async function run() {
     const apiKey = process.env.GEMINI_API_KEY;
+    
     if (!apiKey) {
-        console.error("❌ ERRO CRÍTICO: GEMINI_API_KEY não encontrada/vazia.");
+        console.error("❌ ERRO: Sem API Key.");
         process.exit(1);
     }
-    
-    // Debug da chave (mostra apenas os 4 primeiros caracteres por segurança)
-    console.log(`🔑 Chave detectada: ${apiKey.substring(0, 4)}... (Total chars: ${apiKey.length})`);
+
+    console.log(`🔑 Chave detectada (início): ${apiKey.substring(0, 4)}...`);
+    console.log("📡 Consultando catálogo de modelos do Google via HTTP...");
 
     try {
-        console.log("📂 Lendo dados...");
-        const meta = JSON.parse(fs.readFileSync(META_FILE));
+        // Endpoint oficial para listar modelos
+        const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
         
-        const prompt = `Escreva um 'Olá Mundo' para testar a conexão.`;
+        const response = await fetch(url);
+        const data = await response.json();
 
-        console.log(`🤖 Testando conexão com modelo: ${MODEL_NAME}...`);
-        
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-        
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        if (data.error) {
+            console.error("❌ O Google retornou um erro:");
+            console.error(JSON.stringify(data.error, null, 2));
+            
+            // Dica baseada no erro comum
+            if (data.error.message && data.error.message.includes("API has not been used")) {
+                console.log("\n💡 DICA DE SOLUÇÃO: A API 'Generative Language API' não está ativada no seu console.");
+                console.log("   Acesse o link que aparece na mensagem de erro acima e clique em 'ENABLE'.");
+            }
+        } else if (data.models) {
+            console.log("\n✅ SUCESSO! Modelos disponíveis para sua chave:");
+            console.log("------------------------------------------------");
+            data.models.forEach(m => {
+                // Filtra apenas os modelos de geração de texto (gemini)
+                if (m.name.includes("gemini")) {
+                    console.log(`- ${m.name} (Versão: ${m.version})`);
+                }
+            });
+            console.log("------------------------------------------------");
+            console.log("Se a lista acima estiver vazia, sua chave não tem acesso aos modelos Gemini.");
+        } else {
+            console.log("⚠️ Resposta estranha (sem erro, mas sem modelos):");
+            console.log(JSON.stringify(data, null, 2));
+        }
 
-        console.log("✅ SUCESSO! A API RESPONDEU:");
-        console.log(text);
-        
-        // Se chegou aqui, a chave funciona. Pode salvar o arquivo de teste.
-        fs.writeFileSync(path.join(REPORT_DIR, "teste_api.md"), text);
-
-    } catch (error) {
-        console.error("\n❌❌❌ ERRO DETALHADO DA API ❌❌❌");
-        console.error("Tipo:", error.name);
-        console.error("Mensagem:", error.message);
-        if (error.status) console.error("Status HTTP:", error.status);
-        if (error.statusText) console.error("Texto Status:", error.statusText);
-        console.error("------------------------------------------------");
-        process.exit(1);
+    } catch (err) {
+        console.error("❌ Erro de conexão:", err.message);
     }
 }
 
