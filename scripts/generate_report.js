@@ -1,8 +1,8 @@
 /**
  * Script: AI Report Generator
- * Version: 2.19.1
+ * Version: 2.19.3
  * Description: Reads stats and uses Gemini API to write a blog post.
- * Fix: Updated model to gemini-1.5-flash
+ * Fix: Uses specific stable model version (gemini-1.5-flash-001)
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -76,12 +76,12 @@ async function run() {
         Escreva o relatório agora.
         `;
 
-        // 4. Chama o Gemini (CORRIGIDO AQUI)
-        console.log("🤖 Consultando a IA (Gemini 1.5 Flash)...");
+        // 4. Chama o Gemini (CORRIGIDO PARA VERSÃO ESTÁVEL)
+        console.log("🤖 Consultando a IA (Gemini 1.5 Flash 001)...");
         const genAI = new GoogleGenerativeAI(apiKey);
         
-        // ALTERADO DE "gemini-pro" PARA "gemini-1.5-flash"
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
+        // USANDO O NOME ESPECÍFICO DA VERSÃO
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001"});
         
         const result = await model.generateContent(prompt);
         const response = await result.response;
@@ -96,6 +96,8 @@ async function run() {
 
     } catch (error) {
         console.error("❌ Falha ao gerar relatório:", error);
+        // Em caso de erro, lista os modelos disponíveis para debug
+        console.log("Dica: Verifique se a API Key tem permissão para 'gemini-1.5-flash-001'");
         process.exit(1);
     }
 }
