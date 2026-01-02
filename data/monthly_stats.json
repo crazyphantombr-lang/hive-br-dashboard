@@ -1,5 +1,14 @@
 [
-   {
+  {
+    "date": "2026-01-01",
+    "total_power": 55431.72114207645,
+    "own_hp": 14269.051142076445,
+    "delegators_count": 64,
+    "monthly_votes": 21,
+    "trail_count": 85,
+    "hbr_staked_total": 5336.91955799
+  },
+  {
     "date": "2026-01-12",
     "total_power": 554215,
     "own_hp": 14009.040881033843,
@@ -7,18 +16,9 @@
     "monthly_votes": 315,
     "trail_count": 84,
     "hbr_staked_total": 5300.91955799
-   },
-   {
-    "date": "2026-12-01",
-    "total_power": 55431.67688103385,
-    "own_hp": 14269.040881033843,
-    "delegators_count": 64,
-    "monthly_votes": 21,
-    "trail_count": 85,
-    "hbr_staked_total": 5336.91955799
   },
   {
-    "date": "2026-01-01",
+    "date": "2026-12-01",
     "total_power": 55431.67688103385,
     "own_hp": 14269.040881033843,
     "delegators_count": 64,
