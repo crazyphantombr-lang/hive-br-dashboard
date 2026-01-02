@@ -1,7 +1,8 @@
 /**
  * Script: AI Report Generator
- * Version: 2.19.0
+ * Version: 2.19.1
  * Description: Reads stats and uses Gemini API to write a blog post.
+ * Fix: Updated model to gemini-1.5-flash
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -75,10 +76,12 @@ async function run() {
         Escreva o relatório agora.
         `;
 
-        // 4. Chama o Gemini
-        console.log("🤖 Consultando a IA (Gemini)...");
+        // 4. Chama o Gemini (CORRIGIDO AQUI)
+        console.log("🤖 Consultando a IA (Gemini 1.5 Flash)...");
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+        
+        // ALTERADO DE "gemini-pro" PARA "gemini-1.5-flash"
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
         
         const result = await model.generateContent(prompt);
         const response = await result.response;
