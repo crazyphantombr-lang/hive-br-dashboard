@@ -1,7 +1,7 @@
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.20.0
- * Update: Adds 'Active Community Member' counting logic.
+ * Version: 2.20.1 (Development)
+ * Update: Fixes vote counting with Deep Pagination (loops history until start of month).
  */
 
 const fetch = require("node-fetch");
@@ -55,21 +55,59 @@ async function fetchHiveEngineBalances(accounts) {
 }
 
 async function fetchVoteHistory() {
-  // Simplificado para pegar apenas estatísticas de votos recentes
-  const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 1000]);
   let votes_month = 0;
   const now = new Date();
-  const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // 1º dia do mês atual
+  
+  // Limite de segurança para não loopar infinitamente (ex: 20k transações)
+  let limit = 20000; 
+  let start = -1; // Começa do último
+  let count = 1000; // Pede de 1k em 1k
 
-  if (history) {
-    history.forEach(tx => {
+  console.log(`🔍 Buscando votos desde ${firstDayOfMonth.toISOString()}...`);
+
+  while (limit > 0) {
+    const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, start, count]);
+    
+    if (!history || history.length === 0) break;
+
+    // Processa transações do lote (do mais novo para o mais velho)
+    // O retorno da API vem em ordem cronológica (index 0 = mais antigo do lote)
+    
+    let oldestDateInBatch = new Date();
+
+    for (let i = history.length - 1; i >= 0; i--) {
+      const tx = history[i];
       const op = tx[1].op;
       const ts = new Date(tx[1].timestamp + "Z");
-      if (op[0] === 'vote' && op[1].voter === VOTER_ACCOUNT && ts >= firstDayOfMonth) {
+      oldestDateInBatch = ts;
+
+      // Se a transação é mais antiga que o início do mês, paramos de contar
+      if (ts < firstDayOfMonth) {
+        limit = 0; // Força saída do loop principal
+        continue;  // Pula contagem
+      }
+
+      if (op[0] === 'vote' && op[1].voter === VOTER_ACCOUNT) {
         votes_month++;
       }
-    });
+    }
+
+    // Prepara próximo lote (pega o ID da transação mais antiga deste lote e subtrai 1)
+    const firstTxId = history[0][0]; 
+    if (firstTxId === 0 || limit === 0) break; // Chegou no genesis ou data limite
+    
+    start = firstTxId - 1;
+    // O próximo count deve ser no máximo 'start' (se start for < 1000)
+    if (start < count) count = start; 
+    
+    limit -= 1000;
+    
+    // Pequeno delay para não floodar o nó RPC
+    await new Promise(r => setTimeout(r, 200));
   }
+
+  console.log(`✅ Votos contados em Deep Search: ${votes_month}`);
   return votes_month;
 }
 
@@ -89,7 +127,7 @@ function updateMonthlyStats(metaData) {
         monthly_votes: metaData.votes_month_current,
         trail_count: metaData.curation_trail_count,
         hbr_staked_total: metaData.total_hbr_staked,
-        active_members: metaData.active_community_members // Nova métrica histórica
+        active_members: metaData.active_community_members 
     };
 
     const index = history.findIndex(h => h.date === monthKey);
@@ -103,7 +141,7 @@ function updateMonthlyStats(metaData) {
 // --- MAIN ---
 async function run() {
     try {
-        console.log("🔄 Coletando dados...");
+        console.log("🔄 Coletando dados (v2.20.1)...");
         
         // 1. Delegações
         const res = await fetch(HAF_API);
@@ -130,11 +168,10 @@ async function run() {
         const heBalances = await fetchHiveEngineBalances([...currentDelegators]);
         const tokenSum = heBalances.reduce((acc, curr) => acc + parseFloat(curr.stake || 0), 0);
 
-        // 4. Votos
+        // 4. Votos (Agora com Paginação Profunda)
         const votesMonth = await fetchVoteHistory();
 
-        // 5. Métrica de Membros Únicos (Nova)
-        // Une Delegadores + Quem segue a trilha
+        // 5. Métrica de Membros Únicos
         const uniqueMembers = new Set([
             ...delegations.map(d => d.delegator),
             ...CURATION_TRAIL_USERS
@@ -148,13 +185,13 @@ async function run() {
             total_hbr_staked: tokenSum,
             votes_month_current: votesMonth,
             curation_trail_count: CURATION_TRAIL_USERS.length,
-            active_community_members: uniqueMembers.size // Total de brasileiros envolvidos
+            active_community_members: uniqueMembers.size 
         };
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
         updateMonthlyStats(metaData);
         
-        console.log("✅ Dados atualizados (v2.20.0)");
+        console.log("✅ Dados atualizados com sucesso!");
 
     } catch (err) {
         console.error("❌ Erro:", err.message);
