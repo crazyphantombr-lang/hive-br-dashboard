@@ -1,10 +1,13 @@
 {
-  "last_updated": "2026-01-04T18:26:44.934Z",
+  "last_updated": "2026-01-04T18:35:43.787Z",
   "total_delegators": 65,
-  "total_hp": 41372.895,
-  "project_account_hp": 14271.32268073735,
+  "total_hp": 41372.914000000004,
+  "project_account_hp": 14271.328901331957,
   "total_hbr_staked": 4930.615025509999,
-  "votes_month_current": 51,
   "curation_trail_count": 85,
-  "active_community_members": 314
+  "active_community_members": 314,
+  "votes_24h": 19,
+  "votes_month_current": 51,
+  "votes_month_prev1": 351,
+  "votes_month_prev2": 405
 }
