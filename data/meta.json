@@ -1,19 +1,19 @@
 {
-  "last_updated": "2026-01-08T12:27:39.668Z",
+  "last_updated": "2026-01-08T18:17:02.817Z",
   "total_delegators": 65,
-  "total_hp": 41384.07300000001,
-  "project_account_hp": 14275.17759951851,
-  "total_hbr_staked": 4937.1430255099995,
+  "total_hp": 41384.781,
+  "project_account_hp": 14275.425187529523,
+  "total_hbr_staked": 4937.21202551,
   "curation_trail_count": 85,
   "active_community_members": 314,
-  "votes_24h": 18,
+  "votes_24h": 7,
   "vote_history_named": {
-    "Janeiro 2026": 92,
+    "Janeiro 2026": 94,
     "Dezembro 2025": 351,
     "Novembro 2025": 405,
     "Outubro 2025": 289
   },
-  "votes_month_current": 92,
+  "votes_month_current": 94,
   "votes_month_prev1": 351,
   "votes_month_prev2": 405
 }
