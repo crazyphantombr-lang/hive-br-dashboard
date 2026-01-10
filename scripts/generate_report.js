@@ -1,7 +1,7 @@
 /**
  * Script: AI Report Generator
- * Version: 2.22.0 (Logic: Historical Diff)
- * Description: Calculates MVP based on real historical data (Current HP - Last Day of Prev Month HP).
+ * Version: 2.23.0 (Logic Match: Debug MVP)
+ * Description: Uses proven logic from debug script to calculate MVP based on 2025-12-31 history.
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -60,40 +60,40 @@ async function run() {
 
         const listsData = readJsonSafe(LISTS_FILE, { new_delegators: [] });
         const monthlyHistory = readJsonSafe(MONTHLY_FILE, []);
-        const historyData = readJsonSafe(HISTORY_FILE, {}); // Histórico Diário Completo
-
+        const historyData = readJsonSafe(HISTORY_FILE, {}); // Carrega Histórico Completo
         const lastMonthStats = (Array.isArray(monthlyHistory) && monthlyHistory.length >= 2) ? monthlyHistory[monthlyHistory.length - 2] : null;
 
-        // --- CÁLCULO DE MVP (Top Gainer) ---
-        // Lógica: Comparar HP Atual com HP do Último Dia do Mês Anterior
+        // --- CÁLCULO DE MVP (Lógica Validada pelo Debug) ---
+        const dateCalc = new Date(now.getFullYear(), now.getMonth(), 0); 
+        const targetDateKey = dateCalc.toISOString().split('T')[0]; // Ex: 2025-12-31
         
-        // 1. Encontrar a data alvo (Último dia do mês anterior)
-        const dateCalc = new Date(now.getFullYear(), now.getMonth(), 0); // Dia 0 do mês atual = Último dia do anterior
-        const targetDateKey = dateCalc.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-        
-        console.log(`📊 Calculando crescimento com base em: ${targetDateKey}`);
+        console.log(`📊 Calculando MVP baseando-se em: ${targetDateKey}`);
 
-        let topGainer = { name: "N/A", increase: 0 };
+        let topGainer = { name: "Ninguém", increase: 0 };
 
         currentList.forEach(user => {
             const name = user.delegator || user.username;
             const currentHp = parseFloat(user.delegated_hp || user.hp || 0);
             
-            // Busca o HP histórico daquele usuário na data alvo
             let previousHp = 0;
+            // Verifica se existe histórico na data exata
             if (historyData[name] && historyData[name][targetDateKey]) {
                 previousHp = parseFloat(historyData[name][targetDateKey]);
+            } else {
+                // Se não achar histórico exato, ignora (evita falso positivo de "novo usuário")
+                // Ou podemos definir previousHp = currentHp para que o aumento seja 0
+                previousHp = currentHp; 
             }
-            // Se não encontrar a data exata (script falhou no dia?), tenta fallback de 1 dia antes?
-            // Por enquanto, assume 0 se não tiver registro no último dia do mês (novo delegador ou falha)
-            
+
             const diff = currentHp - previousHp;
             
-            // Filtra apenas crescimento positivo e significativo (> 1 HP)
+            // Filtra apenas crescimento positivo real (> 1 HP)
             if (diff > 1 && diff > topGainer.increase) {
                 topGainer = { name: name, increase: diff, total: currentHp };
             }
         });
+        
+        console.log(`🏆 Vencedor Identificado: ${topGainer.name} (+${topGainer.increase.toFixed(2)})`);
 
         const dataPayload = {
             date: now.toLocaleDateString("pt-BR"),
@@ -138,7 +138,7 @@ ESTRUTURA OBRIGATÓRIA DO POST:
 TOM: Celebrativo, Profissional e Vibrante. PT-BR.
 `;
 
-        console.log(`🤖 Gerando Relatório v2.22.0...`);
+        console.log(`🤖 Gerando Relatório v2.23.0...`);
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const result = await model.generateContent(prompt);
