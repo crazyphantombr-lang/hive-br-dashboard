@@ -1,7 +1,7 @@
 /**
  * Script: AI Report Generator
- * Version: 2.20.4 (Hotfix)
- * Description: Fixes 'slice' error by handling current.json as both Array or Object.
+ * Version: 2.20.5 (Hotfix)
+ * Description: Robust JSON loading. Ignores corrupted files (HTML) instead of crashing.
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -23,6 +23,19 @@ const LISTS_FILE = path.join(DATA_DIR, "lists.json");
 
 if (!fs.existsSync(REPORT_DIR)) fs.mkdirSync(REPORT_DIR, { recursive: true });
 
+// --- FUNÇÃO DE LEITURA BLINDADA ---
+function readJsonSafe(filepath, fallbackValue) {
+    if (!fs.existsSync(filepath)) return fallbackValue;
+    try {
+        const raw = fs.readFileSync(filepath, 'utf8');
+        return JSON.parse(raw);
+    } catch (e) {
+        console.warn(`⚠️ AVISO: Arquivo corrompido ignorado: ${path.basename(filepath)}`);
+        console.warn(`   Erro: ${e.message.slice(0, 50)}...`);
+        return fallbackValue;
+    }
+}
+
 async function run() {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) { console.error("❌ Erro: GEMINI_API_KEY ausente."); process.exit(1); }
@@ -37,55 +50,51 @@ async function run() {
     const isForced = process.env.FORCE_REPORT === "true";
 
     if (!isForced && (!isLastDay || !isAfternoon)) {
-        console.log(`[SKIP] Script abortado. Hoje (${now.toLocaleDateString()}) não é fechamento mensal.`);
+        console.log(`[SKIP] Script abortado. Hoje não é fechamento mensal.`);
         return;
     }
 
-    if (isForced) console.log("⚠️ MODO MANUAL ATIVADO: Ignorando verificação de data.");
+    if (isForced) console.log("⚠️ MODO MANUAL ATIVADO.");
 
     try {
-        console.log("📂 Carregando dados para Relatório...");
+        console.log("📂 Carregando dados de forma segura...");
 
-        const meta = JSON.parse(fs.readFileSync(META_FILE));
+        // Leitura com Fallbacks (evita crash por HTML/JSON inválido)
+        const meta = readJsonSafe(META_FILE, { 
+            active_community_members: 0, total_hp: 0, votes_month_current: 0, curation_trail_count: 0 
+        });
         
-        // --- CORREÇÃO DO ERRO DE SLICE ---
+        const rawCurrent = readJsonSafe(CURRENT_FILE, []);
+        const listsData = readJsonSafe(LISTS_FILE, { new_delegators: [] });
+        const dailyHistory = readJsonSafe(HISTORY_FILE, []);
+        const monthlyHistory = readJsonSafe(MONTHLY_FILE, []);
+
+        // Tratamento do Current (Array vs Objeto)
         let currentList = [];
-        if (fs.existsSync(CURRENT_FILE)) {
-            const raw = JSON.parse(fs.readFileSync(CURRENT_FILE));
-            // Se for Array direto, usa ele. Se for objeto com chave ranking, usa a chave.
-            if (Array.isArray(raw)) {
-                currentList = raw;
-            } else if (raw.ranking && Array.isArray(raw.ranking)) {
-                currentList = raw.ranking;
-            }
+        if (Array.isArray(rawCurrent)) {
+            currentList = rawCurrent;
+        } else if (rawCurrent.ranking && Array.isArray(rawCurrent.ranking)) {
+            currentList = rawCurrent.ranking;
         }
-        // Ordena por HP (segurança extra)
+        
+        // Ordenação de Segurança
         currentList.sort((a, b) => (b.delegated_hp || 0) - (a.delegated_hp || 0));
-        
-        const listsData = fs.existsSync(LISTS_FILE) ? JSON.parse(fs.readFileSync(LISTS_FILE)) : { new_delegators: [] };
-        
-        let dailyHistory = [];
-        try { dailyHistory = JSON.parse(fs.readFileSync(HISTORY_FILE)); } catch (e) {}
-
-        let monthlyHistory = [];
-        try { monthlyHistory = JSON.parse(fs.readFileSync(MONTHLY_FILE)); } catch (e) {}
 
         // --- 2. CÁLCULOS ANALÍTICOS ---
 
         // A. Comparação de 15 Dias
         let stats15DaysAgo = null;
-        if (dailyHistory.length >= 15) {
+        if (Array.isArray(dailyHistory) && dailyHistory.length >= 15) {
             stats15DaysAgo = dailyHistory[dailyHistory.length - 15];
         }
 
         // B. Comparação Mês Anterior
-        const lastMonthStats = monthlyHistory.length >= 2 ? monthlyHistory[monthlyHistory.length - 2] : null;
+        const lastMonthStats = (Array.isArray(monthlyHistory) && monthlyHistory.length >= 2) 
+            ? monthlyHistory[monthlyHistory.length - 2] 
+            : null;
 
-        // C. Identificar o "DELEGADOR DESTAQUE" (MVP)
+        // C. Delegador Destaque (MVP)
         let topGainer = { name: "N/A", increase: 0 };
-        
-        // Tenta encontrar dados de ranking do mês anterior (se salvo no monthly_stats)
-        // Se não tiver, usamos o ranking_history de 30 dias atrás como fallback
         let lastRankingMap = new Map();
         
         if (lastMonthStats && lastMonthStats.ranking) {
@@ -93,9 +102,8 @@ async function run() {
         }
 
         currentList.forEach(user => {
-            const name = user.delegator || user.username; // Suporte a ambos formatos
+            const name = user.delegator || user.username;
             const currentHp = user.delegated_hp || user.hp || 0;
-            
             const lastHp = lastRankingMap.get(name) || 0;
             const diff = currentHp - lastHp;
             
@@ -104,59 +112,46 @@ async function run() {
             }
         });
 
-        // --- 3. PAYLOAD PARA AI ---
+        // --- 3. GERAÇÃO ---
         const dataPayload = {
             date: now.toLocaleDateString("pt-BR"),
-            is_manual_run: isForced,
             stats: {
-                active_members: meta.active_community_members,
-                total_hp: Math.floor(meta.total_hp),
-                votes_month: meta.votes_month_current,
-                trail_followers: meta.curation_trail_count
+                active_members: meta.active_community_members || 0,
+                total_hp: Math.floor(meta.total_hp || 0),
+                votes_month: meta.votes_month_current || 0,
+                trail_followers: meta.curation_trail_count || 0
             },
             comparison: {
                 last_month: lastMonthStats ? {
                     total_hp: lastMonthStats.total_power,
-                    members: lastMonthStats.active_members
-                } : "Sem dados anteriores",
-                days_15_ago: stats15DaysAgo ? {
-                    total_hp: stats15DaysAgo.total_hp,
-                    date: stats15DaysAgo.date
-                } : "Sem histórico de 15 dias"
+                } : "Sem dados",
             },
             highlight: {
                 delegator_of_month: topGainer.increase > 0 ? topGainer : null,
                 new_delegators: listsData.new_delegators || []
             },
-            // AGORA SEGURO: currentList é garantido como array
             top_ranking: currentList.slice(0, 10) 
         };
 
         const prompt = `
-ATUE COMO: O Gerente de Comunidade e Analista de Dados da Hive BR.
-OBJETIVO: Escrever o "Relatório Mensal de Performance" em Markdown.
+ATUE COMO: O Gerente de Comunidade da Hive BR.
+OBJETIVO: Escrever o "Relatório Mensal" (Markdown).
 
-DADOS REAIS (JSON):
+DADOS:
 ${JSON.stringify(dataPayload)}
 
-DIRETRIZES ESTRUTURAIS:
-1. **Cabeçalho:** Use a imagem de capa: ![Capa](${COVER_IMAGE_URL})
-2. **Título:** "Relatório Hive BR: [Mês/Ano] - [Frase de Impacto]" ${isForced ? "(Prévia Manual)" : ""}.
-3. **Introdução:** Resumo executivo.
-4. **🏆 DESTAQUE DO MÊS:**
-   - Crie um parágrafo especial celebrando **${topGainer.name}** pelo maior aumento (+${Math.floor(topGainer.increase)} HP). Use emojis.
-5. **📊 Análise de Crescimento:**
-   - Compare o HP Atual (${Math.floor(meta.total_hp)}) com o Mês Anterior.
-   - Cite a evolução dos últimos 15 dias (se houver).
-6. **Ranking TOP 10:** Tabela (Posição | Usuário | HP Total).
-7. **Boas-vindas:** Novos delegadores.
-8. **Conclusão e CTA:** Link Discord: ${DISCORD_LINK}
+ESTRUTURA:
+1. Capa: ![Capa](${COVER_IMAGE_URL})
+2. Título Criativo (${now.toLocaleDateString()}).
+3. Destaque do Mês: ${topGainer.name} (+${Math.floor(topGainer.increase)} HP).
+4. Dados Gerais: Total HP ${Math.floor(meta.total_hp || 0)}, Membros ${meta.active_community_members || 0}.
+5. Ranking Top 10 (Tabela).
+6. CTA para Discord: ${DISCORD_LINK}
 
-TOM: Profissional, analítico, mas vibrante.
-IDIOMA: Português Brasileiro.
+TOM: Celebrativo e Profissional. PT-BR.
 `;
 
-        console.log(`🤖 Gerando Relatório v2.20.4 (Manual: ${isForced})...`);
+        console.log(`🤖 Gerando Relatório v2.20.5...`);
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const result = await model.generateContent(prompt);
@@ -169,7 +164,7 @@ IDIOMA: Português Brasileiro.
         console.log(`✅ Relatório salvo: ${filename}`);
 
     } catch (error) {
-        console.error("❌ Falha:", error.message);
+        console.error("❌ Falha Crítica:", error.message);
         process.exit(1);
     }
 }
