@@ -1,7 +1,7 @@
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.23.0 (Stable Feature)
- * Update: Fixes 'current.json' saving, enriches user data (Real-time Activity), and standardizes output.
+ * Version: 2.24.1 (Hotfix)
+ * Update: Restores 'timestamp' for accurate delegation time. Fixes 'Last Curation' logic.
  */
 
 const fetch = require("node-fetch");
@@ -25,7 +25,6 @@ try { if (fs.existsSync(CONFIG_PATH)) listConfig = JSON.parse(fs.readFileSync(CO
 const CURATION_TRAIL_USERS = listConfig.curation_trail || [];
 const FIXED_USERS = listConfig.watchlist || [];
 
-// Garante pasta de dados
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 // --- FUNÇÕES AUXILIARES ---
@@ -62,25 +61,25 @@ function getMonthLabel(dateObj) {
 function getCountryCode(username) {
     if ((listConfig.verificado_br || []).includes(username)) return "BR_CERT";
     if ((listConfig.br || []).includes(username)) return "BR";
-    // Adicionar lógica para PT se necessário no futuro
     return null;
 }
 
-// --- BUSCA PROFUNDA DE VOTOS ---
+// --- BUSCA PROFUNDA DE VOTOS E CURADORIA ---
 async function fetchVoteHistory() {
   const now = new Date();
   let historyMap = {}; 
+  let lastCurationMap = {}; // Mapa: Quem recebeu voto -> Data
   let votes24h = 0;
   
   const time24h = new Date(now.getTime() - (24 * 60 * 60 * 1000));
   const limitDate = new Date(now);
-  limitDate.setDate(limitDate.getDate() - 90);
+  limitDate.setDate(limitDate.getDate() - 90); // Scan de 90 dias
 
   let limit = 50000; 
   let start = -1; 
   let count = 1000;
 
-  console.log(`🔍 Iniciando varredura de votos (90 dias)...`);
+  console.log(`🔍 Iniciando varredura de votos do projeto (90 dias)...`);
 
   while (limit > 0) {
     const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, start, count]);
@@ -95,10 +94,17 @@ async function fetchVoteHistory() {
       if (ts < limitDate) { stopScan = true; break; }
 
       if (op[0] === 'vote' && op[1].voter === VOTER_ACCOUNT) {
+          // Estatísticas
           if (ts >= time24h) votes24h++;
           const label = getMonthLabel(ts);
           if (!historyMap[label]) historyMap[label] = 0;
           historyMap[label]++;
+
+          // Mapeamento de Curadoria (author = quem recebeu)
+          const author = op[1].author;
+          if (!lastCurationMap[author]) {
+              lastCurationMap[author] = ts.toISOString(); // Pega o mais recente
+          }
       }
     }
     if (stopScan) break;
@@ -109,7 +115,7 @@ async function fetchVoteHistory() {
     limit -= 1000;
     await new Promise(r => setTimeout(r, 100));
   }
-  return { votes24h, historyMap };
+  return { votes24h, historyMap, lastCurationMap };
 }
 
 function updateMonthlyStats(metaData) {
@@ -143,101 +149,93 @@ function updateMonthlyStats(metaData) {
 // --- MAIN ---
 async function run() {
     try {
-        console.log("🔄 Coletando dados (v2.23.0 - Full Pipeline Fix)...");
+        console.log("🔄 Coletando dados (v2.24.1)...");
         
         // 1. Delegações (HAF)
         const res = await fetch(HAF_API);
         let delegations = await res.json();
         if (!Array.isArray(delegations)) delegations = [];
 
-        // Adiciona Watchlist (usuários fixos mesmo sem delegar)
         const currentDelegators = new Set(delegations.map(d => d.delegator));
         FIXED_USERS.forEach(u => {
-            if (!currentDelegators.has(u)) delegations.push({ delegator: u, hp_equivalent: 0 });
+            if (!currentDelegators.has(u)) delegations.push({ delegator: u, hp_equivalent: 0, timestamp: new Date().toISOString() });
         });
 
-        // 2. Globais (Para converter VESTS -> HP)
+        // 2. Globais
         const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
         const vestToHp = parseFloat(globals.total_vesting_fund_hive) / parseFloat(globals.total_vesting_shares);
         
-        // 3. Dados Detalhados das Contas (Atividade, HP Próprio, etc.)
-        const allKnownBrs = new Set([...(listConfig.verificado_br || []), ...(listConfig.br || [])]);
-        
-        // Une todas as contas relevantes para fazer uma busca única em lote
-        const accountsToFetch = new Set([
-            ...delegations.map(d => d.delegator), 
-            PROJECT_ACCOUNT, 
-            ...allKnownBrs
-        ]);
+        // 3. Histórico de Votos do Projeto (Scan)
+        const { votes24h, historyMap, lastCurationMap } = await fetchVoteHistory();
 
+        // 4. Dados das Contas (Atividade Geral)
+        const allKnownBrs = new Set([...(listConfig.verificado_br || []), ...(listConfig.br || [])]);
+        const accountsToFetch = new Set([...currentDelegators, PROJECT_ACCOUNT, ...allKnownBrs]);
         const accountsList = Array.from(accountsToFetch);
         let allAccountsData = [];
         
-        // Paginação de 50 em 50 para a API Hive
         for (let i = 0; i < accountsList.length; i += 50) {
             const batch = accountsList.slice(i, i + 50);
             const batchData = await hiveRpc("condenser_api.get_accounts", [batch]);
             if (batchData) allAccountsData = allAccountsData.concat(batchData);
         }
 
-        // 4. Tokens (Hive Engine)
+        // 5. Tokens (Hive Engine)
         const heBalances = await fetchHiveEngineBalances(Array.from(accountsToFetch));
 
-        // --- PROCESSAMENTO E ENRIQUECIMENTO ---
+        // --- PROCESSAMENTO ---
         let projectHp = 0;
         let activeBraziliansCount = 0;
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-        // Mapa auxiliar para busca rápida
         const accMap = new Map(allAccountsData.map(a => [a.name, a]));
         const heMap = new Map(heBalances.map(b => [b.account, parseFloat(b.stake || 0)]));
 
-        // Calcula métricas do Projeto e Brasileiros
+        // Cálculo de Brasileiros Ativos (Apenas Post/Comentário)
         allAccountsData.forEach(acc => {
-            if (acc.name === PROJECT_ACCOUNT) {
-                projectHp = parseFloat(acc.vesting_shares) * vestToHp;
-            }
+            if (acc.name === PROJECT_ACCOUNT) projectHp = parseFloat(acc.vesting_shares) * vestToHp;
             if (allKnownBrs.has(acc.name)) {
                 const lastPost = new Date(acc.last_post + "Z");
                 if (lastPost >= thirtyDaysAgo) activeBraziliansCount++;
             }
         });
 
-        // Monta a Lista Final (Ranking) enriquecida para o Frontend
+        // Montagem Final do Ranking
         const enrichedRanking = delegations.map(d => {
             const acc = accMap.get(d.delegator);
+            
+            // CORREÇÃO: last_vote_date vem do nosso mapa de curadoria
+            const realLastCuration = lastCurationMap[d.delegator] || null;
+
             return {
                 delegator: d.delegator,
                 delegated_hp: parseFloat(d.hp_equivalent || 0),
+                // CORREÇÃO: timestamp mantido da API HAF para cálculo correto de fidelidade
+                timestamp: d.timestamp, 
                 total_account_hp: acc ? (parseFloat(acc.vesting_shares) * vestToHp) : 0,
                 token_balance: heMap.get(d.delegator) || 0,
                 last_user_post: acc ? acc.last_post : null,
-                last_vote_date: acc ? acc.last_vote_time : null,
+                last_vote_date: realLastCuration,
                 next_withdrawal: acc ? acc.next_vesting_withdrawal : null,
                 country_code: getCountryCode(d.delegator),
                 in_curation_trail: CURATION_TRAIL_USERS.includes(d.delegator)
             };
         });
 
-        // Ordena por HP Delegado
         enrichedRanking.sort((a, b) => b.delegated_hp - a.delegated_hp);
 
-        // 5. Histórico de Votos (Deep Scan)
-        const { votes24h, historyMap } = await fetchVoteHistory();
+        // Labels
         const now = new Date();
         const curLabel = getMonthLabel(now);
         const d1 = new Date(); d1.setMonth(d1.getMonth() - 1); const prev1Label = getMonthLabel(d1);
         const d2 = new Date(); d2.setMonth(d2.getMonth() - 2); const prev2Label = getMonthLabel(d2);
 
-        // 6. Membros Únicos
         const uniqueMembers = new Set([...delegations.map(d => d.delegator), ...CURATION_TRAIL_USERS]);
         const totalHpDelegated = enrichedRanking.reduce((acc, curr) => acc + curr.delegated_hp, 0);
         const totalHbr = enrichedRanking.reduce((acc, curr) => acc + curr.token_balance, 0);
 
-        // --- SALVAMENTO (Padronizado) ---
-
-        // A. meta.json
+        // --- SALVAMENTO ---
         const metaData = {
             last_updated: new Date().toISOString(),
             total_delegators: delegations.filter(d => d.hp_equivalent > 0).length,
@@ -255,10 +253,8 @@ async function run() {
         };
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
 
-        // B. monthly_stats.json
         updateMonthlyStats(metaData);
 
-        // C. current.json (CRÍTICO: Agora salva como Objeto enriquecido)
         fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify({
             updated_at: new Date().toISOString(),
             ranking: enrichedRanking
