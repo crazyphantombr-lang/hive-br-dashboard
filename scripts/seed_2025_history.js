@@ -1,7 +1,7 @@
 /**
  * Script: Seed 2025 History (Time Machine)
- * Version: 1.0.0
- * Description: Scans entire 2025 history to populate monthly_stats.json with Votes & New Delegators.
+ * Version: 1.0.2 (Hotfix)
+ * Description: Scans 2025 history. Auto-repairs Git Merge Conflicts in JSON files.
  */
 
 const fetch = require("node-fetch");
@@ -13,8 +13,35 @@ const RPC_NODES = ["https://api.hive.blog", "https://api.deathwing.me", "https:/
 const DATA_DIR = "data";
 const TARGET_FILE = path.join(DATA_DIR, "monthly_stats.json");
 
-// Garante que o diretório existe
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
+
+// --- FUNÇÃO DE AUTO-REPARO DE GIT ---
+function loadAndRepairStats() {
+    if (!fs.existsSync(TARGET_FILE)) return [];
+    
+    let raw = fs.readFileSync(TARGET_FILE, 'utf8');
+    
+    // Verifica se há marcadores de conflito
+    if (raw.includes("<<<<<<<")) {
+        console.warn("⚠️ Detectado conflito de Git no arquivo JSON. Iniciando auto-reparo...");
+        
+        // Estratégia: Manter a versão "Stashed/Incoming" (parte de baixo do conflito)
+        // Remove tudo entre <<<<<<< e =======
+        raw = raw.replace(/<<<<<<<[\s\S]+?=======/g, "");
+        // Remove a linha >>>>>>>
+        raw = raw.replace(/>>>>>>>[\s\S]+?(\r\n|\n|$)/g, "");
+        
+        console.log("🔧 Marcadores removidos. Tentando interpretar JSON limpo...");
+    }
+
+    try {
+        return JSON.parse(raw);
+    } catch (e) {
+        console.error("❌ Falha crítica ao ler JSON mesmo após reparo.", e.message);
+        // Fallback: Retorna array vazio para não travar o script, mas avisa
+        return []; 
+    }
+}
 
 async function hiveRpc(method, params) {
   for (const node of RPC_NODES) {
@@ -33,13 +60,15 @@ async function hiveRpc(method, params) {
 async function run() {
     console.log(`⏳ Iniciando varredura histórica de 2025 para @${ACCOUNT}...`);
     
-    // Estrutura para armazenar dados mês a mês
-    // Chave: "2025-01", "2025-02", etc.
-    const timeline = {};
+    // 1. Carrega dados existentes (com reparo automático)
+    let existingStats = loadAndRepairStats();
+    console.log(`📂 Arquivo carregado: ${existingStats.length} entradas encontradas.`);
 
+    // 2. Coleta dados da Blockchain
+    const timeline = {};
     const limitDate = new Date("2025-01-01T00:00:00Z");
     let start = -1;
-    let count = 1000; // Máximo por lote
+    let count = 1000; 
     let active = true;
     let totalScanned = 0;
 
@@ -48,7 +77,6 @@ async function run() {
         
         if (!history || history.length === 0) break;
 
-        // Processa de trás para frente (mais recente -> mais antigo)
         for (let i = history.length - 1; i >= 0; i--) {
             const tx = history[i];
             const op = tx[1].op;
@@ -59,32 +87,26 @@ async function run() {
                 break;
             }
 
-            // Chave do Mês (Ex: 2025-12)
             const monthKey = `${ts.getFullYear()}-${String(ts.getMonth() + 1).padStart(2, '0')}`;
             if (!timeline[monthKey]) {
-                timeline[monthKey] = { votes: 0, new_delegators: 0, delegator_names: new Set() };
+                timeline[monthKey] = { votes: 0, new_delegators: 0 };
             }
 
-            // 1. Contagem de Votos
             if (op[0] === 'vote' && op[1].voter === ACCOUNT) {
                 timeline[monthKey].votes++;
             }
 
-            // 2. Novas Delegações (delegate_vesting_shares)
-            // Lógica: Se alguém delegou para nós e a quantidade > 0
             if (op[0] === 'delegate_vesting_shares' && op[1].delegatee === ACCOUNT) {
                 const amount = parseFloat(op[1].vesting_shares);
                 if (amount > 0) {
                     timeline[monthKey].new_delegators++;
-                    timeline[monthKey].delegator_names.add(op[1].delegator);
                 }
             }
         }
 
         totalScanned += history.length;
-        if (totalScanned % 5000 === 0) process.stdout.write("."); // Barra de progresso visual
+        if (totalScanned % 5000 === 0) console.log(`... ${totalScanned} txs analisadas`);
 
-        // Paginação
         const firstTxId = history[0][0];
         if (firstTxId === 0) break;
         start = firstTxId - 1;
@@ -92,42 +114,33 @@ async function run() {
     }
 
     console.log("\n✅ Varredura concluída!");
-    console.log("📊 Resultados encontrados:");
 
-    // Carregar arquivo existente para não perder dados atuais
-    let existingStats = [];
-    if (fs.existsSync(TARGET_FILE)) {
-        existingStats = JSON.parse(fs.readFileSync(TARGET_FILE));
-    }
-
-    // Mesclar dados
+    // 3. Mesclar dados novos com os existentes
     Object.keys(timeline).sort().forEach(key => {
         const data = timeline[key];
-        const statDate = `${key}-01`; // Formato YYYY-MM-01
+        const statDate = `${key}-01`; // Ex: 2025-12-01
 
-        console.log(`   📅 ${key}: ${data.votes} Votos | ${data.new_delegators} Movimentações de Delegação`);
+        console.log(`   📅 ${key}: ${data.votes} Votos | ${data.new_delegators} Novas Delegações`);
 
         const index = existingStats.findIndex(e => e.date === statDate);
         if (index >= 0) {
-            // Atualiza apenas os campos que recalculamos
+            // Atualiza registros existentes
             existingStats[index].monthly_votes = data.votes;
-            // Nota: Não sobrescrevemos Total HP pois não temos como calcular retroativo fácil
         } else {
-            // Cria nova entrada (HP ficará 0 pois não sabemos, mas Votos estarão lá)
+            // Cria novos registros
             existingStats.push({
                 date: statDate,
-                total_power: 0, // Desconhecido
+                total_power: 0, 
                 monthly_votes: data.votes,
-                active_members: 0 // Desconhecido
+                active_members: 0 
             });
         }
     });
 
-    // Ordenar e Salvar
+    // 4. Salvar arquivo limpo e atualizado
     existingStats.sort((a, b) => new Date(a.date) - new Date(b.date));
     fs.writeFileSync(TARGET_FILE, JSON.stringify(existingStats, null, 2));
-    
-    console.log(`💾 Arquivo ${TARGET_FILE} atualizado com sucesso.`);
+    console.log(`💾 Histórico reparado e salvo em ${TARGET_FILE}`);
 }
 
 run();
