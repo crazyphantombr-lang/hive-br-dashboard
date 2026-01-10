@@ -8,8 +8,8 @@
     "report": "node scripts/generate_report.js"
   },
   "dependencies": {
-    "node-fetch": "^2.6.7",
-    "@google/generative-ai": "^0.21.0"
+    "@google/generative-ai": "^0.21.0",
+    "node-fetch": "^2.7.0"
   },
   "author": "Hive BR",
   "license": "MIT"

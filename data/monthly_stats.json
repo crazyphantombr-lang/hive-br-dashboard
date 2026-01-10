@@ -10,8 +10,13 @@
   },
   {
     "date": "2026-01-01",
+<<<<<<< Updated upstream
     "total_power": 55668.01268509693,
     "own_hp": 14277.42568509694,
+=======
+    "total_power": 55668.01693236952,
+    "own_hp": 14277.425932369528,
+>>>>>>> Stashed changes
     "delegators_count": 65,
     "monthly_votes": 117,
     "trail_count": 85,
