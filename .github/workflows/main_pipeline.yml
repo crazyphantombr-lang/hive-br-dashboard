@@ -3,7 +3,7 @@ name: Main Data Pipeline
 on:
   schedule:
     - cron: '0 */6 * * *'  # Roda a cada 6 horas
-  workflow_dispatch:        # Permite rodar manualmente pelo botão
+  workflow_dispatch:        # Permite execução manual
 
 permissions:
   contents: write
@@ -23,35 +23,33 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # 1. Coleta e Enriquece Dados (Gera current.json, meta.json, monthly_stats.json)
+      # 1. Coleta, Enriquece e Salva Dados (Gera current.json, meta.json, monthly_stats.json)
       - name: Fetch Data
         run: node scripts/fetch_delegations.js
 
-      # 2. Consolida Histórico de HP (Atualiza ranking_history.json)
+      # 2. Consolida Histórico Diário (Atualiza ranking_history.json)
       - name: Merge History
         run: node scripts/merge_history.js
 
-      # 3. Gera Relatório com IA (Se for dia de fechamento)
+      # 3. Gera Relatório Mensal (Se for dia de fechamento ou manual)
       - name: Generate AI Report
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node scripts/generate_report.js
 
-      # 4. Commit Atômico (Tudo ou Nada)
+      # 4. Commit Único e Atômico (Evita conflitos de Git)
       - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Evita conflitos puxando antes
           git pull --rebase --autostash origin main
           
-          # Adiciona todos os arquivos de dados e relatórios
           git add data/*.json config/lists.json reports/*.md
           
           if git diff --staged --quiet; then
             echo "Nenhuma mudança detectada nos dados."
           else
-            git commit -m "Auto: Update Data Pipeline (v2.23.0)"
+            git commit -m "Auto: Update Pipeline (Data + History + Report)"
             git push
           fi
