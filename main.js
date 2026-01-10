@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.17.0
- * Update: Tooltip text updates + Curation Trail Card
+ * Version: 2.21.0
+ * Update: Supports Named Vote History (e.g., "Dezembro 2025") and dynamic labels.
  */
 
 ;(function() { 
@@ -12,7 +12,8 @@
   var dashboardSort = { column: 'delegated_hp', direction: 'desc' };
 
   async function loadDashboard() {
-    const BASE_URL = "https://crazyphantombr-lang.github.io/hive-br-dashboard/data";
+    // Ajuste a URL base conforme necessário para seu ambiente (local ou prod)
+    const BASE_URL = "data"; 
     
     try {
       const [resCurrent, resHistory, resMeta] = await Promise.all([
@@ -23,7 +24,16 @@
 
       if (!resCurrent.ok) throw new Error("Erro ao carregar dados.");
 
-      dashboardData = await resCurrent.json();
+      // Tratamento para current.json (Array vs Objeto)
+      const rawCurrent = await resCurrent.json();
+      if (Array.isArray(rawCurrent)) {
+          dashboardData = rawCurrent;
+      } else if (rawCurrent.ranking) {
+          dashboardData = rawCurrent.ranking;
+      } else {
+          dashboardData = [];
+      }
+
       dashboardHistory = resHistory.ok ? await resHistory.json() : {};
       const metaData = resMeta.ok ? await resMeta.json() : null;
 
@@ -35,15 +45,16 @@
     } catch (err) {
       console.error("Erro no dashboard:", err);
       const el = document.getElementById("last-updated");
-      if (el) el.innerText = "Aguardando migração de DNS ou dados...";
+      if (el) el.innerText = "Carregando dados offline ou aguardando atualização...";
     }
   }
 
-  function getMonthName(subtractMonths) {
+  // Função auxiliar para gerar nomes de meses (Ex: "Janeiro 2026")
+  function getMonthLabel(subtractMonths) {
       const d = new Date();
       d.setMonth(d.getMonth() - subtractMonths);
-      const monthName = d.toLocaleString('pt-BR', { month: 'long' });
-      return monthName.charAt(0).toUpperCase() + monthName.slice(1);
+      const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+      return `${months[d.getMonth()]} ${d.getFullYear()}`;
   }
 
   function updateStats(delegations, meta, historyData) {
@@ -54,7 +65,7 @@
     }
 
     const projectHp = meta && meta.project_account_hp ? meta.project_account_hp : 0;
-    const delegatedHp = delegations.reduce((acc, curr) => acc + curr.delegated_hp, 0);
+    const delegatedHp = delegations.reduce((acc, curr) => acc + (curr.delegated_hp || curr.hp || 0), 0);
     const communityPower = projectHp + delegatedHp;
 
     document.getElementById("stat-community-power").innerText = 
@@ -66,39 +77,59 @@
     document.getElementById("stat-delegated-hp").innerText = 
       delegatedHp.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + " HP";
     
-    const activeDelegators = delegations.filter(d => d.delegated_hp > 0).length;
+    const activeDelegators = delegations.filter(d => (d.delegated_hp || d.hp) > 0).length;
     document.getElementById("stat-count").innerText = activeDelegators;
 
+    // --- LÓGICA DE VOTOS NOMINAIS (V2.21.0) ---
     const v24h = meta && meta.votes_24h ? meta.votes_24h : 0;
-    const vCurr = meta && meta.votes_month_current ? meta.votes_month_current : 0;
-    const vM1   = meta && meta.votes_month_prev1 ? meta.votes_month_prev1 : 0;
-    const vM2   = meta && meta.votes_month_prev2 ? meta.votes_month_prev2 : 0;
-    
-    // NOVO DADO: Trilha
     const trailCount = meta && meta.curation_trail_count ? meta.curation_trail_count : 0;
 
-    document.getElementById("lbl-votes-current").innerText = `VOTOS DISTRIBUÍDOS EM ${getMonthName(0).toUpperCase()}`;
-    document.getElementById("lbl-votes-m1").innerText = `Votos em ${getMonthName(1)}`;
-    document.getElementById("lbl-votes-m2").innerText = `Votos em ${getMonthName(2)}`;
+    // Gera os rótulos dinâmicos
+    const labelCurr = getMonthLabel(0); // Ex: "Janeiro 2026"
+    const labelM1   = getMonthLabel(1); // Ex: "Dezembro 2025"
+    const labelM2   = getMonthLabel(2); // Ex: "Novembro 2025"
 
-    document.getElementById("stat-votes-current").innerText = vCurr;
+    // Busca valores no histórico nomeado (prioridade) ou usa fallback
+    let valCurr = 0, valM1 = 0, valM2 = 0;
+
+    if (meta && meta.vote_history_named) {
+        valCurr = meta.vote_history_named[labelCurr] || 0;
+        valM1   = meta.vote_history_named[labelM1]   || 0;
+        valM2   = meta.vote_history_named[labelM2]   || 0;
+    } else if (meta) {
+        // Fallback para campos legados
+        valCurr = meta.votes_month_current || 0;
+        valM1   = meta.votes_month_prev1 || 0;
+        valM2   = meta.votes_month_prev2 || 0;
+    }
+
+    // Atualiza a Interface
     document.getElementById("stat-votes-24h").innerText = v24h;
-    document.getElementById("stat-votes-m1").innerText = vM1;
-    document.getElementById("stat-votes-m2").innerText = vM2;
-    
-    // ATUALIZA CARD DA TRILHA
     document.getElementById("stat-trail-count").innerText = trailCount;
 
+    // Atualiza Títulos e Valores dos Cards de Votos
+    document.getElementById("lbl-votes-current").innerText = labelCurr.toUpperCase(); // JANEIRO 2026
+    document.getElementById("stat-votes-current").innerText = valCurr;
+
+    document.getElementById("lbl-votes-m1").innerText = labelM1; // Dezembro 2025
+    document.getElementById("stat-votes-m1").innerText = valM1;
+
+    document.getElementById("lbl-votes-m2").innerText = labelM2; // Novembro 2025
+    document.getElementById("stat-votes-m2").innerText = valM2;
+
+
+    // Lógica do Destaque (Growth)
     let bestGrower = { name: "—", val: 0 };
     delegations.forEach(user => {
-      const hist = historyData[user.delegator];
+      const username = user.delegator || user.username;
+      const hist = historyData[username];
       if (hist) {
         const dates = Object.keys(hist).sort();
         const firstDate = dates[0]; 
         const lastDate = dates[dates.length - 1];
         if (firstDate && lastDate && firstDate !== lastDate) {
           const growth = hist[lastDate] - hist[firstDate];
-          if (growth > bestGrower.val) bestGrower = { name: user.delegator, val: growth };
+          if (growth > bestGrower.val) bestGrower = { name: username, val: growth };
         }
       }
     });
@@ -108,7 +139,14 @@
   }
 
   function calculateLoyalty(username, apiTimestamp, historyData) {
+    // Se não tiver timestamp da API, tenta inferir pelo histórico
+    if (!apiTimestamp && historyData[username]) {
+        const dates = Object.keys(historyData[username]).sort();
+        if (dates.length > 0) apiTimestamp = dates[0];
+    }
+
     if (!apiTimestamp) return { days: 0, text: "—" };
+    
     const lastChange = new Date(apiTimestamp);
     const now = new Date();
     const diffTime = Math.abs(now - lastChange);
@@ -130,18 +168,21 @@
     tbody.innerHTML = "";
 
     dashboardData.forEach((user, index) => {
+      const username = user.delegator || user.username;
+      const hp = user.delegated_hp || user.hp || 0;
+      
       const rank = index + 1;
       const tr = document.createElement("tr");
       tr.classList.add("delegator-row");
-      tr.dataset.name = user.delegator.toLowerCase();
+      tr.dataset.name = username.toLowerCase();
 
-      const canvasId = `chart-${user.delegator}`;
-      const loyalty = calculateLoyalty(user.delegator, user.timestamp, dashboardHistory);
+      const canvasId = `chart-${username}`;
+      const loyalty = calculateLoyalty(username, user.timestamp, dashboardHistory);
       let durationHtml = loyalty.text;
       
       if (loyalty.days > 365) durationHtml += ` <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>`;
 
-      const trueRank = getTrueRank(user.delegator);
+      const trueRank = getTrueRank(username);
       const ownHp = user.total_account_hp || 0;
       const hbrStake = user.token_balance || 0;
       
@@ -154,19 +195,15 @@
           pdHtml = `<span style="color:#ff4d4d; font-size:0.85em;">📉 ${dateObj.toLocaleDateString("pt-BR")}</span>`;
       }
 
-      // --- ATUALIZAÇÃO DE LEGENDAS (V2.16.0) ---
       let flagHtml = "";
       if (user.country_code === "BR_CERT") {
-        flagHtml = `<span title="Brasileiro reconhecido na comunidade" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>`;
+        flagHtml = `<span title="Brasileiro Verificado" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>`;
       } 
       else if (user.country_code === "BR") {
-        flagHtml = `<span class="flag-bw" title="Pendente de apresentação nos chats da comunidade" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>`;
+        flagHtml = `<span class="flag-bw" title="Pendente" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>`;
       } 
       else if (user.country_code === "PT_CERT") {
-        flagHtml = `<span title="Português reconhecido na comunidade" style="margin-left:5px; font-size:1.1em; cursor:help;">🇵🇹</span>`;
-      } 
-      else if (user.country_code === "PT") {
-        flagHtml = `<span class="flag-bw" title="Pendente de apresentação nos chats da comunidade" style="margin-left:5px; font-size:1.1em; cursor:help;">🇵🇹</span>`;
+        flagHtml = `<span title="Português Verificado" style="margin-left:5px; font-size:1.1em; cursor:help;">🇵🇹</span>`;
       }
 
       const delegationBonusHtml = getDelegationBonus(trueRank);
@@ -180,13 +217,13 @@
       tr.innerHTML = `
         <td class="sticky-col">
           <span style="color:#666; margin-right:8px; font-weight:bold;">#${trueRank}</span>
-          <img src="https://images.hive.blog/u/${user.delegator}/avatar/small" 
+          <img src="https://images.hive.blog/u/${username}/avatar/small" 
                style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:5px;">
-          <a href="https://peakd.com/@${user.delegator}" target="_blank">@${user.delegator}</a>
+          <a href="https://peakd.com/@${username}" target="_blank">@${username}</a>
           ${flagHtml}
         </td>
         <td style="font-weight:bold; font-family:monospace; font-size:1.1em; color:#4dff91;">
-            ${user.delegated_hp.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}
+            ${hp.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}
         </td>
         <td style="font-size:0.9em;">${durationHtml}</td>
         <td style="${ownHpStyle}">${ownHp.toLocaleString("pt-BR", { maximumFractionDigits: 0 })} HP</td>
@@ -205,10 +242,10 @@
       `;
       tbody.appendChild(tr);
 
-      let userHistory = dashboardHistory[user.delegator] || {};
+      let userHistory = dashboardHistory[username] || {};
       if (Object.keys(userHistory).length === 0) {
          const today = new Date().toISOString().slice(0, 10);
-         userHistory = { [today]: user.delegated_hp };
+         userHistory = { [today]: hp };
       }
       renderSparkline(canvasId, userHistory);
     });
@@ -233,7 +270,7 @@
       
       const daysText = daysAgo === 0 ? "Hoje" : daysAgo === 1 ? "Ontem" : `${daysAgo}d atrás`;
       
-      return `<div style="line-height:1.2;"><span style="color:${color}; font-weight:bold;">${icon} ${daysText}</span><br><span style="font-size:0.8em; color:#888;">(${count30d} votos/mês)</span></div>`;
+      return `<div style="line-height:1.2;"><span style="color:${color}; font-weight:bold;">${icon} ${daysText}</span><br><span style="font-size:0.8em; color:#888;">(${count30d || 0} votos/mês)</span></div>`;
     }
     return `<span style="color:#666; font-size:0.8em; opacity:0.5; font-weight:bold;">SEM DADOS</span>`;
   }
@@ -262,18 +299,24 @@
     updateSortIcons(column, dashboardSort.direction);
 
     dashboardData.sort((a, b) => {
+      // Normalização de chaves (delegator vs username / delegated_hp vs hp)
       let valA = a[column];
       let valB = b[column];
 
+      if (column === 'delegator') { valA = a.delegator || a.username; valB = b.delegator || b.username; }
+      if (column === 'delegated_hp') { valA = a.delegated_hp || a.hp; valB = b.delegated_hp || b.hp; }
+
       if (column === 'timestamp') {
-          const loyaltyA = calculateLoyalty(a.delegator, a.timestamp, dashboardHistory).days;
-          const loyaltyB = calculateLoyalty(b.delegator, b.timestamp, dashboardHistory).days;
+          const nameA = a.delegator || a.username;
+          const nameB = b.delegator || b.username;
+          const loyaltyA = calculateLoyalty(nameA, a.timestamp, dashboardHistory).days;
+          const loyaltyB = calculateLoyalty(nameB, b.timestamp, dashboardHistory).days;
           valA = loyaltyA;
           valB = loyaltyB;
       } 
       else if (column === 'last_user_post' || column === 'last_vote_date' || column === 'next_withdrawal') {
-          valA = a[column] ? new Date(a[column]).getTime() : 0;
-          valB = b[column] ? new Date(b[column]).getTime() : 0;
+          valA = valA ? new Date(valA).getTime() : 0;
+          valB = valB ? new Date(valB).getTime() : 0;
       }
       else if (column === 'delegator') {
           valA = valA.toLowerCase();
@@ -307,7 +350,8 @@
     const DAYS_BACK = 7; 
 
     delegations.forEach(user => {
-      const hist = historyData[user.delegator];
+      const username = user.delegator || user.username;
+      const hist = historyData[username];
       if (hist) {
         const dates = Object.keys(hist).sort();
         if (dates.length >= 2) {
@@ -321,7 +365,7 @@
           const diff = todayHP - pastHP;
 
           if (Math.abs(diff) >= NOISE_THRESHOLD) {
-            changes.push({ name: user.delegator, old: pastHP, new: todayHP, diff: diff });
+            changes.push({ name: username, old: pastHP, new: todayHP, diff: diff });
           }
         }
       }
@@ -355,8 +399,8 @@
   }
 
   function getTrueRank(username) {
-      const sortedByHp = [...dashboardData].sort((a, b) => b.delegated_hp - a.delegated_hp);
-      return sortedByHp.findIndex(u => u.delegator === username) + 1;
+      const sortedByHp = [...dashboardData].sort((a, b) => (b.delegated_hp || b.hp) - (a.delegated_hp || a.hp));
+      return sortedByHp.findIndex(u => (u.delegator || u.username) === username) + 1;
   }
 
   function setupSearch() {
