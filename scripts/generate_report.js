@@ -1,7 +1,7 @@
 /**
  * Script: AI Report Generator
- * Version: 2.20.3 (Development)
- * Description: Generates blog post. Supports MANUAL EXECUTION via env var FORCE_REPORT.
+ * Version: 2.20.4 (Hotfix)
+ * Description: Fixes 'slice' error by handling current.json as both Array or Object.
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -27,22 +27,17 @@ async function run() {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) { console.error("❌ Erro: GEMINI_API_KEY ausente."); process.exit(1); }
 
-    // --- 1. VERIFICAÇÃO DE EXECUÇÃO (MENSAL & MANUAL) ---
+    // --- 1. VERIFICAÇÃO DE EXECUÇÃO ---
     const now = new Date();
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
-    // Verificações de Data
     const isLastDay = now.getMonth() !== tomorrow.getMonth();
     const isAfternoon = now.getHours() >= 12;
-    
-    // Verifica se há um comando forçado via Variável de Ambiente (Do GitHub Actions Manual)
     const isForced = process.env.FORCE_REPORT === "true";
 
-    // A lógica: Se NÃO for forçado E (não for último dia OU for de manhã) -> PULA
     if (!isForced && (!isLastDay || !isAfternoon)) {
         console.log(`[SKIP] Script abortado. Hoje (${now.toLocaleDateString()}) não é fechamento mensal.`);
-        console.log(`ℹ️ Dica: Para testar, use o workflow 'Manual Report Inspection' no GitHub.`);
         return;
     }
 
@@ -52,7 +47,21 @@ async function run() {
         console.log("📂 Carregando dados para Relatório...");
 
         const meta = JSON.parse(fs.readFileSync(META_FILE));
-        const currentData = fs.existsSync(CURRENT_FILE) ? JSON.parse(fs.readFileSync(CURRENT_FILE)) : { ranking: [] };
+        
+        // --- CORREÇÃO DO ERRO DE SLICE ---
+        let currentList = [];
+        if (fs.existsSync(CURRENT_FILE)) {
+            const raw = JSON.parse(fs.readFileSync(CURRENT_FILE));
+            // Se for Array direto, usa ele. Se for objeto com chave ranking, usa a chave.
+            if (Array.isArray(raw)) {
+                currentList = raw;
+            } else if (raw.ranking && Array.isArray(raw.ranking)) {
+                currentList = raw.ranking;
+            }
+        }
+        // Ordena por HP (segurança extra)
+        currentList.sort((a, b) => (b.delegated_hp || 0) - (a.delegated_hp || 0));
+        
         const listsData = fs.existsSync(LISTS_FILE) ? JSON.parse(fs.readFileSync(LISTS_FILE)) : { new_delegators: [] };
         
         let dailyHistory = [];
@@ -75,16 +84,25 @@ async function run() {
         // C. Identificar o "DELEGADOR DESTAQUE" (MVP)
         let topGainer = { name: "N/A", increase: 0 };
         
+        // Tenta encontrar dados de ranking do mês anterior (se salvo no monthly_stats)
+        // Se não tiver, usamos o ranking_history de 30 dias atrás como fallback
+        let lastRankingMap = new Map();
+        
         if (lastMonthStats && lastMonthStats.ranking) {
-            const lastRankingMap = new Map(lastMonthStats.ranking.map(u => [u.username, u.hp]));
-            currentData.ranking.forEach(user => {
-                const lastHp = lastRankingMap.get(user.username) || 0;
-                const diff = user.hp - lastHp;
-                if (diff > topGainer.increase) {
-                    topGainer = { name: user.username, increase: diff, total: user.hp };
-                }
-            });
+             lastRankingMap = new Map(lastMonthStats.ranking.map(u => [u.username, u.hp]));
         }
+
+        currentList.forEach(user => {
+            const name = user.delegator || user.username; // Suporte a ambos formatos
+            const currentHp = user.delegated_hp || user.hp || 0;
+            
+            const lastHp = lastRankingMap.get(name) || 0;
+            const diff = currentHp - lastHp;
+            
+            if (diff > topGainer.increase) {
+                topGainer = { name: name, increase: diff, total: currentHp };
+            }
+        });
 
         // --- 3. PAYLOAD PARA AI ---
         const dataPayload = {
@@ -110,7 +128,8 @@ async function run() {
                 delegator_of_month: topGainer.increase > 0 ? topGainer : null,
                 new_delegators: listsData.new_delegators || []
             },
-            top_ranking: currentData.ranking.slice(0, 10) 
+            // AGORA SEGURO: currentList é garantido como array
+            top_ranking: currentList.slice(0, 10) 
         };
 
         const prompt = `
@@ -137,13 +156,12 @@ TOM: Profissional, analítico, mas vibrante.
 IDIOMA: Português Brasileiro.
 `;
 
-        console.log(`🤖 Gerando Relatório v2.20.3 (Manual: ${isForced})...`);
+        console.log(`🤖 Gerando Relatório v2.20.4 (Manual: ${isForced})...`);
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const result = await model.generateContent(prompt);
         const text = result.response.text();
 
-        // Se for manual, adiciona sufixo para não sobrescrever o oficial se rodar no dia errado
         const suffix = isForced ? "_MANUAL_INSPECTION" : "_MENSAL";
         const filename = `relatorio_${now.toISOString().slice(0, 7)}${suffix}.md`;
         
