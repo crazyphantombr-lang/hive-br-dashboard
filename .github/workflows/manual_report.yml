@@ -1,0 +1,66 @@
+name: Manual Report Inspection
+
+on:
+  workflow_dispatch:
+    inputs:
+      save_to_repo:
+        description: 'Salvar arquivo no repositório?'
+        required: true
+        default: false
+        type: boolean
+      reason:
+        description: 'Motivo da execução (Log)'
+        required: false
+        default: 'Inspeção Manual'
+
+permissions:
+  contents: write
+
+jobs:
+  generate-inspect:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Force Run Report Generation
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FORCE_REPORT: "true"  # <--- Aqui está o segredo que ativa o modo manual
+        run: node scripts/generate_report.js
+
+      - name: List Generated Files (Debug)
+        run: ls -la reports/
+
+      # Opção A: Disponibiliza para Download (Artifact) - Ideal para inspecionar sem sujar o git
+      - name: Upload Report for Inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-manual
+          path: reports/*.md
+          retention-days: 1
+
+      # Opção B: Comita no repositório (apenas se a checkbox for marcada)
+      - name: Commit and Push (If requested)
+        if: ${{ inputs.save_to_repo == true }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add reports/*.md
+          
+          if git diff --staged --quiet; then
+            echo "Nenhum relatório novo gerado."
+          else
+            git commit -m "Manual: Relatório gerado para inspeção [${{ inputs.reason }}]"
+            git push
+          fi
