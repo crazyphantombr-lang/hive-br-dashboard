@@ -1,0 +1,56 @@
+name: Main Data Pipeline
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # A cada 6 horas
+  workflow_dispatch:        # Botão manual
+
+permissions:
+  contents: write
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      # 1. Coleta os dados da API (Gera current.json, meta.json, monthly_stats.json)
+      - name: Fetch Data
+        run: node scripts/fetch_delegations.js
+
+      # 2. Consolida o histórico de HP (Atualiza ranking_history.json)
+      - name: Merge History
+        run: node scripts/merge_history.js
+
+      # 3. Gera o Relatório com IA (Lê os dados acima e gera .md)
+      - name: Generate AI Report
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/generate_report.js
+
+      # 4. Commit Único e Atômico
+      - name: Commit and Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Tenta puxar mudanças remotas antes para evitar conflito
+          git pull --rebase --autostash origin main
+          
+          git add data/* config/lists.json reports/*.md
+          
+          if git diff --staged --quiet; then
+            echo "Nenhuma mudança nos dados."
+          else
+            git commit -m "Auto: Update Pipeline (Data + History + Report)"
+            git push
+          fi
