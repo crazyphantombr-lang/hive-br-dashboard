@@ -1,5 +1,71 @@
 [
   {
+    "date": "2025-01-01",
+    "total_power": 0,
+    "monthly_votes": 648,
+    "active_members": 0
+  },
+  {
+    "date": "2025-02-01",
+    "total_power": 0,
+    "monthly_votes": 614,
+    "active_members": 0
+  },
+  {
+    "date": "2025-03-01",
+    "total_power": 0,
+    "monthly_votes": 577,
+    "active_members": 0
+  },
+  {
+    "date": "2025-04-01",
+    "total_power": 0,
+    "monthly_votes": 543,
+    "active_members": 0
+  },
+  {
+    "date": "2025-05-01",
+    "total_power": 0,
+    "monthly_votes": 565,
+    "active_members": 0
+  },
+  {
+    "date": "2025-06-01",
+    "total_power": 0,
+    "monthly_votes": 575,
+    "active_members": 0
+  },
+  {
+    "date": "2025-07-01",
+    "total_power": 0,
+    "monthly_votes": 464,
+    "active_members": 0
+  },
+  {
+    "date": "2025-08-01",
+    "total_power": 0,
+    "monthly_votes": 452,
+    "active_members": 0
+  },
+  {
+    "date": "2025-09-01",
+    "total_power": 0,
+    "monthly_votes": 442,
+    "active_members": 0
+  },
+  {
+    "date": "2025-10-01",
+    "total_power": 0,
+    "monthly_votes": 438,
+    "active_members": 0
+  },
+  {
+    "date": "2025-11-01",
+    "total_power": 0,
+    "monthly_votes": 405,
+    "active_members": 0
+  },
+  {
     "date": "2025-12-01",
     "total_power": 55490,
     "own_hp": 14236,
@@ -10,13 +76,8 @@
   },
   {
     "date": "2026-01-01",
-<<<<<<< Updated upstream
-    "total_power": 55668.01268509693,
-    "own_hp": 14277.42568509694,
-=======
     "total_power": 55668.01693236952,
     "own_hp": 14277.425932369528,
->>>>>>> Stashed changes
     "delegators_count": 65,
     "monthly_votes": 117,
     "trail_count": 85,
