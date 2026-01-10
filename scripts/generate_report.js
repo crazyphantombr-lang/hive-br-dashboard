@@ -1,7 +1,7 @@
 /**
  * Script: AI Report Generator
- * Version: 2.21.1 (Prompt Tuning)
- * Description: Updates AI prompt with validated definitions and strict formatting rules for Ranking/MVP.
+ * Version: 2.21.2 (Prompt Polish)
+ * Description: Improves CTA section instruction to be more engaging and formatted.
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -47,12 +47,10 @@ async function run() {
 
     try {
         console.log("📂 Carregando dados...");
-        // Carrega metadados com fallback
         const meta = readJsonSafe(META_FILE, { 
             active_community_members: 0, total_hp: 0, votes_month_current: 0, curation_trail_count: 0, active_brazilians: 0 
         });
         
-        // Carrega ranking atual (suporta Array ou Objeto)
         const rawCurrent = readJsonSafe(CURRENT_FILE, []);
         let currentList = [];
         if (Array.isArray(rawCurrent)) currentList = rawCurrent;
@@ -61,13 +59,10 @@ async function run() {
         currentList.sort((a, b) => (b.delegated_hp || 0) - (a.delegated_hp || 0));
 
         const listsData = readJsonSafe(LISTS_FILE, { new_delegators: [] });
-        const dailyHistory = readJsonSafe(HISTORY_FILE, []);
         const monthlyHistory = readJsonSafe(MONTHLY_FILE, []);
-
-        // Comparativos
         const lastMonthStats = (Array.isArray(monthlyHistory) && monthlyHistory.length >= 2) ? monthlyHistory[monthlyHistory.length - 2] : null;
 
-        // Cálculo do MVP (Top Gainer)
+        // Cálculo do MVP
         let topGainer = { name: "N/A", increase: 0 };
         let lastRankingMap = new Map();
         if (lastMonthStats && lastMonthStats.ranking) lastRankingMap = new Map(lastMonthStats.ranking.map(u => [u.username, u.hp]));
@@ -80,7 +75,6 @@ async function run() {
             if (diff > topGainer.increase) topGainer = { name: name, increase: diff, total: currentHp };
         });
 
-        // Payload para a IA
         const dataPayload = {
             date: now.toLocaleDateString("pt-BR"),
             stats: {
@@ -95,12 +89,10 @@ async function run() {
             },
             highlight: {
                 delegator_of_month: topGainer.increase > 0 ? topGainer : null,
-                new_delegators: listsData.new_delegators || []
             },
             top_ranking: currentList.slice(0, 10) 
         };
 
-        // --- PROMPT REFINADO ---
         const prompt = `
 ATUE COMO: O Gerente de Comunidade da Hive BR.
 OBJETIVO: Escrever o "Relatório Mensal" (Markdown).
@@ -109,23 +101,24 @@ DADOS:
 ${JSON.stringify(dataPayload)}
 
 ### DEFINIÇÕES OFICIAIS (Glossário Obrigatório)
-Use estas definições exatas para explicar os números à comunidade na seção de "Saúde da Comunidade":
-1. **Membros Ativos do Projeto (${dataPayload.stats.active_members}):** "Total de contas únicas que participam diretamente da economia do projeto. Inclui todos os delegadores de Hive Power e todos os seguidores da trilha de curadoria (Curation Trail), removendo duplicatas."
-2. **Brasileiros Ativos na Hive (${dataPayload.stats.active_brazilians}):** "Contagem de usuários identificados como brasileiros em nossa base de dados (verificados ou pendentes) que registraram atividade de escrita (postagem ou comentário) nos últimos 30 dias. Esta métrica mede a retenção e a voz ativa da comunidade brasileira na rede."
+1. **Membros Ativos do Projeto:** "Total de contas únicas que participam diretamente da economia do projeto. Inclui todos os delegadores de Hive Power e todos os seguidores da trilha de curadoria (Curation Trail), removendo duplicatas."
+2. **Brasileiros Ativos na Hive:** "Contagem de usuários identificados como brasileiros em nossa base de dados (verificados ou pendentes) que registraram atividade de escrita (postagem ou comentário) nos últimos 30 dias. Esta métrica mede a retenção e a voz ativa da comunidade brasileira na rede."
 
 ESTRUTURA OBRIGATÓRIA DO POST:
 1. Capa: ![Capa](${COVER_IMAGE_URL})
 2. Título Criativo (${now.toLocaleDateString()}).
-3. 🏆 **DELEGADOR DESTAQUE DO MÊS:** Escreva um parágrafo dedicado ao usuário **${topGainer.name}**, celebrando seu apoio. Você DEVE mencionar explicitamente o incremento de **+${Math.floor(topGainer.increase)} HP** realizado neste mês.
+3. 🏆 **DELEGADOR DESTAQUE DO MÊS:** Escreva um parágrafo dedicado ao usuário **${topGainer.name}**, celebrando seu apoio. Mencione explicitamente o incremento de **+${Math.floor(topGainer.increase)} HP** realizado neste mês.
 4. **Saúde da Comunidade:** Apresente os números de "Membros Ativos" vs "Brasileiros Ativos" usando as definições oficiais acima.
 5. Dados Gerais: Total HP ${Math.floor(meta.total_hp || 0)}.
 6. **Ranking Delegadores TOP 10:** Crie uma tabela Markdown com estritamente estas 3 colunas: "Posição", "Usuário" e "HP Delegado".
-7. CTA para Discord: ${DISCORD_LINK}
+7. 📞 **Canais de Comunicação (CTA):** Crie uma seção de encerramento vibrante e bem formatada. Convide os usuários para entrar no nosso Discord usando uma lista ou destaque visual.
+   - Link Obrigatório: [**Junte-se ao Discord Hive BR**](${DISCORD_LINK})
+   - Encerre com uma mensagem motivadora sobre a construção da comunidade.
 
 TOM: Celebrativo, Profissional e Vibrante. PT-BR.
 `;
 
-        console.log(`🤖 Gerando Relatório v2.21.1...`);
+        console.log(`🤖 Gerando Relatório v2.21.2...`);
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const result = await model.generateContent(prompt);
