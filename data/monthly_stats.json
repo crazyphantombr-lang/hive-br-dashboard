@@ -76,12 +76,13 @@
   },
   {
     "date": "2026-01-01",
-    "total_power": 55668.13094229718,
-    "own_hp": 14277.455942297198,
+    "total_power": 55668.18758346029,
+    "own_hp": 14277.469583460288,
     "delegators_count": 65,
     "monthly_votes": 117,
     "trail_count": 85,
-    "hbr_staked_total": 4937.235025509999,
-    "active_members": 314
+    "hbr_staked_total": 5343.69955799,
+    "active_members": 314,
+    "active_brazilians": 24
   }
 ]
