@@ -1,94 +1,74 @@
 /**
  * Script: Merge History
- * Version: 1.9.1
- * Description: Garante leitura correta de 'delegated_hp'
+ * Version: 1.3.0 (Compatibility Update)
+ * Description: Merges current ranking data into historical registry. Supports new object format.
  */
 
 const fs = require("fs");
 const path = require("path");
 
 const DATA_DIR = "data";
-const HISTORY_FILE = path.join(DATA_DIR, "ranking_history.json");
 const CURRENT_FILE = path.join(DATA_DIR, "current.json");
-
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
-function loadHistory() {
-  try {
-    if (fs.existsSync(HISTORY_FILE)) {
-      return JSON.parse(fs.readFileSync(HISTORY_FILE, "utf-8"));
-    }
-  } catch (err) {
-    console.warn("⚠️ Histórico novo criado.");
-  }
-  return {};
-}
-
-function loadCurrent() {
-  try {
-    if (fs.existsSync(CURRENT_FILE)) {
-      return JSON.parse(fs.readFileSync(CURRENT_FILE, "utf-8"));
-    }
-    throw new Error("current.json não encontrado.");
-  } catch (err) {
-    console.error("❌ Erro:", err.message);
-    process.exit(1);
-  }
-}
-
-function saveHistory(history) {
-  fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
-}
-
-function today() {
-  return new Date().toISOString().slice(0, 10);
-}
+const HISTORY_FILE = path.join(DATA_DIR, "ranking_history.json");
 
 function run() {
-  console.log("🔄 Atualizando histórico...");
-  
-  const history = loadHistory();
-  const currentList = loadCurrent();
-  const date = today();
+    console.log("🔄 Atualizando histórico...");
 
-  const currentMap = new Map();
-  currentList.forEach(entry => {
-    // CRÍTICO: Usa delegated_hp. Se for undefined, usa 0.
-    const val = entry.delegated_hp !== undefined ? entry.delegated_hp : entry.hp;
-    currentMap.set(entry.delegator, val || 0);
-  });
-
-  const allUsers = new Set([
-    ...Object.keys(history),
-    ...currentMap.keys()
-  ]);
-
-  let updatesCount = 0;
-
-  allUsers.forEach(user => {
-    if (!history[user]) history[user] = {};
-
-    const currentHP = currentMap.get(user);
-    const lastDate = Object.keys(history[user]).sort().pop();
-    const lastHP = lastDate ? history[user][lastDate] : 0;
-
-    if (currentHP !== undefined) {
-      if (history[user][date] !== currentHP) {
-        history[user][date] = currentHP;
-        updatesCount++;
-      }
-    } else if (lastHP > 0) {
-      if (history[user][date] !== 0) {
-        history[user][date] = 0;
-        updatesCount++;
-      }
+    if (!fs.existsSync(CURRENT_FILE)) {
+        console.error("❌ Erro: current.json não encontrado.");
+        process.exit(1);
     }
-  });
 
-  saveHistory(history);
-  console.log(`✅ Histórico salvo (${updatesCount} updates).`);
+    // 1. Carrega dados atuais (com suporte a formatos antigo/novo)
+    const rawCurrent = JSON.parse(fs.readFileSync(CURRENT_FILE, "utf8"));
+    let currentList = [];
+
+    if (Array.isArray(rawCurrent)) {
+        // Formato Legado: [...]
+        currentList = rawCurrent;
+    } else if (rawCurrent.ranking && Array.isArray(rawCurrent.ranking)) {
+        // Novo Formato v2.23.0: { "ranking": [...], "updated_at": "..." }
+        currentList = rawCurrent.ranking;
+    } else {
+        console.error("❌ Erro: Formato de current.json inválido.");
+        process.exit(1);
+    }
+
+    // 2. Carrega histórico existente
+    let history = {};
+    if (fs.existsSync(HISTORY_FILE)) {
+        try {
+            history = JSON.parse(fs.readFileSync(HISTORY_FILE, "utf8"));
+        } catch (e) {
+            console.warn("⚠️ Histórico corrompido, reiniciando...");
+            history = {};
+        }
+    }
+
+    // 3. Define a data de hoje (YYYY-MM-DD)
+    const today = new Date().toISOString().split("T")[0];
+
+    // 4. Mescla os dados
+    // Para cada usuário no ranking atual, adiciona/atualiza a entrada de hoje no histórico dele
+    currentList.forEach(entry => {
+        const username = entry.delegator || entry.username;
+        const hp = entry.delegated_hp || entry.hp_equivalent || 0;
+
+        // Se o usuário não tem histórico, cria objeto vazio
+        if (!history[username]) {
+            history[username] = {};
+        }
+
+        // Grava o HP de hoje
+        history[username][today] = parseFloat(hp.toFixed(3));
+    });
+
+    // 5. Limpeza (Opcional): Remove usuários que não delegam nada há muito tempo?
+    // Por enquanto, mantemos tudo para preservar a história.
+
+    // 6. Salva
+    fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
+    console.log(`✅ Histórico atualizado para ${today}.`);
 }
 
 run();
