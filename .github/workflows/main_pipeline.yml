@@ -23,21 +23,37 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # 1. Coleta, Enriquece e Salva Dados (Gera current.json, meta.json, monthly_stats.json)
-      - name: Fetch Data
+      # --- FASE 1: COLETA DE DADOS PRIMÁRIOS (Essenciais) ---
+      
+      - name: 1. Coletar Votos (Gera votes_stats.json)
+        run: node scripts/fetch_votes.js
+        continue-on-error: true # Se falhar, não para tudo, mas avisa
+
+      - name: 2. Coletar Posts Recentes (Gera posts_stats.json)
+        run: node scripts/fetch_posts.js
+        continue-on-error: true
+
+      # --- FASE 2: PROCESSAMENTO E FUSÃO ---
+
+      - name: 3. Processar Delegações (Lê votos/posts e Gera current.json)
         run: node scripts/fetch_delegations.js
 
-      # 2. Consolida Histórico Diário (Atualiza ranking_history.json)
-      - name: Merge History
-        run: node scripts/merge_history.js
+      - name: 4. Enriquecer Contas (Saldo e HP Total)
+        run: node scripts/fetch_accounts.js
+        continue-on-error: true
 
-      # 3. Gera Relatório Mensal (Se for dia de fechamento ou manual)
-      - name: Generate AI Report
+      # --- FASE 3: HISTÓRICO E RELATÓRIO ---
+
+      - name: 5. Consolidar Histórico Global e Individual (Novo merge_data.js)
+        run: node scripts/merge_data.js
+
+      - name: 6. Gerar Relatório IA (Se necessário)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node scripts/generate_report.js
 
-      # 4. Commit Único e Atômico (Evita conflitos de Git)
+      # --- FASE 4: SALVAR TUDO ---
+
       - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"
@@ -50,6 +66,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "Nenhuma mudança detectada nos dados."
           else
-            git commit -m "Auto: Update Pipeline (Data + History + Report)"
+            git commit -m "Auto: Pipeline Update (Votos + Delegações + Histórico)"
             git push
           fi
