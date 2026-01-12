@@ -3,7 +3,7 @@ name: Main Data Pipeline
 on:
   schedule:
     - cron: '0 */6 * * *'  # Roda a cada 6 horas
-  workflow_dispatch:        # Permite execução manual
+  workflow_dispatch:        # Execução manual
 
 permissions:
   contents: write
@@ -23,49 +23,30 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # --- FASE 1: COLETA DE DADOS PRIMÁRIOS (Essenciais) ---
-      
-      - name: 1. Coletar Votos (Gera votes_stats.json)
-        run: node scripts/fetch_votes.js
-        continue-on-error: true # Se falhar, não para tudo, mas avisa
+      # PASSO ÚNICO E ROBUSTO: Coleta tudo de uma vez
+      - name: Fetch All Data (Unified)
+        run: node scripts/fetch_data.js
 
-      - name: 2. Coletar Posts Recentes (Gera posts_stats.json)
-        run: node scripts/fetch_posts.js
-        continue-on-error: true
-
-      # --- FASE 2: PROCESSAMENTO E FUSÃO ---
-
-      - name: 3. Processar Delegações (Lê votos/posts e Gera current.json)
-        run: node scripts/fetch_delegations.js
-
-      - name: 4. Enriquecer Contas (Saldo e HP Total)
-        run: node scripts/fetch_accounts.js
-        continue-on-error: true
-
-      # --- FASE 3: HISTÓRICO E RELATÓRIO ---
-
-      - name: 5. Consolidar Histórico Global e Individual (Novo merge_data.js)
+      # Histórico e Metadados
+      - name: Merge History & Meta
         run: node scripts/merge_data.js
 
-      - name: 6. Gerar Relatório IA (Se necessário)
+      # Relatório IA
+      - name: Generate AI Report
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node scripts/generate_report.js
-
-      # --- FASE 4: SALVAR TUDO ---
 
       - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
           git pull --rebase --autostash origin main
-          
           git add data/*.json config/lists.json reports/*.md
           
           if git diff --staged --quiet; then
-            echo "Nenhuma mudança detectada nos dados."
+            echo "Nenhuma mudança."
           else
-            git commit -m "Auto: Pipeline Update (Votos + Delegações + Histórico)"
+            git commit -m "Auto: Data Update"
             git push
           fi
