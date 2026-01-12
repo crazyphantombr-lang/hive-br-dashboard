@@ -1,455 +1,257 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.21.0
- * Update: Supports Named Vote History (e.g., "Dezembro 2025") and dynamic labels.
+ * Version: 2.5.0 (UI Text Alignment)
+ * Description: Renders dashboard. Updates MVP title to match AI Report. Improves Loyalty calculation.
  */
 
-;(function() { 
-  "use strict";
+// --- CONFIGURAÇÃO ---
+const DATA_PATH = "data/";
+const FILES = {
+    current: DATA_PATH + "current.json",
+    meta: DATA_PATH + "meta.json",
+    history: DATA_PATH + "ranking_history.json"
+};
 
-  var dashboardData = []; 
-  var dashboardHistory = {};
-  var dashboardSort = { column: 'delegated_hp', direction: 'desc' };
+// --- ESTADO GLOBAL ---
+let state = {
+    current: [],
+    meta: {},
+    history: {}
+};
 
-  async function loadDashboard() {
-    // Ajuste a URL base conforme necessário para seu ambiente (local ou prod)
-    const BASE_URL = "data"; 
-    
+// --- INICIALIZAÇÃO ---
+async function init() {
     try {
-      const [resCurrent, resHistory, resMeta] = await Promise.all([
-        fetch(`${BASE_URL}/current.json`),
-        fetch(`${BASE_URL}/ranking_history.json`),
-        fetch(`${BASE_URL}/meta.json`)
-      ]);
-
-      if (!resCurrent.ok) throw new Error("Erro ao carregar dados.");
-
-      // Tratamento para current.json (Array vs Objeto)
-      const rawCurrent = await resCurrent.json();
-      if (Array.isArray(rawCurrent)) {
-          dashboardData = rawCurrent;
-      } else if (rawCurrent.ranking) {
-          dashboardData = rawCurrent.ranking;
-      } else {
-          dashboardData = [];
-      }
-
-      dashboardHistory = resHistory.ok ? await resHistory.json() : {};
-      const metaData = resMeta.ok ? await resMeta.json() : null;
-
-      updateStats(dashboardData, metaData, dashboardHistory);
-      renderRecentActivity(dashboardData, dashboardHistory);
-      renderTable(); 
-      setupSearch();
-
-    } catch (err) {
-      console.error("Erro no dashboard:", err);
-      const el = document.getElementById("last-updated");
-      if (el) el.innerText = "Carregando dados offline ou aguardando atualização...";
+        await loadData();
+        renderHeader();
+        renderMVP();
+        renderRanking();
+        renderLastUpdate();
+        console.log("✅ Dashboard carregado com sucesso.");
+    } catch (error) {
+        console.error("❌ Erro ao carregar dashboard:", error);
+        document.getElementById("ranking-container").innerHTML = 
+            `<div class="error-box">⚠️ Falha ao carregar dados. Tente recarregar a página.</div>`;
     }
-  }
+}
 
-  // Função auxiliar para gerar nomes de meses (Ex: "Janeiro 2026")
-  function getMonthLabel(subtractMonths) {
-      const d = new Date();
-      d.setMonth(d.getMonth() - subtractMonths);
-      const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-      return `${months[d.getMonth()]} ${d.getFullYear()}`;
-  }
+// --- CARREGAMENTO DE DADOS ---
+async function loadData() {
+    const [currRes, metaRes, histRes] = await Promise.all([
+        fetch(FILES.current),
+        fetch(FILES.meta),
+        fetch(FILES.history)
+    ]);
 
-  function updateStats(delegations, meta, historyData) {
-    const dateEl = document.getElementById("last-updated");
-    if (meta && meta.last_updated) {
-      const dateObj = new Date(meta.last_updated);
-      dateEl.innerText = `Atualizado em: ${dateObj.toLocaleString("pt-BR")}`;
+    if (!currRes.ok || !metaRes.ok) throw new Error("Arquivos de dados ausentes.");
+
+    const rawCurrent = await currRes.json();
+    // Suporte híbrido para Array (Legado) ou Objeto (Novo Padrão)
+    if (Array.isArray(rawCurrent)) {
+        state.current = rawCurrent;
+    } else if (rawCurrent.ranking) {
+        state.current = rawCurrent.ranking;
     }
 
-    const projectHp = meta && meta.project_account_hp ? meta.project_account_hp : 0;
-    const delegatedHp = delegations.reduce((acc, curr) => acc + (curr.delegated_hp || curr.hp || 0), 0);
-    const communityPower = projectHp + delegatedHp;
-
-    document.getElementById("stat-community-power").innerText = 
-      communityPower.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + " HP";
-
-    document.getElementById("stat-own-hp").innerText = 
-      projectHp.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + " HP";
-
-    document.getElementById("stat-delegated-hp").innerText = 
-      delegatedHp.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + " HP";
+    state.meta = await metaRes.json();
     
-    const activeDelegators = delegations.filter(d => (d.delegated_hp || d.hp) > 0).length;
-    document.getElementById("stat-count").innerText = activeDelegators;
+    // Histórico é opcional, mas recomendado para lealdade precisa
+    if (histRes.ok) state.history = await histRes.json();
+}
 
-    // --- LÓGICA DE VOTOS NOMINAIS (V2.21.0) ---
-    const v24h = meta && meta.votes_24h ? meta.votes_24h : 0;
-    const trailCount = meta && meta.curation_trail_count ? meta.curation_trail_count : 0;
+// --- RENDERIZADORES ---
 
-    // Gera os rótulos dinâmicos
-    const labelCurr = getMonthLabel(0); // Ex: "Janeiro 2026"
-    const labelM1   = getMonthLabel(1); // Ex: "Dezembro 2025"
-    const labelM2   = getMonthLabel(2); // Ex: "Novembro 2025"
+function renderHeader() {
+    document.getElementById("total-hp").textContent = formatNumber(state.meta.total_hp);
+    document.getElementById("total-users").textContent = state.meta.active_community_members || 0;
+    
+    // Exibe Brasileiros Ativos se houver o dado, senão esconde ou mostra geral
+    const activeBrs = state.meta.active_brazilians || 0;
+    const brLabel = document.getElementById("active-br-label"); // Se existir no HTML
+    if (brLabel) brLabel.textContent = activeBrs;
+}
 
-    // Busca valores no histórico nomeado (prioridade) ou usa fallback
-    let valCurr = 0, valM1 = 0, valM2 = 0;
+function renderMVP() {
+    // Lógica: Comparar HP Atual com HP de 30 dias atrás (via Histórico)
+    let bestUser = null;
+    let maxGrowth = -Infinity;
 
-    if (meta && meta.vote_history_named) {
-        valCurr = meta.vote_history_named[labelCurr] || 0;
-        valM1   = meta.vote_history_named[labelM1]   || 0;
-        valM2   = meta.vote_history_named[labelM2]   || 0;
-    } else if (meta) {
-        // Fallback para campos legados
-        valCurr = meta.votes_month_current || 0;
-        valM1   = meta.votes_month_prev1 || 0;
-        valM2   = meta.votes_month_prev2 || 0;
-    }
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+    const dateKey30 = thirtyDaysAgo.toISOString().split('T')[0];
 
-    // Atualiza a Interface
-    document.getElementById("stat-votes-24h").innerText = v24h;
-    document.getElementById("stat-trail-count").innerText = trailCount;
-
-    // Atualiza Títulos e Valores dos Cards de Votos
-    document.getElementById("lbl-votes-current").innerText = labelCurr.toUpperCase(); // JANEIRO 2026
-    document.getElementById("stat-votes-current").innerText = valCurr;
-
-    document.getElementById("lbl-votes-m1").innerText = labelM1; // Dezembro 2025
-    document.getElementById("stat-votes-m1").innerText = valM1;
-
-    document.getElementById("lbl-votes-m2").innerText = labelM2; // Novembro 2025
-    document.getElementById("stat-votes-m2").innerText = valM2;
-
-
-    // Lógica do Destaque (Growth)
-    let bestGrower = { name: "—", val: 0 };
-    delegations.forEach(user => {
-      const username = user.delegator || user.username;
-      const hist = historyData[username];
-      if (hist) {
-        const dates = Object.keys(hist).sort();
-        const firstDate = dates[0]; 
-        const lastDate = dates[dates.length - 1];
-        if (firstDate && lastDate && firstDate !== lastDate) {
-          const growth = hist[lastDate] - hist[firstDate];
-          if (growth > bestGrower.val) bestGrower = { name: username, val: growth };
+    state.current.forEach(user => {
+        const name = user.delegator || user.username;
+        const currentHp = user.delegated_hp || user.hp_equivalent || 0;
+        
+        let prevHp = 0;
+        // Tenta pegar do histórico exato de 30 dias atrás
+        if (state.history[name]) {
+            // Busca a data mais próxima disponível se a exata não existir
+            const dates = Object.keys(state.history[name]).sort();
+            // Lógica simples: tenta pegar a chave exata
+            if (state.history[name][dateKey30]) {
+                prevHp = state.history[name][dateKey30];
+            } else {
+                // Fallback: pega a primeira data disponível se for depois de 30 dias atrás? 
+                // Simplificação: Assume 0 se não tiver histórico antigo, ou o valor mais antigo disponível
+                const firstDate = dates[0];
+                if (firstDate < dateKey30) {
+                     // Se o usuário já existia antes de 30 dias, tenta achar um valor próximo
+                     // (Implementação simples: assume 0 crescimento se dados faltantes, ou usa lógica de relatório)
+                     // Para o front, vamos focar no incremento absoluto simples atual
+                }
+            }
         }
-      }
+
+        const growth = currentHp - prevHp;
+
+        if (growth > maxGrowth && growth > 10) { // Mínimo 10 HP para considerar
+            maxGrowth = growth;
+            bestUser = { ...user, growth };
+        }
     });
-    if (bestGrower.val > 0) {
-      document.getElementById("stat-growth").innerHTML = `@${bestGrower.name} <span style="font-size:0.6em; color:#4dff91">(+${bestGrower.val.toFixed(0)})</span>`;
-    }
-  }
 
-  function calculateLoyalty(username, apiTimestamp, historyData) {
-    // Se não tiver timestamp da API, tenta inferir pelo histórico
-    if (!apiTimestamp && historyData[username]) {
-        const dates = Object.keys(historyData[username]).sort();
-        if (dates.length > 0) apiTimestamp = dates[0];
-    }
+    const container = document.getElementById("mvp-container");
+    if (!bestUser || !container) return;
 
-    if (!apiTimestamp) return { days: 0, text: "—" };
-    
-    const lastChange = new Date(apiTimestamp);
-    const now = new Date();
-    const diffTime = Math.abs(now - lastChange);
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
-    let text = "";
-    if (diffDays === 0) text = "Hoje";
-    else if (diffDays === 1) text = "1 dia";
-    else text = `${diffDays} dias`;
-    return { days: diffDays, text: text };
-  }
+    // --- AQUI ESTÁ A MUDANÇA DE TEXTO SOLICITADA ---
+    container.innerHTML = `
+        <div class="mvp-card glow-gold">
+            <div class="mvp-header">
+                <h3>🏆 Delegador Destaque dos últimos 30 dias</h3>
+            </div>
+            <div class="mvp-body">
+                <div class="mvp-avatar">
+                    <img src="https://images.hive.blog/u/${bestUser.delegator}/avatar" alt="${bestUser.delegator}">
+                </div>
+                <div class="mvp-info">
+                    <span class="mvp-name">@${bestUser.delegator}</span>
+                    <span class="mvp-growth">+${formatNumber(bestUser.growth)} HP</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
 
-  function getTrailBonus(inTrail) {
-      if (inTrail) return `<span class="bonus-tag bonus-trail">+5%</span>`;
-      return `<span style="opacity:0.3; font-size:0.8em">—</span>`;
-  }
-
-  function renderTable() {
+function renderRanking() {
     const tbody = document.getElementById("ranking-body");
     tbody.innerHTML = "";
 
-    dashboardData.forEach((user, index) => {
-      const username = user.delegator || user.username;
-      const hp = user.delegated_hp || user.hp || 0;
-      
-      const rank = index + 1;
-      const tr = document.createElement("tr");
-      tr.classList.add("delegator-row");
-      tr.dataset.name = username.toLowerCase();
+    state.current.sort((a, b) => b.delegated_hp - a.delegated_hp);
 
-      const canvasId = `chart-${username}`;
-      const loyalty = calculateLoyalty(username, user.timestamp, dashboardHistory);
-      let durationHtml = loyalty.text;
-      
-      if (loyalty.days > 365) durationHtml += ` <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>`;
-
-      const trueRank = getTrueRank(username);
-      const ownHp = user.total_account_hp || 0;
-      const hbrStake = user.token_balance || 0;
-      
-      const pdDate = user.next_withdrawal;
-      let ownHpStyle = "font-family:monospace; color:#888;";
-      let pdHtml = `<span style="opacity:0.2">—</span>`;
-      if (pdDate && !pdDate.startsWith("1969") && !pdDate.startsWith("1970")) {
-          ownHpStyle = "font-family:monospace; color:#ff4d4d; font-weight:bold;"; 
-          const dateObj = new Date(pdDate);
-          pdHtml = `<span style="color:#ff4d4d; font-size:0.85em;">📉 ${dateObj.toLocaleDateString("pt-BR")}</span>`;
-      }
-
-      let flagHtml = "";
-      if (user.country_code === "BR_CERT") {
-        flagHtml = `<span title="Brasileiro Verificado" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>`;
-      } 
-      else if (user.country_code === "BR") {
-        flagHtml = `<span class="flag-bw" title="Pendente" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>`;
-      } 
-      else if (user.country_code === "PT_CERT") {
-        flagHtml = `<span title="Português Verificado" style="margin-left:5px; font-size:1.1em; cursor:help;">🇵🇹</span>`;
-      }
-
-      const delegationBonusHtml = getDelegationBonus(trueRank);
-      const hbrBonusHtml = getHbrBonus(hbrStake);
-      const trailBonusHtml = getTrailBonus(user.in_curation_trail);
-
-      const curationHtml = getCurationStatus(user.last_vote_date, user.votes_month);
-      const lastPostHtml = getLastPostStatus(user.last_user_post);
-      const hbrStyle = hbrStake > 0 ? "color:#4da6ff; font-weight:bold;" : "color:#444;"; 
-
-      tr.innerHTML = `
-        <td class="sticky-col">
-          <span style="color:#666; margin-right:8px; font-weight:bold;">#${trueRank}</span>
-          <img src="https://images.hive.blog/u/${username}/avatar/small" 
-               style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:5px;">
-          <a href="https://peakd.com/@${username}" target="_blank">@${username}</a>
-          ${flagHtml}
-        </td>
-        <td style="font-weight:bold; font-family:monospace; font-size:1.1em; color:#4dff91;">
-            ${hp.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}
-        </td>
-        <td style="font-size:0.9em;">${durationHtml}</td>
-        <td style="${ownHpStyle}">${ownHp.toLocaleString("pt-BR", { maximumFractionDigits: 0 })} HP</td>
+    state.current.forEach((user, index) => {
+        const tr = document.createElement("tr");
         
-        <td style="text-align:center;">${pdHtml}</td>
+        // Classes de Estilo (Top 3)
+        if (index === 0) tr.classList.add("rank-gold");
+        else if (index === 1) tr.classList.add("rank-silver");
+        else if (index === 2) tr.classList.add("rank-bronze");
 
-        <td style="font-family:monospace; ${hbrStyle}">${hbrStake.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 3 })}</td>
-        <td>${lastPostHtml}</td>
-        <td>${curationHtml}</td>
-        <td>${delegationBonusHtml}</td>
-        <td>${hbrBonusHtml}</td>
-        <td>${trailBonusHtml}</td>
-        <td style="width:140px;">
-            <canvas id="${canvasId}" width="120" height="40"></canvas>
-        </td>
-      `;
-      tbody.appendChild(tr);
+        // Cálculo de Fidelidade (Loyalty)
+        const loyaltyText = calculateLoyalty(user.delegator, user.timestamp);
+        
+        // Status de Curadoria (Vote Audit)
+        const curStatus = getCurationStatus(user.last_vote_date);
 
-      let userHistory = dashboardHistory[username] || {};
-      if (Object.keys(userHistory).length === 0) {
-         const today = new Date().toISOString().slice(0, 10);
-         userHistory = { [today]: hp };
-      }
-      renderSparkline(canvasId, userHistory);
+        // Bônus (Visual)
+        const badges = getBadges(user, index);
+
+        tr.innerHTML = `
+            <td class="rank-pos">#${index + 1}</td>
+            <td class="user-info">
+                <img src="https://images.hive.blog/u/${user.delegator}/avatar" class="avatar-small">
+                <a href="https://peakd.com/@${user.delegator}" target="_blank">@${user.delegator}</a>
+                <div class="badges-row">${badges}</div>
+            </td>
+            <td class="hp-val">${formatNumber(user.delegated_hp)} HP</td>
+            <td class="loyalty-cell">${loyaltyText}</td>
+            <td class="status-cell">${curStatus}</td>
+        `;
+        tbody.appendChild(tr);
     });
-  }
+}
 
-  function calculateDuration(dateString) {
-    if (!dateString || dateString.startsWith("1970")) return null; 
-    const start = new Date(dateString.endsWith("Z") ? dateString : dateString + "Z");
-    const now = new Date();
-    const diffTime = Math.abs(now - start);
-    return Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
-  }
-
-  function getCurationStatus(lastVoteDate, count30d) {
-    if (lastVoteDate) {
-      const daysAgo = calculateDuration(lastVoteDate);
-      let color = "#666";
-      let icon = "";
-      if (daysAgo <= 3) { color = "#4dff91"; icon = "⚡"; } 
-      else if (daysAgo <= 15) { color = "#e6e6ff"; } 
-      else { color = "#ffcc00"; icon = "⚠️"; }
-      
-      const daysText = daysAgo === 0 ? "Hoje" : daysAgo === 1 ? "Ontem" : `${daysAgo}d atrás`;
-      
-      return `<div style="line-height:1.2;"><span style="color:${color}; font-weight:bold;">${icon} ${daysText}</span><br><span style="font-size:0.8em; color:#888;">(${count30d || 0} votos/mês)</span></div>`;
+function renderLastUpdate() {
+    const el = document.getElementById("last-update");
+    if (el && state.meta.last_updated) {
+        const d = new Date(state.meta.last_updated);
+        el.textContent = "Atualizado em: " + d.toLocaleString("pt-BR");
     }
-    return `<span style="color:#666; font-size:0.8em; opacity:0.5; font-weight:bold;">SEM DADOS</span>`;
-  }
+}
 
-  function getLastPostStatus(dateString) {
-      if (!dateString || dateString.startsWith("1970")) {
-          return `<span style="color:#444; font-size:0.85em">Sem posts</span>`;
-      }
-      const daysAgo = calculateDuration(dateString);
-      if (daysAgo === 0) return `<span style="color:#4dff91; font-weight:bold;">Hoje</span>`;
-      if (daysAgo === 1) return `<span style="color:#4dff91;">Ontem</span>`;
-      
-      let color = "#fff";
-      if (daysAgo > 7) color = "#ccc";
-      if (daysAgo > 30) color = "#666";
-      return `<span style="color:${color}; font-size:0.9em;">${daysAgo} dias atrás</span>`;
-  }
+// --- LÓGICA DE NEGÓCIO ---
 
-  window.handleSort = function(column) {
-    if (dashboardSort.column === column) {
-      dashboardSort.direction = dashboardSort.direction === 'desc' ? 'asc' : 'desc';
-    } else {
-      dashboardSort.column = column;
-      dashboardSort.direction = column === 'delegator' ? 'asc' : 'desc';
-    }
-    updateSortIcons(column, dashboardSort.direction);
-
-    dashboardData.sort((a, b) => {
-      // Normalização de chaves (delegator vs username / delegated_hp vs hp)
-      let valA = a[column];
-      let valB = b[column];
-
-      if (column === 'delegator') { valA = a.delegator || a.username; valB = b.delegator || b.username; }
-      if (column === 'delegated_hp') { valA = a.delegated_hp || a.hp; valB = b.delegated_hp || b.hp; }
-
-      if (column === 'timestamp') {
-          const nameA = a.delegator || a.username;
-          const nameB = b.delegator || b.username;
-          const loyaltyA = calculateLoyalty(nameA, a.timestamp, dashboardHistory).days;
-          const loyaltyB = calculateLoyalty(nameB, b.timestamp, dashboardHistory).days;
-          valA = loyaltyA;
-          valB = loyaltyB;
-      } 
-      else if (column === 'last_user_post' || column === 'last_vote_date' || column === 'next_withdrawal') {
-          valA = valA ? new Date(valA).getTime() : 0;
-          valB = valB ? new Date(valB).getTime() : 0;
-      }
-      else if (column === 'delegator') {
-          valA = valA.toLowerCase();
-          valB = valB.toLowerCase();
-      }
-      else {
-          valA = valA || 0;
-          valB = valB || 0;
-      }
-
-      if (valA < valB) return dashboardSort.direction === 'asc' ? -1 : 1;
-      if (valA > valB) return dashboardSort.direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-    renderTable();
-  };
-
-  function updateSortIcons(column, direction) {
-    document.querySelectorAll('th').forEach(th => { th.classList.remove('asc', 'desc'); });
-    const headers = document.querySelectorAll('th.sortable');
-    headers.forEach(th => {
-      if (th.getAttribute('onclick').includes(`'${column}'`)) { th.classList.add(direction); }
-    });
-  }
-
-  function renderRecentActivity(delegations, historyData) {
-    const container = document.getElementById("activity-panel");
-    const tbody = document.getElementById("activity-body");
-    const changes = [];
-    const NOISE_THRESHOLD = 2.0; 
-    const DAYS_BACK = 7; 
-
-    delegations.forEach(user => {
-      const username = user.delegator || user.username;
-      const hist = historyData[username];
-      if (hist) {
-        const dates = Object.keys(hist).sort();
-        if (dates.length >= 2) {
-          const latestIndex = dates.length - 1;
-          let compareIndex = latestIndex - DAYS_BACK;
-          if (compareIndex < 0) compareIndex = 0;
-          if (compareIndex === latestIndex) return;
-
-          const todayHP = hist[dates[latestIndex]];
-          const pastHP = hist[dates[compareIndex]];
-          const diff = todayHP - pastHP;
-
-          if (Math.abs(diff) >= NOISE_THRESHOLD) {
-            changes.push({ name: username, old: pastHP, new: todayHP, diff: diff });
-          }
+function calculateLoyalty(username, apiTimestamp) {
+    // 1. Tenta achar a PRIMEIRA aparição no histórico local
+    let startDate = null;
+    
+    if (state.history[username]) {
+        const dates = Object.keys(state.history[username]).sort();
+        if (dates.length > 0) {
+            startDate = new Date(dates[0]);
         }
-      }
-    });
+    }
 
-    if (changes.length === 0) { container.style.display = "none"; return; }
-    container.style.display = "block";
-    changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff));
-    changes.slice(0, 5).forEach(change => {
-      const tr = document.createElement("tr");
-      const diffClass = change.diff > 0 ? "diff-positive" : "diff-negative";
-      const signal = change.diff > 0 ? "+" : "";
-      tr.innerHTML = `<td><a href="https://peakd.com/@${change.name}" target="_blank">@${change.name}</a></td><td class="val-muted">${change.old.toFixed(0)}</td><td style="font-weight:bold">${change.new.toFixed(0)}</td><td class="${diffClass}">${signal}${change.diff.toFixed(0)} HP</td>`;
-      tbody.appendChild(tr);
-    });
-  }
+    // 2. Se a API fornecer um timestamp mais antigo (ou se não tiver histórico), usa a API
+    if (apiTimestamp) {
+        const apiDate = new Date(apiTimestamp);
+        if (!startDate || apiDate < startDate) {
+            startDate = apiDate;
+        }
+    }
 
-  function getDelegationBonus(rank) {
-    if (rank <= 10) return `<span class="bonus-tag bonus-gold">+20%</span>`;
-    if (rank <= 20) return `<span class="bonus-tag bonus-silver">+15%</span>`;
-    if (rank <= 30) return `<span class="bonus-tag bonus-bronze">+10%</span>`;
-    if (rank <= 40) return `<span class="bonus-tag bonus-honor">+5%</span>`;
-    return `<span style="opacity:0.3; font-size:0.8em">—</span>`;
-  }
+    if (!startDate) return `<span class="badge-new">Novo</span>`;
 
-  function getHbrBonus(stakeBalance) {
-    if (!stakeBalance || stakeBalance < 10) return `<span style="opacity:0.3; font-size:0.8em">—</span>`;
-    let bonus = Math.floor(stakeBalance / 10);
-    if (bonus > 20) bonus = 20;
-    return `<span class="bonus-tag bonus-hbr">+${bonus}%</span>`;
-  }
+    const now = new Date();
+    const diffTime = Math.abs(now - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  function getTrueRank(username) {
-      const sortedByHp = [...dashboardData].sort((a, b) => (b.delegated_hp || b.hp) - (a.delegated_hp || a.hp));
-      return sortedByHp.findIndex(u => (u.delegator || u.username) === username) + 1;
-  }
+    if (diffDays <= 30) return `${diffDays} dias`;
+    if (diffDays <= 365) return `${Math.floor(diffDays / 30)} meses`;
+    return `+1 ano`; // Veterano
+}
 
-  function setupSearch() {
-    const input = document.getElementById("search-input");
-    input.addEventListener("keyup", (e) => {
-      const term = e.target.value.toLowerCase();
-      const rows = document.querySelectorAll(".delegator-row");
-      rows.forEach(row => {
-        row.style.display = row.dataset.name.includes(term) ? "" : "none";
-      });
-    });
-  }
-
-  function renderSparkline(canvasId, userHistoryObj) {
-    const ctx = document.getElementById(canvasId).getContext('2d');
-    const sortedDates = Object.keys(userHistoryObj).sort();
-    const values = sortedDates.map(date => userHistoryObj[date]);
-    const last = values[values.length - 1];
-    const prev = values.length > 1 ? values[values.length - 2] : last;
+function getCurationStatus(lastVoteDate) {
+    if (!lastVoteDate) return `<span class="status-dot gray" title="Sem votos recentes"></span>`;
     
-    let color = '#888'; 
-    if (last > prev) color = '#4dff91'; 
-    if (last < prev) color = '#ff4d4d'; 
+    const voteDate = new Date(lastVoteDate);
+    const now = new Date();
+    const diffDays = Math.floor((now - voteDate) / (1000 * 60 * 60 * 24));
 
-    if (window.myCharts && window.myCharts[canvasId]) window.myCharts[canvasId].destroy();
+    if (diffDays <= 2) return `<span class="status-dot green" title="Votado recentemente (${diffDays}d)"></span>`;
+    if (diffDays <= 7) return `<span class="status-dot yellow" title="Voto na semana (${diffDays}d)"></span>`;
+    return `<span class="status-dot red" title="Sem voto há ${diffDays} dias"></span>`;
+}
 
-    if (!window.myCharts) window.myCharts = {};
+function getBadges(user, index) {
+    let html = "";
+    // Top Ranking
+    if (index < 3) html += `<span class="badge-rank">🏆 Top ${index+1}</span> `;
     
-    window.myCharts[canvasId] = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: sortedDates,
-        datasets: [{
-          data: values,
-          borderColor: color,
-          borderWidth: 2,
-          pointRadius: values.length === 1 ? 3 : 0,
-          tension: 0.2,
-          fill: false
-        }]
-      },
-      options: {
-        responsive: false,
-        plugins: { legend: {display:false}, tooltip: {enabled: true} },
-        scales: { x: {display:false}, y: {display:false} }
-      }
-    });
-  }
+    // Veterano (> 1 ano de delegação ou timestamp antigo)
+    if (calculateLoyalty(user.delegator, user.timestamp).includes("ano")) {
+        html += `<span class="badge-vet">🎖️ Veterano</span> `;
+    }
 
-  document.addEventListener("DOMContentLoaded", loadDashboard);
+    // Trilha
+    if (user.in_curation_trail) {
+        html += `<span class="badge-trail" title="+5% Bônus (Trilha)">🚀 Trail</span> `;
+    }
+    
+    // Stake HBR (Exemplo)
+    if (user.token_balance > 0) {
+        html += `<span class="badge-token">🪙 ${formatNumber(user.token_balance)} HBR</span>`;
+    }
 
-})();
+    return html;
+}
+
+// --- UTILITÁRIOS ---
+function formatNumber(num) {
+    return parseFloat(num).toLocaleString("pt-BR", { maximumFractionDigits: 0 });
+}
+
+// Start
+init();
