@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.18.2 (Phrasing Fix)
- * Description: Updates vote labels to "Votos distribuídos em...", implements 30d MVP, preserves rich features.
+ * Version: 2.18.3 (Relative Path Fix)
+ * Description: Uses relative paths for data fetching to prevent CORS/URL mismatches.
  */
 
 ;(function() { 
@@ -12,17 +12,21 @@
   var dashboardSort = { column: 'delegated_hp', direction: 'desc' };
 
   async function loadDashboard() {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    const BASE_URL = isLocal ? "data" : "https://crazyphantombr-lang.github.io/hive-br-dashboard/data";
+    // --- CORREÇÃO AQUI: Caminho relativo simples ---
+    const BASE_URL = "data"; 
     
     try {
+      // Adiciona timestamp para evitar cache agressivo do JSON
+      const antiCache = `?t=${new Date().getTime()}`;
+
       const [resCurrent, resHistory, resMeta] = await Promise.all([
-        fetch(`${BASE_URL}/current.json`),
-        fetch(`${BASE_URL}/ranking_history.json`),
-        fetch(`${BASE_URL}/meta.json`)
+        fetch(`${BASE_URL}/current.json${antiCache}`),
+        fetch(`${BASE_URL}/ranking_history.json${antiCache}`),
+        fetch(`${BASE_URL}/meta.json${antiCache}`)
       ]);
 
-      if (!resCurrent.ok) throw new Error("Erro ao carregar dados.");
+      if (!resCurrent.ok) throw new Error("Erro ao carregar current.json");
+      if (!resMeta.ok) throw new Error("Erro ao carregar meta.json");
 
       const rawCurrent = await resCurrent.json();
       dashboardData = Array.isArray(rawCurrent) ? rawCurrent : (rawCurrent.ranking || []);
@@ -35,13 +39,17 @@
       renderTable(); 
       setupSearch();
 
+      console.log("✅ Dados carregados com sucesso via caminho relativo.");
+
     } catch (err) {
-      console.error("Erro no dashboard:", err);
+      console.error("❌ Erro fatal no dashboard:", err);
       const el = document.getElementById("last-updated");
-      if (el) el.innerText = "Aguardando sincronização de dados...";
+      if (el) el.innerText = "Erro: Verifique o Console (F12)";
     }
   }
 
+  // ... (MANTENHA O RESTANTE DO CÓDIGO EXATAMENTE IGUAL ABAIXO) ...
+  
   function getMonthName(subtractMonths) {
       const d = new Date();
       d.setMonth(d.getMonth() - subtractMonths);
@@ -82,15 +90,14 @@
     const vM2   = meta && meta.votes_month_prev2 ? meta.votes_month_prev2 : 0;
     const trailCount = meta && meta.curation_trail_count ? meta.curation_trail_count : 0;
 
-    // --- FRASEOLOGIA ATUALIZADA (SOLICITADA) ---
     const lblVotes = document.getElementById("lbl-votes-current");
     if (lblVotes) lblVotes.innerText = `VOTOS DISTRIBUÍDOS EM ${getMonthName(0).toUpperCase()}`;
     
     const lblM1 = document.getElementById("lbl-votes-m1");
-    if (lblM1) lblM1.innerText = `Votos distribuídos em ${getMonthName(1)}`; // Ex: Votos distribuídos em Dezembro
+    if (lblM1) lblM1.innerText = `Votos distribuídos em ${getMonthName(1)}`; 
     
     const lblM2 = document.getElementById("lbl-votes-m2");
-    if (lblM2) lblM2.innerText = `Votos distribuídos em ${getMonthName(2)}`; // Ex: Votos distribuídos em Novembro
+    if (lblM2) lblM2.innerText = `Votos distribuídos em ${getMonthName(2)}`; 
 
     if(document.getElementById("stat-votes-current")) document.getElementById("stat-votes-current").innerText = vCurr;
     if(document.getElementById("stat-votes-24h")) document.getElementById("stat-votes-24h").innerText = v24h;
@@ -145,8 +152,6 @@
     }
   }
 
-  // --- UTILS (Sparklines, Badges, Tables) ---
-  
   function calculateLoyalty(username, apiTimestamp, historyData) {
     if (apiTimestamp && !apiTimestamp.startsWith("1970")) {
         const lastChange = new Date(apiTimestamp);
