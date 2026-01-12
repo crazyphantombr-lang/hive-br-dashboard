@@ -1,7 +1,7 @@
 /**
  * Script: Main Frontend Logic
- * Version: 2.18.0 (Rich Hybrid)
- * Description: Preserves all rich features (Sparklines, Badges, Bonuses) + Adds New MVP & Active BR Stats.
+ * Version: 2.18.2 (Phrasing Fix)
+ * Description: Updates vote labels to "Votos distribuídos em...", implements 30d MVP, preserves rich features.
  */
 
 ;(function() { 
@@ -12,7 +12,6 @@
   var dashboardSort = { column: 'delegated_hp', direction: 'desc' };
 
   async function loadDashboard() {
-    // Detecta ambiente (GitHub Pages ou Local) para ajustar caminho
     const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
     const BASE_URL = isLocal ? "data" : "https://crazyphantombr-lang.github.io/hive-br-dashboard/data";
     
@@ -26,7 +25,6 @@
       if (!resCurrent.ok) throw new Error("Erro ao carregar dados.");
 
       const rawCurrent = await resCurrent.json();
-      // Suporte a formato Array ou Objeto {ranking: []}
       dashboardData = Array.isArray(rawCurrent) ? rawCurrent : (rawCurrent.ranking || []);
       
       dashboardHistory = resHistory.ok ? await resHistory.json() : {};
@@ -74,26 +72,25 @@
     const activeDelegators = delegations.filter(d => d.delegated_hp > 0).length;
     document.getElementById("stat-count").innerText = activeDelegators;
 
-    // --- NOVO: BRASILEIROS ATIVOS ---
     const activeBrs = meta && meta.active_brazilians ? meta.active_brazilians : 0;
     const brLabel = document.getElementById("active-br-label");
     if (brLabel) brLabel.innerText = activeBrs;
 
-    // Métricas de Votos
     const v24h = meta && meta.votes_24h ? meta.votes_24h : 0;
     const vCurr = meta && meta.votes_month_current ? meta.votes_month_current : 0;
     const vM1   = meta && meta.votes_month_prev1 ? meta.votes_month_prev1 : 0;
     const vM2   = meta && meta.votes_month_prev2 ? meta.votes_month_prev2 : 0;
     const trailCount = meta && meta.curation_trail_count ? meta.curation_trail_count : 0;
 
+    // --- FRASEOLOGIA ATUALIZADA (SOLICITADA) ---
     const lblVotes = document.getElementById("lbl-votes-current");
-    if (lblVotes) lblVotes.innerText = `VOTOS EM ${getMonthName(0).toUpperCase()}`;
+    if (lblVotes) lblVotes.innerText = `VOTOS DISTRIBUÍDOS EM ${getMonthName(0).toUpperCase()}`;
     
     const lblM1 = document.getElementById("lbl-votes-m1");
-    if (lblM1) lblM1.innerText = `Votos em ${getMonthName(1)}`;
+    if (lblM1) lblM1.innerText = `Votos distribuídos em ${getMonthName(1)}`; // Ex: Votos distribuídos em Dezembro
     
     const lblM2 = document.getElementById("lbl-votes-m2");
-    if (lblM2) lblM2.innerText = `Votos em ${getMonthName(2)}`;
+    if (lblM2) lblM2.innerText = `Votos distribuídos em ${getMonthName(2)}`; // Ex: Votos distribuídos em Novembro
 
     if(document.getElementById("stat-votes-current")) document.getElementById("stat-votes-current").innerText = vCurr;
     if(document.getElementById("stat-votes-24h")) document.getElementById("stat-votes-24h").innerText = v24h;
@@ -101,46 +98,35 @@
     if(document.getElementById("stat-votes-m2")) document.getElementById("stat-votes-m2").innerText = vM2;
     if(document.getElementById("stat-trail-count")) document.getElementById("stat-trail-count").innerText = trailCount;
 
-    // --- NOVO CÁLCULO DE MVP (30 DIAS FIXOS) ---
-    // Lógica alinhada com Relatório da IA: Diferença entre Hoje e 30 dias atrás
+    // MVP Calculation (Last 30 Days)
     let bestGrower = { name: "—", val: 0 };
-    
     const today = new Date();
     const targetDate = new Date();
     targetDate.setDate(today.getDate() - 30);
-    const targetKey = targetDate.toISOString().split('T')[0]; // YYYY-MM-DD alvo
+    const targetKey = targetDate.toISOString().split('T')[0];
 
     delegations.forEach(user => {
       const name = user.delegator;
       const currentVal = user.delegated_hp || 0;
       let prevVal = 0;
 
-      // Busca no histórico
       if (historyData[name]) {
-          // Tenta pegar a data exata, senão pega a primeira disponível se for antiga
           if (historyData[name][targetKey]) {
               prevVal = historyData[name][targetKey];
           } else {
-              // Fallback simples: se não tem data de 30 dias atrás, assume valor atual (crescimento 0) 
-              // para não dar falso positivo em quem já delegava mas falhou o histórico.
-              // A IA é mais esperta, aqui vamos ser conservadores.
               const dates = Object.keys(historyData[name]).sort();
               if (dates.length > 0 && dates[0] < targetKey) {
-                 // Usuário antigo, mas sem o dado do dia exato -> Crescimento incerto, ignorar ou usar dado próximo?
-                 // Vamos ignorar para evitar bugs visuais.
                  prevVal = currentVal; 
               } else {
-                 // Usuário novo (primeira data é depois de 30 dias atrás) -> prevVal = 0
                  prevVal = 0;
               }
           }
       } else {
-          // Sem histórico -> Assume novo se tiver HP
           prevVal = 0;
       }
 
       const growth = currentVal - prevVal;
-      if (growth > bestGrower.val && growth > 10) { // Filtro de ruído (>10 HP)
+      if (growth > bestGrower.val && growth > 10) {
          bestGrower = { name: name, val: growth };
       }
     });
@@ -159,17 +145,15 @@
     }
   }
 
-  // --- FUNÇÕES AUXILIARES (Mantidas da v2.17.0) ---
-
+  // --- UTILS (Sparklines, Badges, Tables) ---
+  
   function calculateLoyalty(username, apiTimestamp, historyData) {
-    // Tenta usar API primeiro
     if (apiTimestamp && !apiTimestamp.startsWith("1970")) {
         const lastChange = new Date(apiTimestamp);
         const now = new Date();
         const diffDays = Math.floor(Math.abs(now - lastChange) / (1000 * 60 * 60 * 24));
         return { days: diffDays, text: diffDays === 0 ? "Hoje" : diffDays === 1 ? "1 dia" : `${diffDays} dias` };
     }
-    // Fallback Histórico Local
     if (historyData[username]) {
         const dates = Object.keys(historyData[username]).sort();
         if (dates.length > 0) {
@@ -192,7 +176,7 @@
     tbody.innerHTML = "";
 
     dashboardData.forEach((user, index) => {
-      const rank = index + 1; // Dados já vêm ordenados do backend ou sort manual
+      const rank = index + 1;
       const tr = document.createElement("tr");
       tr.classList.add("delegator-row");
       tr.dataset.name = (user.delegator || "").toLowerCase();
@@ -200,7 +184,6 @@
       const canvasId = `chart-${user.delegator}`;
       const loyalty = calculateLoyalty(user.delegator, user.timestamp, dashboardHistory);
       let durationHtml = loyalty.text;
-      
       if (loyalty.days > 365) durationHtml += ` <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>`;
 
       const trueRank = getTrueRank(user.delegator);
@@ -216,7 +199,6 @@
           pdHtml = `<span style="color:#ff4d4d; font-size:0.85em;">📉 ${dateObj.toLocaleDateString("pt-BR")}</span>`;
       }
 
-      // BANDEIRAS
       let flagHtml = "";
       if (user.country_code === "BR_CERT") flagHtml = `<span title="Brasileiro Verificado" style="margin-left:5px;cursor:help;">🇧🇷</span>`;
       else if (user.country_code === "BR") flagHtml = `<span class="flag-bw" title="Brasileiro Pendente" style="margin-left:5px;cursor:help;">🇧🇷</span>`;
@@ -243,9 +225,7 @@
         </td>
         <td style="font-size:0.9em;">${durationHtml}</td>
         <td style="${ownHpStyle}">${Math.floor(ownHp).toLocaleString("pt-BR")} HP</td>
-        
         <td style="text-align:center;">${pdHtml}</td>
-
         <td style="font-family:monospace; ${hbrStyle}">${hbrStake.toLocaleString("pt-BR", { maximumFractionDigits: 0 })}</td>
         <td>${lastPostHtml}</td>
         <td>${curationHtml}</td>
@@ -258,7 +238,6 @@
       `;
       tbody.appendChild(tr);
 
-      // SPARKLINE RENDER
       let userHistory = dashboardHistory[user.delegator] || {};
       if (Object.keys(userHistory).length === 0) {
          const today = new Date().toISOString().slice(0, 10);
@@ -284,22 +263,17 @@
       if (daysAgo <= 3) { color = "#4dff91"; icon = "⚡"; } 
       else if (daysAgo <= 15) { color = "#e6e6ff"; } 
       else { color = "#ffcc00"; icon = "⚠️"; }
-      
       const daysText = daysAgo === 0 ? "Hoje" : daysAgo === 1 ? "Ontem" : `${daysAgo}d atrás`;
-      
       return `<div style="line-height:1.2;"><span style="color:${color}; font-weight:bold;">${icon} ${daysText}</span><br><span style="font-size:0.8em; color:#888;">(${count30d || 0} votos/mês)</span></div>`;
     }
     return `<span style="color:#666; font-size:0.8em; opacity:0.5; font-weight:bold;">SEM DADOS</span>`;
   }
 
   function getLastPostStatus(dateString) {
-      if (!dateString || dateString.startsWith("1970")) {
-          return `<span style="color:#444; font-size:0.85em">Sem posts</span>`;
-      }
+      if (!dateString || dateString.startsWith("1970")) return `<span style="color:#444; font-size:0.85em">Sem posts</span>`;
       const daysAgo = calculateDuration(dateString);
       if (daysAgo === 0) return `<span style="color:#4dff91; font-weight:bold;">Hoje</span>`;
       if (daysAgo === 1) return `<span style="color:#4dff91;">Ontem</span>`;
-      
       let color = "#fff";
       if (daysAgo > 7) color = "#ccc";
       if (daysAgo > 30) color = "#666";
@@ -318,11 +292,9 @@
     dashboardData.sort((a, b) => {
       let valA = a[column];
       let valB = b[column];
-
       if (column === 'timestamp') {
-          const loyaltyA = calculateLoyalty(a.delegator, a.timestamp, dashboardHistory).days;
-          const loyaltyB = calculateLoyalty(b.delegator, b.timestamp, dashboardHistory).days;
-          valA = loyaltyA; valB = loyaltyB;
+          valA = calculateLoyalty(a.delegator, a.timestamp, dashboardHistory).days;
+          valB = calculateLoyalty(b.delegator, b.timestamp, dashboardHistory).days;
       } 
       else if (column === 'last_user_post' || column === 'last_vote_date' || column === 'next_withdrawal') {
           valA = valA ? new Date(valA).getTime() : 0;
@@ -336,7 +308,6 @@
           valA = parseFloat(valA) || 0;
           valB = parseFloat(valB) || 0;
       }
-
       if (valA < valB) return dashboardSort.direction === 'asc' ? -1 : 1;
       if (valA > valB) return dashboardSort.direction === 'asc' ? 1 : -1;
       return 0;
@@ -358,7 +329,7 @@
     if(!container || !tbody) return;
 
     const changes = [];
-    const NOISE_THRESHOLD = 5.0; // Ignorar variações < 5 HP
+    const NOISE_THRESHOLD = 5.0; 
     const DAYS_BACK = 7; 
 
     delegations.forEach(user => {
@@ -370,11 +341,9 @@
           let compareIndex = latestIndex - DAYS_BACK;
           if (compareIndex < 0) compareIndex = 0;
           if (compareIndex === latestIndex) return;
-
           const todayHP = hist[dates[latestIndex]];
           const pastHP = hist[dates[compareIndex]];
           const diff = todayHP - pastHP;
-
           if (Math.abs(diff) >= NOISE_THRESHOLD) {
             changes.push({ name: user.delegator, old: pastHP, new: todayHP, diff: diff });
           }
@@ -384,22 +353,13 @@
 
     if (changes.length === 0) { container.style.display = "none"; return; }
     container.style.display = "block";
-    
-    // Sort by absolute change magnitude
     changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff));
-    
-    // Mostra Top 5 Mudanças
     tbody.innerHTML = "";
     changes.slice(0, 5).forEach(change => {
       const tr = document.createElement("tr");
       const diffClass = change.diff > 0 ? "diff-positive" : "diff-negative";
       const signal = change.diff > 0 ? "+" : "";
-      tr.innerHTML = `
-        <td><a href="https://peakd.com/@${change.name}" target="_blank">@${change.name}</a></td>
-        <td class="val-muted">${Math.floor(change.old)}</td>
-        <td style="font-weight:bold">${Math.floor(change.new)}</td>
-        <td class="${diffClass}">${signal}${Math.floor(change.diff)} HP</td>
-      `;
+      tr.innerHTML = `<td><a href="https://peakd.com/@${change.name}" target="_blank">@${change.name}</a></td><td class="val-muted">${Math.floor(change.old)}</td><td style="font-weight:bold">${Math.floor(change.new)}</td><td class="${diffClass}">${signal}${Math.floor(change.diff)} HP</td>`;
       tbody.appendChild(tr);
     });
   }
@@ -440,42 +400,20 @@
     const el = document.getElementById(canvasId);
     if (!el) return;
     const ctx = el.getContext('2d');
-    
     const sortedDates = Object.keys(userHistoryObj).sort();
     const values = sortedDates.map(date => userHistoryObj[date]);
-    
     const last = values[values.length - 1];
     const prev = values.length > 1 ? values[values.length - 2] : last;
-    
     let color = '#888'; 
     if (last > prev) color = '#4dff91'; 
     if (last < prev) color = '#ff4d4d'; 
-
     if (window.myCharts && window.myCharts[canvasId]) window.myCharts[canvasId].destroy();
     if (!window.myCharts) window.myCharts = {};
-    
     window.myCharts[canvasId] = new Chart(ctx, {
       type: 'line',
-      data: {
-        labels: sortedDates,
-        datasets: [{
-          data: values,
-          borderColor: color,
-          borderWidth: 2,
-          pointRadius: 0, 
-          tension: 0.2,
-          fill: false
-        }]
-      },
-      options: {
-        responsive: false,
-        plugins: { legend: {display:false}, tooltip: {enabled: false} },
-        scales: { x: {display:false}, y: {display:false} },
-        elements: { point: { radius: 0 } }
-      }
+      data: { labels: sortedDates, datasets: [{ data: values, borderColor: color, borderWidth: 2, pointRadius: 0, tension: 0.2, fill: false }] },
+      options: { responsive: false, plugins: { legend: {display:false}, tooltip: {enabled: false} }, scales: { x: {display:false}, y: {display:false} }, elements: { point: { radius: 0 } } }
     });
   }
-
   document.addEventListener("DOMContentLoaded", loadDashboard);
-
 })();
