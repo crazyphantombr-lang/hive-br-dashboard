@@ -1,7 +1,7 @@
 /**
  * Script: Fetch Data (Hybrid/Restored)
- * Version: 3.1.0 (Back to HAF)
- * Description: Restaura o núcleo robusto da v2.21.0 (API HAF) e adiciona o enriquecimento de dados em lotes para o novo Frontend.
+ * Version: 3.1.1 (Config Fix)
+ * Description: Correção da conta alvo para hive-br.voter (onde estão as delegações reais).
  */
 
 const fs = require("fs");
@@ -11,27 +11,27 @@ const path = require("path");
 let fetch;
 try { fetch = global.fetch || require("node-fetch"); } catch (e) { }
 
-// --- CONFIGURAÇÕES DO SISTEMA ANTIGO (v2.21.0) ---
-const HIVE_ACCOUNT = "hive-br";
-// Aumentado limit para 1000 conforme sua observação sobre a capacidade da API
+// --- CONFIGURAÇÕES ---
+// CORREÇÃO CRÍTICA: A conta que recebe delegações é a .voter
+const HIVE_ACCOUNT = "hive-br.voter"; 
+
+// Aumentado limit para 1000 (Capacidade real da API)
 const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${HIVE_ACCOUNT}/incoming?limit=1000`; 
 const RPC_NODES = ["https://api.hive.blog", "https://api.deathwing.me", "https://api.openhive.network"];
 const IGNORE_LIST = ["ptgram-power", "tipu", "bdvoter.cur"];
 
-// --- CONFIGURAÇÃO DE CAMINHOS (Robustez) ---
-// Garante que roda certo seja via root ou pasta scripts
+// --- CONFIGURAÇÃO DE CAMINHOS ---
 const DATA_DIR = fs.existsSync("data") ? "data" : path.join(__dirname, "..", "data");
 const LISTS_FILE = path.join(DATA_DIR, "lists.json");
 const OUTPUT_FILE = path.join(DATA_DIR, "current.json");
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-// --- FUNÇÕES AUXILIARES (Baseadas na v2.21) ---
+// --- FUNÇÕES AUXILIARES ---
 
 async function hiveRpc(method, params) {
     for (const node of RPC_NODES) {
         try {
-            // AbortController para evitar travamentos infinitos
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout
 
@@ -57,21 +57,21 @@ async function hiveRpc(method, params) {
 
 async function fetchGlobalProps() {
     const props = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
-    if (!props) return 0.0005; // Fallback seguro
+    if (!props) return 0.0005; 
     return parseFloat(props.total_vesting_fund_hive) / parseFloat(props.total_vesting_shares);
 }
 
-// Nova Função Necessária: Data do Último Post (Individual)
+// Data do Último Post
 async function fetchLastPostDate(username) {
     const posts = await hiveRpc("condenser_api.get_discussions_by_author_before_date", [username, "", "2030-01-01T00:00:00", 1]);
     if (posts && posts.length > 0) return posts[0].created;
     return "1970-01-01T00:00:00";
 }
 
-// Nova Solução: Batching para Detalhes de Conta (Evita o bug da v3.0.0)
+// Batching para Detalhes de Conta
 async function fetchAccountDetailsBatch(usernames) {
     let details = {};
-    const BATCH_SIZE = 50; // Tamanho seguro para condenser_api.get_accounts
+    const BATCH_SIZE = 50; 
     
     console.log(`📦 Processando detalhes de ${usernames.length} contas em lotes...`);
 
@@ -89,7 +89,6 @@ async function fetchAccountDetailsBatch(usernames) {
                 };
             });
         }
-        // Pequena pausa para não engasgar o nó público
         await new Promise(r => setTimeout(r, 100));
     }
     return details;
@@ -98,18 +97,18 @@ async function fetchAccountDetailsBatch(usernames) {
 // --- EXECUÇÃO PRINCIPAL ---
 
 async function run() {
-    console.log("🔄 Iniciando Coleta (v3.1.0 - Sistema Híbrido)...");
+    console.log(`🔄 Iniciando Coleta para @${HIVE_ACCOUNT} (v3.1.1)...`);
     
     if (!fetch) {
-        console.error("❌ Erro: Fetch API não disponível. Use Node 18+ ou instale node-fetch.");
+        console.error("❌ Erro: Fetch API não disponível.");
         process.exit(1);
     }
 
     try {
-        // 1. Coleta Fator Global (Vests -> HP)
+        // 1. Coleta Fator Global
         const vestToHp = await fetchGlobalProps();
 
-        // 2. Coleta Lista de Delegações via HAF (Baseado na v2.21.0 - Estável)
+        // 2. Coleta Lista de Delegações via HAF (Conta Correta agora)
         console.log("📡 Consultando API HAF (Mahdiyari)...");
         const hafRes = await fetch(HAF_API);
         let rawDelegations = [];
@@ -118,41 +117,36 @@ async function run() {
             rawDelegations = await hafRes.json();
         } else {
             console.warn("⚠️ API HAF indisponível. Tentando RPC padrão...");
-            // Fallback para RPC se HAF falhar (Limitado a 1000)
             rawDelegations = await hiveRpc("condenser_api.get_vesting_delegations", [HIVE_ACCOUNT, "", 1000]);
         }
 
         if (!Array.isArray(rawDelegations)) throw new Error("Falha crítica ao obter lista de delegações.");
 
-        // Filtra ignorados
         const validDelegations = rawDelegations.filter(d => !IGNORE_LIST.includes(d.delegator));
         console.log(`✅ ${validDelegations.length} delegações válidas encontradas.`);
 
-        // 3. Prepara Enriquecimento de Dados
+        // 3. Prepara Enriquecimento
         let lists = { verificado_br: [], curation_trail: [] };
         if (fs.existsSync(LISTS_FILE)) lists = JSON.parse(fs.readFileSync(LISTS_FILE, 'utf8'));
 
         const delegatorNames = validDelegations.map(d => d.delegator);
         
-        // 4. Busca Detalhes Pesados em Lotes (Solução Nova)
+        // 4. Busca Detalhes em Lotes
         const accountsData = await fetchAccountDetailsBatch(delegatorNames);
 
-        // 5. Monta o Ranking (Compatível com main.js v2.18.3)
+        // 5. Monta o Ranking
         let ranking = [];
         let totalHpProject = 0;
 
         for (const d of validDelegations) {
             const username = d.delegator;
-            // HAF retorna 'vesting_shares', RPC também.
             const delegatedHp = parseFloat(d.vesting_shares) * vestToHp;
             
             const accInfo = accountsData[username] || { total_vests: 0, next_withdrawal: "1969-12-31" };
             const totalAccountHp = accInfo.total_vests * vestToHp;
 
-            // Busca Last Post (Individual é leve se a lista já existe)
             const lastPost = await fetchLastPostDate(username);
             
-            // Lógica de País
             let country = null;
             if (lists.verificado_br.includes(username)) country = "BR_CERT";
             else if (lists.pendente_br?.includes(username)) country = "BR";
@@ -163,12 +157,12 @@ async function run() {
                 delegated_hp: delegatedHp,
                 timestamp: d.timestamp || d.min_delegation_time || new Date().toISOString(),
                 total_account_hp: totalAccountHp,
-                token_balance: 0, // Placeholder para token customizado se necessário futuramente
+                token_balance: 0,
                 next_withdrawal: accInfo.next_withdrawal,
                 country_code: country,
                 in_curation_trail: lists.curation_trail.includes(username),
                 last_user_post: lastPost,
-                last_vote_date: null, // Deixamos nulo para economizar requests, o frontend lida bem
+                last_vote_date: null,
                 votes_month: 0
             });
             
@@ -177,14 +171,12 @@ async function run() {
 
         ranking.sort((a, b) => b.delegated_hp - a.delegated_hp);
 
-        // --- TRAVA DE SEGURANÇA (Safety Gate) ---
+        // --- TRAVA DE SEGURANÇA ---
         if (ranking.length === 0 || totalHpProject < 100) {
             console.error("❌ ERRO CRÍTICO: Dados inconsistentes detectados (HP zerado).");
-            console.error("   O arquivo current.json NÃO será salvo para proteger o site.");
             process.exit(1);
         }
 
-        // 6. Salvar Arquivo
         const output = {
             updated_at: new Date().toISOString(),
             ranking: ranking
