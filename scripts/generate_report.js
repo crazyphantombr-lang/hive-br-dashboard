@@ -1,7 +1,7 @@
 /**
  * Script: AI Report Generator
- * Version: 2.23.0 (Logic Match: Debug MVP)
- * Description: Uses proven logic from debug script to calculate MVP based on 2025-12-31 history.
+ * Version: 2.23.1 (Text Adjustment)
+ * Description: Updates MVP section title to "Delegador Destaque dos últimos 30 dias".
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -63,9 +63,9 @@ async function run() {
         const historyData = readJsonSafe(HISTORY_FILE, {}); // Carrega Histórico Completo
         const lastMonthStats = (Array.isArray(monthlyHistory) && monthlyHistory.length >= 2) ? monthlyHistory[monthlyHistory.length - 2] : null;
 
-        // --- CÁLCULO DE MVP (Lógica Validada pelo Debug) ---
+        // --- CÁLCULO DE MVP (Lógica Histórica) ---
         const dateCalc = new Date(now.getFullYear(), now.getMonth(), 0); 
-        const targetDateKey = dateCalc.toISOString().split('T')[0]; // Ex: 2025-12-31
+        const targetDateKey = dateCalc.toISOString().split('T')[0]; 
         
         console.log(`📊 Calculando MVP baseando-se em: ${targetDateKey}`);
 
@@ -80,14 +80,11 @@ async function run() {
             if (historyData[name] && historyData[name][targetDateKey]) {
                 previousHp = parseFloat(historyData[name][targetDateKey]);
             } else {
-                // Se não achar histórico exato, ignora (evita falso positivo de "novo usuário")
-                // Ou podemos definir previousHp = currentHp para que o aumento seja 0
                 previousHp = currentHp; 
             }
 
             const diff = currentHp - previousHp;
             
-            // Filtra apenas crescimento positivo real (> 1 HP)
             if (diff > 1 && diff > topGainer.increase) {
                 topGainer = { name: name, increase: diff, total: currentHp };
             }
@@ -127,7 +124,7 @@ ${JSON.stringify(dataPayload)}
 ESTRUTURA OBRIGATÓRIA DO POST:
 1. Capa: ![Capa](${COVER_IMAGE_URL})
 2. Título Criativo (${now.toLocaleDateString()}).
-3. 🏆 **DELEGADOR DESTAQUE DO MÊS:** Escreva um parágrafo dedicado ao usuário **${topGainer.name}**, celebrando seu apoio. Mencione explicitamente o incremento de **+${Math.floor(topGainer.increase)} HP** realizado neste mês.
+3. 🏆 **DELEGADOR DESTAQUE DOS ÚLTIMOS 30 DIAS:** Escreva um parágrafo dedicado ao usuário **${topGainer.name}**, celebrando seu apoio. Mencione explicitamente o incremento de **+${Math.floor(topGainer.increase)} HP** realizado neste mês.
 4. **Saúde da Comunidade:** Apresente os números de "Membros Ativos" vs "Brasileiros Ativos" usando as definições oficiais acima.
 5. Dados Gerais: Total HP ${Math.floor(meta.total_hp || 0)}.
 6. **Ranking Delegadores TOP 10:** Crie uma tabela Markdown com estritamente estas 3 colunas: "Posição", "Usuário" e "HP Delegado".
@@ -138,7 +135,7 @@ ESTRUTURA OBRIGATÓRIA DO POST:
 TOM: Celebrativo, Profissional e Vibrante. PT-BR.
 `;
 
-        console.log(`🤖 Gerando Relatório v2.23.0...`);
+        console.log(`🤖 Gerando Relatório v2.23.1...`);
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const result = await model.generateContent(prompt);
