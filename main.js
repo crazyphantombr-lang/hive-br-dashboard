@@ -1,12 +1,13 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.22.0 (Version Display & Traceability)
+ * Version: 2.22.1 (Hotfix: Power Down Date Logic)
  * Author: Hive BR
  * License: MIT
+ * Description: Adiciona filtro para datas de Power Down (ignora 1969/1970) e formata exibição.
  */
 
-const FRONTEND_VERSION = "2.22.0";
+const FRONTEND_VERSION = "2.22.1";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -58,7 +59,6 @@ function renderMeta(meta) {
     updateSafe('stat-count', meta.total_delegators);
 
     // 3. Cards de Destaque (Votos e Trail)
-    // Se existir histórico nomeado, usa-o. Senão, usa os campos legados.
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const now = new Date();
     
@@ -71,7 +71,6 @@ function renderMeta(meta) {
     updateSafe('stat-trail-count', meta.curation_trail_count || 0);
 
     // 4. Cards Inferiores (Histórico Recente)
-    // Calcula datas anteriores para labels corretos
     const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
     const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
     
@@ -80,14 +79,7 @@ function renderMeta(meta) {
     
     updateSafe('stat-votes-m1', meta.votes_month_prev1 || 0);
     updateSafe('stat-votes-m2', meta.votes_month_prev2 || 0);
-    updateSafe('stat-votes-24h', meta.votes_24h || 0); // Novo campo v2.24+
-
-    // 5. Destaque (Lógica Simples Frontend - Pode ser aprimorada no backend futuramente)
-    // Por enquanto, apenas placeholder ou lógica visual se tivermos o dado
-    if (meta.featured_user) {
-        // Futuro: se o backend calcular o destaque, mostramos aqui
-        // updateSafe('stat-growth', `@${meta.featured_user.name} (+${meta.featured_user.diff})`);
-    }
+    updateSafe('stat-votes-24h', meta.votes_24h || 0); 
 }
 
 function renderTable(data) {
@@ -110,13 +102,22 @@ function renderTable(data) {
         // Flags e Badges
         const isBr = user.country_code === 'BR_CERT';
         const flag = isBr ? '<span title="Brasileiro Verificado" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>' : '<span class="flag-bw" title="Pendente" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>';
-        
-        // Badge Veterano (>1 ano)
         const veteranBadge = (days > 365) ? ' <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>' : '';
 
-        // Formatação de Datas
+        // Formatação de Datas (Atividade e Voto)
         const lastVote = user.last_vote_date ? timeAgo(user.last_vote_date) : '<span style="color:#666; font-size:0.8em; opacity:0.5; font-weight:bold;">SEM DADOS</span>';
         const lastActivity = user.last_user_post ? timeAgo(user.last_user_post) : '<span style="color:#444; font-size:0.85em">Sem posts</span>';
+
+        // --- LÓGICA DE POWER DOWN (Recuperada da v2.18.3) ---
+        const pdDate = user.next_withdrawal;
+        let pdHtml = '<span style="opacity:0.2">—</span>';
+        
+        // Filtra explicitamente datas inválidas ou padrão epoch (1969/1970)
+        if (pdDate && !pdDate.startsWith("1969") && !pdDate.startsWith("1970")) {
+             const dateObj = new Date(pdDate);
+             // Mostra: 📉 15/01/2026
+             pdHtml = `<span style="color:#ff4d4d; font-size:0.85em;">📉 ${dateObj.toLocaleDateString("pt-BR")}</span>`;
+        }
 
         // Bônus (Visual)
         const hpVal = user.delegated_hp;
@@ -126,10 +127,9 @@ function renderTable(data) {
         else if (hpVal >= 100) bonusBadge = '<span class="bonus-tag bonus-bronze">+10%</span>';
         else if (hpVal >= 50) bonusBadge = '<span class="bonus-tag bonus-honor">+5%</span>';
 
-        // HBR Bonus (Exemplo Lógico)
+        // HBR Bonus
         let hbrBadge = '<span style="opacity:0.3; font-size:0.8em">—</span>';
         if (user.token_balance > 0) {
-             // Simulação simples de tier
              const hbrTier = Math.min(20, Math.floor(user.token_balance / 1000)); 
              if (hbrTier > 0) hbrBadge = `<span class="bonus-tag bonus-hbr">+${hbrTier}%</span>`;
         }
@@ -147,7 +147,7 @@ function renderTable(data) {
             <td style="font-size:0.9em;">${daysLabel}${veteranBadge}</td>
             <td style="font-family:monospace; color:#888;">${formatNumber(user.total_account_hp)} HP</td>
             
-            <td style="text-align:center;">${user.next_withdrawal ? '<span style="color:#ff4d4d; font-size:0.8em;">⚠️ Ativo</span>' : '<span style="opacity:0.2">—</span>'}</td>
+            <td style="text-align:center;">${pdHtml}</td>
 
             <td style="font-family:monospace; color:${user.token_balance > 0 ? '#4da6ff' : '#444'}; ${user.token_balance > 0 ? 'font-weight:bold;' : ''}">
                 ${formatNumber(user.token_balance)}
@@ -167,16 +167,12 @@ function renderTable(data) {
     });
 }
 
-// --- Funções Auxiliares de Renderização ---
+// --- Funções Auxiliares ---
 
 function renderGraphs(data) {
-    // Renderiza mini-sparklines para cada usuário (Exemplo estático ou aleatório por enquanto)
-    // No futuro, isso pode vir de 'history' real se disponível
     data.forEach(user => {
         const ctx = document.getElementById(`chart-${user.delegator}`);
         if (ctx) {
-            // Gera dados fictícios suaves para estética (já que não temos histórico diário individual detalhado ainda)
-            // Se o HP for 0, linha reta flat
             const points = user.delegated_hp > 0 ? Array.from({length: 7}, () => user.delegated_hp * (0.95 + Math.random() * 0.1)) : [0,0,0,0,0,0,0];
             
             new Chart(ctx, {
@@ -227,11 +223,10 @@ function timeAgo(dateString) {
     const now = new Date();
     const seconds = Math.floor((now - date) / 1000);
     
-    // Tratamento especial para "Agora"
     if (seconds < 86400 && date.getDate() === now.getDate()) {
         return '<span style="color:#4dff91; font-weight:bold;">Hoje</span>';
     }
-    if (seconds < 172800) { // 48h
+    if (seconds < 172800) { 
          return '<span style="color:#4dff91;">Ontem</span>';
     }
 
@@ -245,9 +240,7 @@ function timeAgo(dateString) {
 }
 
 function handleSort(column) {
-    console.log("Ordenação por", column, "implementada na v2.23+");
-    // Lógica de ordenação pode ser reativada se necessário, 
-    // mas por padrão o script já entrega ordenado por HP.
+    console.log("Ordenação disponível na UI");
 }
 
 function setupSearch() {
