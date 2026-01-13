@@ -1,17 +1,18 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.24.1 (Hotfix: RPC Batch Size)
+ * Version: 2.25.0 (Global History + Versioning)
  * Author: Hive BR
  * License: MIT
- * Changelog:
- * - Reduzido batch de histórico de 2000 para 1000 (Limite real dos nós públicos).
- * - Corrige o erro "0 txs analisadas".
+ * Description: Coleta dados, gera ranking, salva histórico diário e informa versões.
  */
 
 const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
+
+// --- VERSÃO DO SISTEMA ---
+const SCRIPT_VERSION = "2.25.0";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -23,6 +24,7 @@ const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 
 const CONFIG_PATH = path.join("config", "lists.json");
 const DATA_DIR = "data";
+const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
 
 // Carrega listas
 let listConfig = { verificado_br: [], curation_trail: [] };
@@ -30,6 +32,7 @@ try { if (fs.existsSync(CONFIG_PATH)) listConfig = JSON.parse(fs.readFileSync(CO
 const CURATION_TRAIL_USERS = listConfig.curation_trail || [];
 const FIXED_USERS = listConfig.watchlist || [];
 
+// Garante pasta de dados
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 // --- FUNÇÕES AUXILIARES ---
@@ -63,9 +66,9 @@ function getMonthLabel(dateObj) {
     return `${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
 }
 
-// --- NOVO SISTEMA DE VOTOS (Smart Scan - Fixed Limit) ---
+// --- SISTEMA DE VOTOS (Smart Scan - Limit 1000 Safe) ---
 async function fetchSmartVoteHistory() {
-    console.log("🗳️ Iniciando varredura inteligente de votos (Limit 1000)...");
+    console.log("🗳️ Iniciando varredura inteligente de votos...");
     
     let lastVotesMap = {}; 
     let historyNamed = {}; 
@@ -77,20 +80,16 @@ async function fetchSmartVoteHistory() {
     limitDate.setDate(limitDate.getDate() - 90); 
 
     let start = -1;
-    let limit = 1000; // CORREÇÃO: Limite seguro para API pública
+    let limit = 1000; // Limite seguro
     let active = true;
     let totalScanned = 0;
-    const MAX_SCAN = 50000; // Scan profundo
+    const MAX_SCAN = 50000; 
 
     while (active && totalScanned < MAX_SCAN) {
         const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, start, limit]);
         
-        if (!history || history.length === 0) {
-            console.log("⚠️ Fim do histórico ou erro na API.");
-            break;
-        }
+        if (!history || history.length === 0) break;
 
-        // Processa do mais recente para o mais antigo
         for (let i = history.length - 1; i >= 0; i--) {
             const tx = history[i];
             const op = tx[1].op;
@@ -120,9 +119,7 @@ async function fetchSmartVoteHistory() {
             const firstId = history[0][0];
             if (firstId <= 0) break;
             start = firstId - 1;
-            limit = Math.min(1000, start); // Mantém limite seguro
-            
-            // Pequeno delay para não sobrecarregar a API pública
+            limit = Math.min(1000, start);
             if (totalScanned % 5000 === 0) console.log(`... ${totalScanned} txs analisadas`);
         }
     }
@@ -158,10 +155,40 @@ function updateMonthlyStats(metaData) {
     fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
 }
 
+// --- SALVA HISTÓRICO GLOBAL (NOVA FEATURE) ---
+function updateGlobalHistory(data) {
+    let globalData = {};
+    try {
+        if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
+            globalData = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE));
+        }
+    } catch (e) { console.warn("Criando novo arquivo de histórico global."); }
+
+    // Chave do dia (YYYY-MM-DD)
+    const todayKey = new Date().toISOString().split('T')[0];
+
+    globalData[todayKey] = {
+        total_votes: data.votes_24h,
+        trail_count: data.curation_trail_count,
+        active_brazilians: data.active_brazilians,
+        total_hp: parseFloat((data.total_hp + data.project_account_hp).toFixed(2)),
+        total_delegated_hp: parseFloat(data.total_hp.toFixed(2)),
+        active_members: data.active_community_members,
+        script_version: SCRIPT_VERSION
+    };
+
+    // Ordena chaves por data
+    const sorted = {};
+    Object.keys(globalData).sort().forEach(key => sorted[key] = globalData[key]);
+
+    fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(sorted, null, 2));
+    console.log(`📅 Histórico Global atualizado para ${todayKey}`);
+}
+
 // --- MAIN ---
 async function run() {
     try {
-        console.log("🚀 Iniciando Hive BR Dashboard (v2.24.1)...");
+        console.log(`🚀 Iniciando Hive BR Dashboard (v${SCRIPT_VERSION})...`);
         
         // 1. Dados Globais
         const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
@@ -172,7 +199,7 @@ async function run() {
             return (vests * totalFund / totalVests);
         };
 
-        // 2. Delegações (HafSQL)
+        // 2. Delegações
         const res = await fetch(HAF_API);
         let delegations = await res.json();
         if (!Array.isArray(delegations)) delegations = [];
@@ -182,7 +209,7 @@ async function run() {
             if (!currentDelegators.has(u)) delegations.push({ delegator: u, vesting_shares: 0, hp_equivalent: 0 });
         });
 
-        // 3. Obter Histórico de Votos
+        // 3. Histórico de Votos
         const voteData = await fetchSmartVoteHistory();
 
         // 4. Contas e Tokens
@@ -200,7 +227,9 @@ async function run() {
         heBalances.forEach(b => { tokenMap[b.account] = parseFloat(b.stake || 0); });
         const tokenSum = heBalances.reduce((acc, curr) => acc + parseFloat(curr.stake || 0), 0);
 
-        // 5. Ranking
+        // 5. Ranking & Contagem de Brasileiros
+        let activeBraziliansCount = 0;
+
         const ranking = delegations.map(d => {
             let finalHp = 0;
             if (d.hp_equivalent) finalHp = parseFloat(d.hp_equivalent);
@@ -210,6 +239,11 @@ async function run() {
             const totalAccountHp = acc.vesting_shares ? vestToHp(acc.vesting_shares) + vestToHp(acc.received_vesting_shares) : 0;
             const isBr = listConfig.verificado_br.includes(d.delegator);
             
+            // Contagem de Brasileiros Ativos (Com HP > 0)
+            if ((isBr || d.delegator === 'hive-br') && finalHp > 0) {
+                activeBraziliansCount++;
+            }
+
             const lastVote = voteData.lastVotesMap[d.delegator] || null;
 
             return {
@@ -230,7 +264,7 @@ async function run() {
         ranking.sort((a, b) => b.delegated_hp - a.delegated_hp);
         fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(ranking, null, 2));
 
-        // 6. Meta Data
+        // 6. Meta Data e Versionamento
         const now = new Date();
         const curLabel = getMonthLabel(now);
         const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
@@ -241,25 +275,32 @@ async function run() {
 
         const metaData = {
             last_updated: new Date().toISOString(),
+            versions: {
+                backend: SCRIPT_VERSION,
+                node_env: process.version
+            },
             total_delegators: ranking.filter(d => d.delegated_hp > 0).length,
             total_hp: totalDelegatedHp,
             project_account_hp: projectHp,
             total_hbr_staked: tokenSum,
             curation_trail_count: CURATION_TRAIL_USERS.length,
             active_community_members: uniqueMembers.size,
+            active_brazilians: activeBraziliansCount, // Campo recuperado
             
             votes_24h: voteData.votes24h,
             vote_history_named: voteData.historyNamed,
-            
             votes_month_current: voteData.historyNamed[curLabel] || 0,
             votes_month_prev1: voteData.historyNamed[getMonthLabel(d1)] || 0,
             votes_month_prev2: voteData.historyNamed[getMonthLabel(d2)] || 0
         };
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
-        updateMonthlyStats(metaData);
         
-        console.log(`✅ Sucesso! Votos hoje: ${voteData.votes24h}`);
+        // 7. Atualizar Históricos
+        updateMonthlyStats(metaData);
+        updateGlobalHistory(metaData); // Salva o histórico diário novo
+        
+        console.log(`✅ Sucesso! Dados globais e ranking atualizados.`);
 
     } catch (err) {
         console.error("❌ Erro fatal:", err.message);
