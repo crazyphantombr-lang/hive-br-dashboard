@@ -1,12 +1,13 @@
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.22.0 (Feature: Global History + Unfreeze Fix)
+ * Version: 2.22.0 (Feature: HAFSQL Limit 1000 + Global History)
  * Author: Hive BR
  * License: MIT
- * * Changelog:
- * - Adicionado salvamento de histórico global diário (data/global_history.json).
- * - Hotfix: Forçada atualização de 'last_vote_date' cruzando dados em tempo real.
- * - Adicionado contador de 'active_brazilians'.
+ * Changelog:
+ * - Aumentado limite da API HAFSQL para 1000 registros (Fix Zero HP).
+ * - Aumentado range de histórico de votos para 5000 (Fix Frozen Dates).
+ * - Implementado salvamento de histórico global diário.
+ * - Implementado contador de membros brasileiros ativos.
  */
 
 const fetch = require("node-fetch");
@@ -17,8 +18,10 @@ const path = require("path");
 const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
 const TOKEN_SYMBOL = "HBR";
-// Aumentei o limite para garantir que pegamos votos recentes mesmo em dias movimentados
-const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=500`; 
+
+// HAFSQL Restored - Limit increased to 1000 as requested
+const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=1000`;
+
 const RPC_NODES = ["https://api.hive.blog", "https://api.deathwing.me", "https://api.openhive.network"];
 const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 
@@ -101,17 +104,15 @@ function getMonthLabel(dateObj) {
             }
         });
 
-        // 3. Obter Histórico de Votos RECENTES (Para corrigir o 'last_vote_date')
-        // Buscamos o histórico da conta votante para saber quem ela votou recentemente
-        const voterHistory = await hiveCall("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 1000]);
-        const lastVotesMap = {}; // Mapa: usuario -> data_ultimo_voto
+        // 3. Obter Histórico de Votos RECENTES (Range aumentado para 5000)
+        const voterHistory = await hiveCall("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 5000]);
+        const lastVotesMap = {}; 
         const now = new Date();
-        const oneMonthAgo = new Date(); oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
         
         let votes24h = 0;
         let historyMap = {}; 
 
-        // Inicializa chaves de histórico (Mês Atual e Anteriores)
+        // Inicializa chaves de histórico
         const curLabel = getMonthLabel(new Date());
         historyMap[curLabel] = 0;
         const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
@@ -138,7 +139,7 @@ function getMonthLabel(dateObj) {
                 // Estatísticas
                 if (txDate >= time24h) votes24h++;
                 
-                // Agrupa por Mês (Janeiro 2026, etc)
+                // Agrupa por Mês
                 const label = getMonthLabel(txDate);
                 if (!historyMap[label]) historyMap[label] = 0;
                 historyMap[label]++;
@@ -146,7 +147,16 @@ function getMonthLabel(dateObj) {
         });
 
         // 4. Detalhes das Contas (Batch RPC) e Construção do JSON
-        const accounts = await hiveCall("condenser_api.get_accounts", [delegations.map(d => d.delegator)]);
+        // Divide em chunks de 50 para garantir estabilidade
+        const delegatorNames = delegations.map(d => d.delegator);
+        let accounts = [];
+        const chunkSize = 50;
+        for (let i = 0; i < delegatorNames.length; i += chunkSize) {
+            const chunk = delegatorNames.slice(i, i + chunkSize);
+            const chunkResult = await hiveCall("condenser_api.get_accounts", [chunk]);
+            accounts = accounts.concat(chunkResult);
+        }
+
         let tokenSum = 0;
         let activeBraziliansCount = 0; // Novo contador
 
@@ -162,26 +172,25 @@ function getMonthLabel(dateObj) {
             const isBr = listConfig.verificado_br.includes(d.delegator);
             const isTrail = CURATION_TRAIL_USERS.includes(d.delegator);
             
-            // Contagem de Brasileiros Ativos (Com delegação > 0 ou na lista fixa)
+            // Contagem de Brasileiros Ativos
             if ((isBr || d.delegator === 'hive-br') && parseFloat(hp) > 0) {
                 activeBraziliansCount++;
             }
 
-            // --- CRÍTICO: Correção de Datas ---
-            // Usa o mapa criado acima para garantir a data real do último voto
+            // --- Correção de Datas ---
             const realLastVote = lastVotesMap[d.delegator] || null;
 
             return {
                 delegator: d.delegator,
                 delegated_hp: parseFloat(hp),
                 total_account_hp: acc ? parseFloat(vestsToHp(acc.vesting_shares)) + parseFloat(vestsToHp(acc.received_vesting_shares)) : 0,
-                last_user_post: acc ? acc.last_post : null, // Data nativa da blockchain
+                last_user_post: acc ? acc.last_post : null,
                 next_withdrawal: acc ? acc.next_vesting_withdrawal : null,
                 country_code: isBr ? "BR_CERT" : "BR",
                 token_balance: tokenBal,
-                timestamp: d.timestamp, // Data da delegação
-                last_vote_date: realLastVote, // Data corrigida do voto
-                votes_month: 0, // Depreciado, mantido para compatibilidade
+                timestamp: d.timestamp, 
+                last_vote_date: realLastVote, // Data corrigida
+                votes_month: 0, 
                 in_curation_trail: isTrail
             };
         }));
@@ -198,8 +207,6 @@ function getMonthLabel(dateObj) {
 
         // 6. Meta Data
         const totalDelegatedHp = processedList.reduce((acc, curr) => acc + curr.delegated_hp, 0);
-        
-        // Contagem de membros ativos (exclui contas zeradas que não são especiais)
         const activeMembers = processedList.filter(d => d.delegated_hp > 0).length;
 
         const metaData = {
@@ -212,7 +219,7 @@ function getMonthLabel(dateObj) {
             active_community_members: new Set([...delegations.map(d => d.delegator), ...CURATION_TRAIL_USERS]).size,
             
             votes_24h: votes24h,
-            vote_history_named: historyMap, // "Janeiro 2026": 142
+            vote_history_named: historyMap,
             
             // Legado
             votes_month_current: historyMap[curLabel] || 0,
@@ -222,8 +229,7 @@ function getMonthLabel(dateObj) {
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
 
-        // --- 7. GLOBAL HISTORY (Novo Recurso) ---
-        // Salva estatísticas diárias em formato de série temporal
+        // --- 7. GLOBAL HISTORY (Salva dados diários) ---
         let globalHistory = {};
         if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
             try {
@@ -231,18 +237,17 @@ function getMonthLabel(dateObj) {
             } catch (e) { console.warn("Erro ao ler histórico global, criando novo."); }
         }
 
-        // Chave do dia (YYYY-MM-DD local ou UTC, aqui usando UTC simplificado)
         const todayKey = new Date().toISOString().split('T')[0];
 
         globalHistory[todayKey] = {
-            total_votes: historyMap[curLabel] || 0, // Votos acumulados do mês atual
+            total_votes: historyMap[curLabel] || 0,
             trail_count: CURATION_TRAIL_USERS.length,
             active_brazilians: activeBraziliansCount,
             total_hp: parseFloat((totalDelegatedHp + projectHp).toFixed(2)),
             active_members: activeMembers
         };
 
-        // Mantém ordem cronológica (opcional, mas bom para JSON)
+        // Mantém ordem cronológica
         const sortedHistory = Object.keys(globalHistory).sort().reduce((obj, key) => { 
             obj[key] = globalHistory[key]; 
             return obj;
