@@ -1,13 +1,12 @@
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.22.0 (Feature: HAFSQL Limit 1000 + Global History)
+ * Version: 2.22.1 (Hotfix: Batched History)
  * Author: Hive BR
  * License: MIT
  * Changelog:
- * - Aumentado limite da API HAFSQL para 1000 registros (Fix Zero HP).
- * - Aumentado range de histórico de votos para 5000 (Fix Frozen Dates).
- * - Implementado salvamento de histórico global diário.
- * - Implementado contador de membros brasileiros ativos.
+ * - Fix Fatal Error: Substituída requisição única de 5000 itens por 2 lotes de 1000 (Paginação).
+ * - Mantido: HAFSQL Limit 1000.
+ * - Mantido: Global History.
  */
 
 const fetch = require("node-fetch");
@@ -19,10 +18,10 @@ const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
 const TOKEN_SYMBOL = "HBR";
 
-// HAFSQL Restored - Limit increased to 1000 as requested
+// HAFSQL Mantido (Limit 1000)
 const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=1000`;
 
-const RPC_NODES = ["https://api.hive.blog", "https://api.deathwing.me", "https://api.openhive.network"];
+const RPC_NODES = ["https://api.hive.blog", "https://api.deathwing.me", "https://api.openhive.network", "https://hive-api.arcange.eu"];
 const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 
 const CONFIG_PATH = path.join("config", "lists.json");
@@ -46,10 +45,10 @@ async function hiveCall(method, params) {
                 method: "POST",
                 body: JSON.stringify({ jsonrpc: "2.0", method, params, id: 1 }),
                 headers: { "Content-Type": "application/json" },
-                timeout: 5000
+                timeout: 10000 // Timeout aumentado para 10s
             });
             const json = await response.json();
-            if (json.result) return json.result;
+            if (json.result !== undefined) return json.result;
         } catch (e) { continue; }
     }
     throw new Error(`Falha em todos os nós RPC para ${method}`);
@@ -83,7 +82,7 @@ function getMonthLabel(dateObj) {
 
 // --- FUNÇÃO PRINCIPAL ---
 (async () => {
-    console.log(`🚀 Iniciando Hive BR Dashboard Backend v2.22.0...`);
+    console.log(`🚀 Iniciando Hive BR Dashboard Backend v2.22.1...`);
     
     try {
         // 1. Obter Cotação VESTS -> HP
@@ -104,11 +103,28 @@ function getMonthLabel(dateObj) {
             }
         });
 
-        // 3. Obter Histórico de Votos RECENTES (Range aumentado para 5000)
-        const voterHistory = await hiveCall("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 5000]);
+        // 3. Obter Histórico de Votos (PAGINADO 2x1000 = 2000)
+        // Isso evita o erro de timeout ao pedir 5000 de uma vez
+        console.log("🗳️ Analisando histórico de votos (Lote 1)...");
+        let voterHistory = await hiveCall("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 1000]);
+        
+        // Tenta pegar mais um lote mais antigo
+        if (voterHistory.length > 0) {
+            const firstId = voterHistory[0][0];
+            if (firstId > 0) {
+                console.log("🗳️ Analisando histórico de votos (Lote 2)...");
+                try {
+                    // Pega mais 1000 anteriores ao primeiro do lote atual
+                    const batch2 = await hiveCall("condenser_api.get_account_history", [VOTER_ACCOUNT, firstId - 1, 1000]);
+                    voterHistory = [...batch2, ...voterHistory]; // Combina os arrays
+                } catch (e) {
+                    console.warn("⚠️ Aviso: Falha ao buscar lote antigo de histórico. Usando apenas recente.");
+                }
+            }
+        }
+
         const lastVotesMap = {}; 
         const now = new Date();
-        
         let votes24h = 0;
         let historyMap = {}; 
 
@@ -131,7 +147,7 @@ function getMonthLabel(dateObj) {
             if (op[0] === 'vote' && op[1].voter === VOTER_ACCOUNT) {
                 const votedUser = op[1].author;
                 
-                // Mapeia o último voto para cada usuário
+                // Mapeia o último voto
                 if (!lastVotesMap[votedUser] || new Date(lastVotesMap[votedUser]) < txDate) {
                     lastVotesMap[votedUser] = timestamp;
                 }
@@ -146,8 +162,7 @@ function getMonthLabel(dateObj) {
             }
         });
 
-        // 4. Detalhes das Contas (Batch RPC) e Construção do JSON
-        // Divide em chunks de 50 para garantir estabilidade
+        // 4. Detalhes das Contas (Batch RPC)
         const delegatorNames = delegations.map(d => d.delegator);
         let accounts = [];
         const chunkSize = 50;
@@ -158,26 +173,23 @@ function getMonthLabel(dateObj) {
         }
 
         let tokenSum = 0;
-        let activeBraziliansCount = 0; // Novo contador
+        let activeBraziliansCount = 0;
 
         const processedList = await Promise.all(delegations.map(async (d) => {
             const acc = accounts.find(a => a.name === d.delegator);
             const hp = vestsToHp(d.vesting_shares || 0);
             
-            // Saldo HBR
             const tokenBal = await getHiveEngineBalance(d.delegator);
             tokenSum += tokenBal;
 
-            // Flags
             const isBr = listConfig.verificado_br.includes(d.delegator);
             const isTrail = CURATION_TRAIL_USERS.includes(d.delegator);
             
-            // Contagem de Brasileiros Ativos
             if ((isBr || d.delegator === 'hive-br') && parseFloat(hp) > 0) {
                 activeBraziliansCount++;
             }
 
-            // --- Correção de Datas ---
+            // Data corrigida pelo histórico recente
             const realLastVote = lastVotesMap[d.delegator] || null;
 
             return {
@@ -189,19 +201,16 @@ function getMonthLabel(dateObj) {
                 country_code: isBr ? "BR_CERT" : "BR",
                 token_balance: tokenBal,
                 timestamp: d.timestamp, 
-                last_vote_date: realLastVote, // Data corrigida
+                last_vote_date: realLastVote, 
                 votes_month: 0, 
                 in_curation_trail: isTrail
             };
         }));
 
-        // Ordena por HP Delegado
         processedList.sort((a, b) => b.delegated_hp - a.delegated_hp);
-
-        // Salva current.json
         fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(processedList, null, 2));
 
-        // 5. Dados do Projeto (HP Próprio)
+        // 5. Dados do Projeto
         const projectAcc = await hiveCall("condenser_api.get_accounts", [[PROJECT_ACCOUNT]]);
         const projectHp = projectAcc.length ? parseFloat(vestsToHp(projectAcc[0].vesting_shares)) : 0;
 
@@ -221,7 +230,6 @@ function getMonthLabel(dateObj) {
             votes_24h: votes24h,
             vote_history_named: historyMap,
             
-            // Legado
             votes_month_current: historyMap[curLabel] || 0,
             votes_month_prev1: historyMap[getMonthLabel(d1)] || 0,
             votes_month_prev2: historyMap[getMonthLabel(d2)] || 0
@@ -229,7 +237,7 @@ function getMonthLabel(dateObj) {
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
 
-        // --- 7. GLOBAL HISTORY (Salva dados diários) ---
+        // 7. Global History
         let globalHistory = {};
         if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
             try {
@@ -247,7 +255,6 @@ function getMonthLabel(dateObj) {
             active_members: activeMembers
         };
 
-        // Mantém ordem cronológica
         const sortedHistory = Object.keys(globalHistory).sort().reduce((obj, key) => { 
             obj[key] = globalHistory[key]; 
             return obj;
