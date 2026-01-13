@@ -1,26 +1,19 @@
 {
-<<<<<<< Updated upstream
-  "last_updated": "2026-01-10T17:35:21.337Z",
+  "last_updated": "2026-01-13T00:19:39.431Z",
   "total_delegators": 65,
-  "total_hp": 41390.58699999999,
-  "project_account_hp": 14277.42568509694,
-=======
-  "last_updated": "2026-01-10T17:35:34.390Z",
-  "total_delegators": 65,
-  "total_hp": 41390.59099999999,
-  "project_account_hp": 14277.425932369528,
->>>>>>> Stashed changes
-  "total_hbr_staked": 4937.235025509999,
-  "curation_trail_count": 85,
-  "active_community_members": 314,
-  "votes_24h": 15,
+  "total_hp": 41397.29,
+  "project_account_hp": 14279.736556679925,
+  "total_hbr_staked": 4937.281025509999,
+  "curation_trail_count": 82,
+  "active_community_members": 313,
+  "votes_24h": 8,
   "vote_history_named": {
-    "Janeiro 2026": 117,
+    "Janeiro 2026": 142,
     "Dezembro 2025": 351,
     "Novembro 2025": 405,
-    "Outubro 2025": 266
+    "Outubro 2025": 232
   },
-  "votes_month_current": 117,
+  "votes_month_current": 142,
   "votes_month_prev1": 351,
   "votes_month_prev2": 405
 }
