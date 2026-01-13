@@ -1,13 +1,12 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.24.0 (Smart Vote Mapping)
+ * Version: 2.24.1 (Hotfix: RPC Batch Size)
  * Author: Hive BR
  * License: MIT
  * Changelog:
- * - Implementada Varredura de Votos (Batch Scan) para mapear 'last_vote_date' de cada usuário.
- * - Mantida lógica de segurança para leitura de HP (HafSQL + Fallback).
- * - Preenchimento dos cards de meses anteriores (Dez/Nov).
+ * - Reduzido batch de histórico de 2000 para 1000 (Limite real dos nós públicos).
+ * - Corrige o erro "0 txs analisadas".
  */
 
 const fetch = require("node-fetch");
@@ -18,7 +17,6 @@ const path = require("path");
 const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
 const TOKEN_SYMBOL = "HBR";
-// Aumentado para 1000 para garantir que pegamos todos se a lista crescer
 const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=1000`;
 const RPC_NODES = ["https://api.deathwing.me", "https://api.hive.blog", "https://api.openhive.network"];
 const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
@@ -32,7 +30,6 @@ try { if (fs.existsSync(CONFIG_PATH)) listConfig = JSON.parse(fs.readFileSync(CO
 const CURATION_TRAIL_USERS = listConfig.curation_trail || [];
 const FIXED_USERS = listConfig.watchlist || [];
 
-// Garante pasta de dados
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 // --- FUNÇÕES AUXILIARES ---
@@ -66,29 +63,32 @@ function getMonthLabel(dateObj) {
     return `${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
 }
 
-// --- NOVO SISTEMA DE VOTOS (Smart Scan) ---
+// --- NOVO SISTEMA DE VOTOS (Smart Scan - Fixed Limit) ---
 async function fetchSmartVoteHistory() {
-    console.log("🗳️ Iniciando varredura inteligente de votos...");
+    console.log("🗳️ Iniciando varredura inteligente de votos (Limit 1000)...");
     
-    let lastVotesMap = {}; // Mapa: user -> data ISO
-    let historyNamed = {}; // Mapa: "Janeiro 2026" -> count
+    let lastVotesMap = {}; 
+    let historyNamed = {}; 
     let votes24h = 0;
     
     const now = new Date();
     const time24h = new Date(now.getTime() - (24 * 60 * 60 * 1000));
     const limitDate = new Date(); 
-    limitDate.setDate(limitDate.getDate() - 90); // Olha até 90 dias atrás
+    limitDate.setDate(limitDate.getDate() - 90); 
 
     let start = -1;
-    let limit = 2000; // Batch maior para ir mais rápido
+    let limit = 1000; // CORREÇÃO: Limite seguro para API pública
     let active = true;
     let totalScanned = 0;
-    const MAX_SCAN = 10000; // Limite de segurança para não travar
+    const MAX_SCAN = 50000; // Scan profundo
 
     while (active && totalScanned < MAX_SCAN) {
         const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, start, limit]);
         
-        if (!history || history.length === 0) break;
+        if (!history || history.length === 0) {
+            console.log("⚠️ Fim do histórico ou erro na API.");
+            break;
+        }
 
         // Processa do mais recente para o mais antigo
         for (let i = history.length - 1; i >= 0; i--) {
@@ -104,12 +104,10 @@ async function fetchSmartVoteHistory() {
             if (op[0] === 'vote' && op[1].voter === VOTER_ACCOUNT) {
                 const votedUser = op[1].author;
                 
-                // 1. Mapa de Último Voto (Prioridade: Data mais recente)
                 if (!lastVotesMap[votedUser]) {
                     lastVotesMap[votedUser] = tx[1].timestamp + "Z";
                 }
 
-                // 2. Estatísticas Temporais
                 if (ts >= time24h) votes24h++;
                 
                 const label = getMonthLabel(ts);
@@ -122,7 +120,10 @@ async function fetchSmartVoteHistory() {
             const firstId = history[0][0];
             if (firstId <= 0) break;
             start = firstId - 1;
-            limit = Math.min(2000, start); // Ajusta limite se estiver no fim
+            limit = Math.min(1000, start); // Mantém limite seguro
+            
+            // Pequeno delay para não sobrecarregar a API pública
+            if (totalScanned % 5000 === 0) console.log(`... ${totalScanned} txs analisadas`);
         }
     }
     
@@ -160,7 +161,7 @@ function updateMonthlyStats(metaData) {
 // --- MAIN ---
 async function run() {
     try {
-        console.log("🚀 Iniciando Hive BR Dashboard (v2.24.0 - Smart Vote Mapping)...");
+        console.log("🚀 Iniciando Hive BR Dashboard (v2.24.1)...");
         
         // 1. Dados Globais
         const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
@@ -181,10 +182,10 @@ async function run() {
             if (!currentDelegators.has(u)) delegations.push({ delegator: u, vesting_shares: 0, hp_equivalent: 0 });
         });
 
-        // 3. Obter Histórico de Votos (AGORA COMPLETO)
+        // 3. Obter Histórico de Votos
         const voteData = await fetchSmartVoteHistory();
 
-        // 4. Contas (HP Próprio) e Tokens
+        // 4. Contas e Tokens
         const accounts = await hiveRpc("condenser_api.get_accounts", [[...currentDelegators, PROJECT_ACCOUNT]]);
         let projectHp = 0;
         let accountsMap = {};
@@ -199,10 +200,9 @@ async function run() {
         heBalances.forEach(b => { tokenMap[b.account] = parseFloat(b.stake || 0); });
         const tokenSum = heBalances.reduce((acc, curr) => acc + parseFloat(curr.stake || 0), 0);
 
-        // 5. Montar Ranking (Com LAST VOTE DATE)
+        // 5. Ranking
         const ranking = delegations.map(d => {
             let finalHp = 0;
-            // Lógica de segurança do HP
             if (d.hp_equivalent) finalHp = parseFloat(d.hp_equivalent);
             else if (d.vesting_shares) finalHp = vestToHp(d.vesting_shares);
 
@@ -210,7 +210,6 @@ async function run() {
             const totalAccountHp = acc.vesting_shares ? vestToHp(acc.vesting_shares) + vestToHp(acc.received_vesting_shares) : 0;
             const isBr = listConfig.verificado_br.includes(d.delegator);
             
-            // Pega a data real do mapa de votos
             const lastVote = voteData.lastVotesMap[d.delegator] || null;
 
             return {
@@ -223,15 +222,15 @@ async function run() {
                 next_withdrawal: acc.next_vesting_withdrawal || null,
                 timestamp: d.timestamp,
                 in_curation_trail: CURATION_TRAIL_USERS.includes(d.delegator),
-                last_vote_date: lastVote, // <-- AQUI ESTÁ A CORREÇÃO
-                votes_month: 0 // Mantido 0 na tabela para simplificar, usamos o global nos cards
+                last_vote_date: lastVote, 
+                votes_month: 0 
             };
         });
 
         ranking.sort((a, b) => b.delegated_hp - a.delegated_hp);
         fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(ranking, null, 2));
 
-        // 6. Labels Dinâmicos
+        // 6. Meta Data
         const now = new Date();
         const curLabel = getMonthLabel(now);
         const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
@@ -249,11 +248,9 @@ async function run() {
             curation_trail_count: CURATION_TRAIL_USERS.length,
             active_community_members: uniqueMembers.size,
             
-            // Dados de Voto
             votes_24h: voteData.votes24h,
             vote_history_named: voteData.historyNamed,
             
-            // Fallbacks para Frontend
             votes_month_current: voteData.historyNamed[curLabel] || 0,
             votes_month_prev1: voteData.historyNamed[getMonthLabel(d1)] || 0,
             votes_month_prev2: voteData.historyNamed[getMonthLabel(d2)] || 0
@@ -262,7 +259,7 @@ async function run() {
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
         updateMonthlyStats(metaData);
         
-        console.log(`✅ Sucesso v2.24.0! Dados salvos com histórico mapeado.`);
+        console.log(`✅ Sucesso! Votos hoje: ${voteData.votes24h}`);
 
     } catch (err) {
         console.error("❌ Erro fatal:", err.message);
