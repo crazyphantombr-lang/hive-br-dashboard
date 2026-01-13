@@ -1,3 +1,4 @@
+// File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
  * Version: 2.23.0 (Hybrid Failover Architecture)
@@ -6,7 +7,7 @@
  * Changelog:
  * - Implementada estratégia de Tripla Camada para Delegações:
  * 1. HafSQL (1000) -> 2. HafSQL (300) -> 3. Native RPC.
- * - Mantida correção de datas de votos (Unfreeze) com paginação segura.
+ * - Mantida correção de datas de votos (Unfreeze) com paginação segura (2x1000).
  * - Mantido Histórico Global e Contador de Brasileiros.
  */
 
