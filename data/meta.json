@@ -1,9 +1,10 @@
 {
-  "last_updated": "2026-01-13T01:11:46.631Z",
+  "last_updated": "2026-01-13T01:18:07.418Z",
+  "data_source": "HAFSQL",
   "total_delegators": 0,
   "total_hp": 0,
-  "project_account_hp": 14279.774,
-  "total_hbr_staked": 529.0110000000001,
+  "project_account_hp": 14279.778,
+  "total_hbr_staked": 393.656,
   "curation_trail_count": 82,
   "active_community_members": 313,
   "votes_24h": 7,
