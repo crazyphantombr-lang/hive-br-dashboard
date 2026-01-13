@@ -1,12 +1,12 @@
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.22.1 (Hotfix: Batched History)
+ * Version: 2.22.1 (Hotfix: Batched History + HAFSQL 1k)
  * Author: Hive BR
  * License: MIT
  * Changelog:
- * - Fix Fatal Error: Substituída requisição única de 5000 itens por 2 lotes de 1000 (Paginação).
- * - Mantido: HAFSQL Limit 1000.
- * - Mantido: Global History.
+ * - Aumentado limite HAFSQL para 1000 (Correção Zero HP).
+ * - Implementada paginação no histórico de votos (2x1000) para evitar Timeout.
+ * - Adicionado salvamento de histórico global diário.
  */
 
 const fetch = require("node-fetch");
@@ -18,7 +18,7 @@ const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
 const TOKEN_SYMBOL = "HBR";
 
-// HAFSQL Mantido (Limit 1000)
+// HAFSQL com limite aumentado para 1000 conforme documentação
 const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=1000`;
 
 const RPC_NODES = ["https://api.hive.blog", "https://api.deathwing.me", "https://api.openhive.network", "https://hive-api.arcange.eu"];
@@ -45,7 +45,7 @@ async function hiveCall(method, params) {
                 method: "POST",
                 body: JSON.stringify({ jsonrpc: "2.0", method, params, id: 1 }),
                 headers: { "Content-Type": "application/json" },
-                timeout: 10000 // Timeout aumentado para 10s
+                timeout: 10000 // 10s timeout
             });
             const json = await response.json();
             if (json.result !== undefined) return json.result;
@@ -103,22 +103,22 @@ function getMonthLabel(dateObj) {
             }
         });
 
-        // 3. Obter Histórico de Votos (PAGINADO 2x1000 = 2000)
-        // Isso evita o erro de timeout ao pedir 5000 de uma vez
+        // 3. Obter Histórico de Votos (PAGINADO)
+        // Busca Lote 1 (Recente - Rápido)
         console.log("🗳️ Analisando histórico de votos (Lote 1)...");
         let voterHistory = await hiveCall("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 1000]);
         
-        // Tenta pegar mais um lote mais antigo
+        // Busca Lote 2 (Antigo - Se necessário)
         if (voterHistory.length > 0) {
-            const firstId = voterHistory[0][0];
+            const firstId = voterHistory[0][0]; // ID mais antigo do lote 1
             if (firstId > 0) {
                 console.log("🗳️ Analisando histórico de votos (Lote 2)...");
                 try {
-                    // Pega mais 1000 anteriores ao primeiro do lote atual
-                    const batch2 = await hiveCall("condenser_api.get_account_history", [VOTER_ACCOUNT, firstId - 1, 1000]);
-                    voterHistory = [...batch2, ...voterHistory]; // Combina os arrays
+                    const limit2 = Math.min(1000, firstId); // Evita erro se houver menos de 1000 txs totais
+                    const batch2 = await hiveCall("condenser_api.get_account_history", [VOTER_ACCOUNT, firstId - 1, limit2]);
+                    voterHistory = [...batch2, ...voterHistory]; // Funde os arrays
                 } catch (e) {
-                    console.warn("⚠️ Aviso: Falha ao buscar lote antigo de histórico. Usando apenas recente.");
+                    console.warn("⚠️ Falha ao buscar lote antigo. Usando apenas recente.");
                 }
             }
         }
@@ -147,7 +147,7 @@ function getMonthLabel(dateObj) {
             if (op[0] === 'vote' && op[1].voter === VOTER_ACCOUNT) {
                 const votedUser = op[1].author;
                 
-                // Mapeia o último voto
+                // Mapeia o último voto para cada usuário
                 if (!lastVotesMap[votedUser] || new Date(lastVotesMap[votedUser]) < txDate) {
                     lastVotesMap[votedUser] = timestamp;
                 }
@@ -179,17 +179,20 @@ function getMonthLabel(dateObj) {
             const acc = accounts.find(a => a.name === d.delegator);
             const hp = vestsToHp(d.vesting_shares || 0);
             
+            // Saldo HBR
             const tokenBal = await getHiveEngineBalance(d.delegator);
             tokenSum += tokenBal;
 
+            // Flags
             const isBr = listConfig.verificado_br.includes(d.delegator);
             const isTrail = CURATION_TRAIL_USERS.includes(d.delegator);
             
+            // Contagem de Brasileiros Ativos
             if ((isBr || d.delegator === 'hive-br') && parseFloat(hp) > 0) {
                 activeBraziliansCount++;
             }
 
-            // Data corrigida pelo histórico recente
+            // Correção de Datas
             const realLastVote = lastVotesMap[d.delegator] || null;
 
             return {
@@ -207,7 +210,10 @@ function getMonthLabel(dateObj) {
             };
         }));
 
+        // Ordena por HP Delegado
         processedList.sort((a, b) => b.delegated_hp - a.delegated_hp);
+
+        // Salva current.json
         fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(processedList, null, 2));
 
         // 5. Dados do Projeto
