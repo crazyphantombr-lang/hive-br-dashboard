@@ -1,12 +1,13 @@
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.22.2 (Stability: Failover System)
+ * Version: 2.23.0 (Hybrid Failover Architecture)
  * Author: Hive BR
  * License: MIT
  * Changelog:
- * - Implementado sistema de Redundância (Failover): Tenta HafSQL -> Se falhar/vazio -> Usa RPC Nativo.
- * - Mantido: Paginação de histórico (2x1000) para corrigir datas congeladas sem timeout.
- * - Mantido: Histórico Global e Contador de Brasileiros.
+ * - Implementada estratégia de Tripla Camada para Delegações:
+ * 1. HafSQL (1000) -> 2. HafSQL (300) -> 3. Native RPC.
+ * - Mantida correção de datas de votos (Unfreeze) com paginação segura.
+ * - Mantido Histórico Global e Contador de Brasileiros.
  */
 
 const fetch = require("node-fetch");
@@ -18,8 +19,8 @@ const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
 const TOKEN_SYMBOL = "HBR";
 
-// Fontes de Dados
-const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=1000`;
+// Endpoints
+const HAF_BASE = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming`;
 const RPC_NODES = [
     "https://api.deathwing.me",
     "https://api.hive.blog", 
@@ -49,14 +50,11 @@ async function hiveCall(method, params) {
                 method: "POST",
                 body: JSON.stringify({ jsonrpc: "2.0", method, params, id: 1 }),
                 headers: { "Content-Type": "application/json" },
-                timeout: 10000 // 10s
+                timeout: 10000 
             });
             const json = await response.json();
             if (json.result !== undefined) return json.result;
-        } catch (e) { 
-            // Falha silenciosa para tentar próximo node
-            continue; 
-        }
+        } catch (e) { continue; }
     }
     throw new Error(`Falha em todos os nós RPC para ${method}`);
 }
@@ -89,7 +87,7 @@ function getMonthLabel(dateObj) {
 
 // --- FUNÇÃO PRINCIPAL ---
 (async () => {
-    console.log(`🚀 Iniciando Hive BR Dashboard Backend v2.22.2...`);
+    console.log(`🚀 Iniciando Hive BR Dashboard Backend v2.23.0...`);
     
     try {
         // 1. Obter Cotação VESTS -> HP
@@ -97,77 +95,76 @@ function getMonthLabel(dateObj) {
         const totalVests = parseFloat(props.total_vesting_shares);
         const totalFund = parseFloat(props.total_vesting_fund_hive);
         
-        // Helper robusto para converter VESTS (aceita string "X VESTS" ou float)
         const vestsToHp = (val) => {
-            let vestValue = 0;
-            if (typeof val === 'string') {
-                vestValue = parseFloat(val.replace(' VESTS', ''));
-            } else {
-                vestValue = parseFloat(val);
-            }
+            let vestValue = (typeof val === 'string') ? parseFloat(val.replace(' VESTS', '')) : parseFloat(val);
             return (vestValue * totalFund / totalVests).toFixed(3);
         };
 
-        // 2. Obter Delegações (SISTEMA DE FAILOVER)
+        // 2. Obter Delegações (SISTEMA HÍBRIDO DE FAILOVER)
         let delegations = [];
         let sourceUsed = "NONE";
 
-        // TENTATIVA 1: HAFSQL
+        // --> TENTATIVA 1: HafSQL Full (Limit 1000)
         try {
-            console.log("📡 Tentando HAFSQL...");
-            const res = await fetch(HAF_API);
-            const hafdata = await res.json();
+            console.log("📡 [1/3] Tentando HafSQL (Limit 1000)...");
+            const res = await fetch(`${HAF_BASE}?limit=1000`);
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+                delegations = data;
+                sourceUsed = "HAFSQL_1000";
+            } else { throw new Error("Vazio"); }
+        } catch (e1) {
+            console.warn(`⚠️ Falha Tentativa 1: ${e1.message}`);
             
-            if (Array.isArray(hafdata) && hafdata.length > 0) {
-                delegations = hafdata;
-                sourceUsed = "HAFSQL";
-                console.log(`✅ HAFSQL respondeu com ${delegations.length} delegadores.`);
-            } else {
-                throw new Error("HAFSQL retornou lista vazia.");
-            }
-        } catch (e) {
-            console.warn(`⚠️ HAFSQL falhou: ${e.message}`);
-            
-            // TENTATIVA 2: RPC NATIVO (FALLBACK)
+            // --> TENTATIVA 2: HafSQL Lite (Limit 300 - Igual v2.20.0)
             try {
-                console.log("🔄 Ativando Fallback para RPC Nativo...");
-                const nativeData = await hiveCall("condenser_api.get_vesting_delegations", [VOTER_ACCOUNT, "", 1000]);
-                
-                // Normaliza para o formato do script
-                delegations = nativeData.map(d => ({
-                    delegator: d.delegator,
-                    vesting_shares: d.vesting_shares, // formato string "VESTS"
-                    timestamp: d.min_delegation_time
-                }));
-                sourceUsed = "NATIVE_RPC";
-                console.log(`✅ Fallback recuperou ${delegations.length} delegadores.`);
-            } catch (fatal) {
-                throw new Error("❌ Todas as fontes de dados de delegação falharam.");
+                console.log("📡 [2/3] Tentando HafSQL (Limit 300)...");
+                const res = await fetch(`${HAF_BASE}?limit=300`);
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    delegations = data;
+                    sourceUsed = "HAFSQL_300";
+                } else { throw new Error("Vazio"); }
+            } catch (e2) {
+                console.warn(`⚠️ Falha Tentativa 2: ${e2.message}`);
+
+                // --> TENTATIVA 3: RPC Nativo (Último Recurso)
+                try {
+                    console.log("🔄 [3/3] Ativando RPC Nativo...");
+                    const nativeData = await hiveCall("condenser_api.get_vesting_delegations", [VOTER_ACCOUNT, "", 1000]);
+                    delegations = nativeData.map(d => ({
+                        delegator: d.delegator,
+                        vesting_shares: d.vesting_shares,
+                        timestamp: d.min_delegation_time
+                    }));
+                    sourceUsed = "NATIVE_RPC";
+                } catch (fatal) {
+                    throw new Error("❌ CRÍTICO: Todas as fontes falharam.");
+                }
             }
         }
 
-        // Adiciona usuários da watchlist se não estiverem na lista
+        console.log(`✅ Fonte de Dados Definida: ${sourceUsed} (${delegations.length} registros)`);
+
+        // Adiciona watchlist
         FIXED_USERS.forEach(u => {
             if (!delegations.find(d => d.delegator === u)) {
                 delegations.push({ delegator: u, vesting_shares: 0, timestamp: null });
             }
         });
 
-        // 3. Obter Histórico de Votos (PAGINADO)
-        console.log("🗳️ Analisando histórico de votos (Lote 1)...");
+        // 3. Histórico de Votos (Paginação Segura: 2000 txs)
+        console.log("🗳️ Analisando histórico de votos...");
         let voterHistory = await hiveCall("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 1000]);
         
         if (voterHistory.length > 0) {
             const firstId = voterHistory[0][0];
             if (firstId > 0) {
-                console.log("🗳️ Analisando histórico de votos (Lote 2)...");
                 try {
                     const limit2 = Math.min(1000, firstId);
                     const batch2 = await hiveCall("condenser_api.get_account_history", [VOTER_ACCOUNT, firstId - 1, limit2]);
                     voterHistory = [...batch2, ...voterHistory];
-                } catch (e) {
-                    console.warn("⚠️ Falha ao buscar lote antigo. Usando apenas recente.");
-                }
+                } catch (e) { console.warn("⚠️ Aviso: Histórico antigo parcial."); }
             }
         }
 
@@ -175,12 +172,13 @@ function getMonthLabel(dateObj) {
         const now = new Date();
         let votes24h = 0;
         let historyMap = {}; 
-
         const curLabel = getMonthLabel(new Date());
-        historyMap[curLabel] = 0;
         const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
-        historyMap[getMonthLabel(d1)] = 0;
         const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
+
+        // Inicializa contadores
+        historyMap[curLabel] = 0;
+        historyMap[getMonthLabel(d1)] = 0;
         historyMap[getMonthLabel(d2)] = 0;
 
         const time24h = new Date(now.getTime() - (24 * 60 * 60 * 1000));
@@ -196,14 +194,13 @@ function getMonthLabel(dateObj) {
                     lastVotesMap[votedUser] = timestamp;
                 }
                 if (txDate >= time24h) votes24h++;
-                
                 const label = getMonthLabel(txDate);
                 if (!historyMap[label]) historyMap[label] = 0;
                 historyMap[label]++;
             }
         });
 
-        // 4. Detalhes das Contas (Batch)
+        // 4. Detalhes das Contas
         const delegatorNames = delegations.map(d => d.delegator);
         let accounts = [];
         const chunkSize = 50;
@@ -230,8 +227,6 @@ function getMonthLabel(dateObj) {
                 activeBraziliansCount++;
             }
 
-            const realLastVote = lastVotesMap[d.delegator] || null;
-
             return {
                 delegator: d.delegator,
                 delegated_hp: parseFloat(hp),
@@ -241,26 +236,24 @@ function getMonthLabel(dateObj) {
                 country_code: isBr ? "BR_CERT" : "BR",
                 token_balance: tokenBal,
                 timestamp: d.timestamp,
-                last_vote_date: realLastVote,
+                last_vote_date: lastVotesMap[d.delegator] || null,
                 votes_month: 0,
                 in_curation_trail: isTrail
             };
         }));
 
         processedList.sort((a, b) => b.delegated_hp - a.delegated_hp);
-
         fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(processedList, null, 2));
 
         // 5. Meta Data
         const projectAcc = accounts.find(a => a.name === PROJECT_ACCOUNT) || await hiveCall("condenser_api.get_accounts", [[PROJECT_ACCOUNT]]).then(r => r[0]);
         const projectHp = projectAcc ? parseFloat(vestsToHp(projectAcc.vesting_shares)) : 0;
-
         const totalDelegatedHp = processedList.reduce((acc, curr) => acc + curr.delegated_hp, 0);
         const activeMembers = processedList.filter(d => d.delegated_hp > 0).length;
 
         const metaData = {
             last_updated: new Date().toISOString(),
-            data_source: sourceUsed, // Debug info
+            data_source: sourceUsed,
             total_delegators: activeMembers,
             total_hp: totalDelegatedHp,
             project_account_hp: projectHp,
@@ -281,7 +274,7 @@ function getMonthLabel(dateObj) {
         if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
             try { globalHistory = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE)); } catch (e) {}
         }
-
+        
         const todayKey = new Date().toISOString().split('T')[0];
         globalHistory[todayKey] = {
             total_votes: historyMap[curLabel] || 0,
@@ -290,15 +283,10 @@ function getMonthLabel(dateObj) {
             total_hp: parseFloat((totalDelegatedHp + projectHp).toFixed(2)),
             active_members: activeMembers
         };
-
-        const sortedHistory = Object.keys(globalHistory).sort().reduce((obj, key) => { 
-            obj[key] = globalHistory[key]; return obj; 
-        }, {});
-
+        const sortedHistory = Object.keys(globalHistory).sort().reduce((obj, key) => { obj[key] = globalHistory[key]; return obj; }, {});
         fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(sortedHistory, null, 2));
         
-        console.log(`✅ Sucesso (${sourceUsed})! Delegado: ${totalDelegatedHp.toFixed(0)} HP | Membros: ${activeMembers}`);
-
+        console.log("✅ Dados atualizados com sucesso!");
     } catch (err) {
         console.error("❌ Erro fatal:", err);
         process.exit(1);
