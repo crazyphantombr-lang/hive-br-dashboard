@@ -1,13 +1,13 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.23.0 (Feature: Active Brazilians Card)
+ * Version: 2.23.1 (Fix: Restore Activity Panel)
  * Author: Hive BR
  * License: MIT
- * Description: Adiciona suporte para exibição do card de Brasileiros Ativos e mantém correções de data.
+ * Description: Restaura a leitura de 'ranking_history.json' para exibir o painel de alterações.
  */
 
-const FRONTEND_VERSION = "2.23.0";
+const FRONTEND_VERSION = "2.23.1";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -16,19 +16,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadData() {
     try {
-        const [metaRes, currentRes] = await Promise.all([
+        // 1. Carrega TODOS os arquivos necessários (incluindo histórico)
+        const [metaRes, currentRes, historyRes] = await Promise.all([
             fetch('data/meta.json'),
-            fetch('data/current.json')
+            fetch('data/current.json'),
+            fetch('data/ranking_history.json')
         ]);
 
-        if (!metaRes.ok || !currentRes.ok) throw new Error("Falha ao carregar JSONs");
+        if (!metaRes.ok || !currentRes.ok) throw new Error("Falha ao carregar dados essenciais");
 
         const meta = await metaRes.json();
         const ranking = await currentRes.json();
+        
+        // Histórico é opcional (se falhar, o site ainda abre, só não mostra o painel)
+        const historyData = historyRes.ok ? await historyRes.json() : {};
 
         renderMeta(meta);
         renderTable(ranking);
         renderGraphs(ranking);
+        renderRecentActivity(ranking, historyData); // <-- Restaurado
 
     } catch (err) {
         console.error("Erro ao carregar dados:", err);
@@ -37,7 +43,7 @@ async function loadData() {
 }
 
 function renderMeta(meta) {
-    // 1. Traceability
+    // Traceability
     const dateStr = new Date(meta.last_updated).toLocaleString('pt-BR');
     const backendVer = meta.versions ? meta.versions.backend : "vLegacy";
     
@@ -51,27 +57,19 @@ function renderMeta(meta) {
         `;
     }
 
-    // 2. Cards Principais
     updateSafe('stat-community-power', formatNumber(meta.total_hp) + " HP");
     updateSafe('stat-own-hp', formatNumber(meta.project_account_hp) + " HP");
     updateSafe('stat-delegated-hp', formatNumber(meta.total_hp - meta.project_account_hp) + " HP");
     updateSafe('stat-count', meta.total_delegators);
-
-    // --- NOVA FEATURE: Card de Brasileiros Ativos ---
-    // Exibe o número calculado pelo backend (Filtro: BR_CERT/BR + HP > 0)
     updateSafe('stat-active-br', meta.active_brazilians || 0);
 
-    // 3. Votos e Trail
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const now = new Date();
     
-    const curMonthName = monthNames[now.getMonth()] + " " + now.getFullYear();
-    updateSafe('lbl-votes-current', curMonthName.toUpperCase());
-    
+    updateSafe('lbl-votes-current', (monthNames[now.getMonth()] + " " + now.getFullYear()).toUpperCase());
     updateSafe('stat-votes-current', meta.votes_month_current || 0);
     updateSafe('stat-trail-count', meta.curation_trail_count || 0);
 
-    // 4. Histórico Recente
     const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
     const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
     
@@ -81,6 +79,72 @@ function renderMeta(meta) {
     updateSafe('stat-votes-m1', meta.votes_month_prev1 || 0);
     updateSafe('stat-votes-m2', meta.votes_month_prev2 || 0);
     updateSafe('stat-votes-24h', meta.votes_24h || 0); 
+}
+
+// --- FUNÇÃO RESTAURADA: ATIVIDADE RECENTE ---
+function renderRecentActivity(delegations, historyData) {
+    const container = document.getElementById("activity-panel");
+    const tbody = document.getElementById("activity-body");
+    if(!container || !tbody) return;
+
+    const changes = [];
+    const NOISE_THRESHOLD = 5.0; // Mínimo de mudança para aparecer (5 HP)
+    const DAYS_BACK = 7; 
+
+    delegations.forEach(user => {
+      const hist = historyData[user.delegator];
+      if (hist) {
+        const dates = Object.keys(hist).sort();
+        if (dates.length >= 2) {
+          const latestIndex = dates.length - 1;
+          // Pega o registro de X dias atrás (ou o mais antigo disponível)
+          let compareIndex = latestIndex - DAYS_BACK;
+          if (compareIndex < 0) compareIndex = 0;
+          
+          // Se só tem 1 dia de registro, não tem como comparar
+          if (compareIndex === latestIndex) return;
+
+          const todayHP = hist[dates[latestIndex]];
+          const pastHP = hist[dates[compareIndex]];
+          const diff = todayHP - pastHP;
+
+          if (Math.abs(diff) >= NOISE_THRESHOLD) {
+            changes.push({ name: user.delegator, old: pastHP, new: todayHP, diff: diff });
+          }
+        }
+      }
+    });
+
+    if (changes.length === 0) { 
+        container.style.display = "none"; 
+        return; 
+    }
+
+    container.style.display = "block";
+    changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff)); // Ordena por magnitude
+    tbody.innerHTML = "";
+
+    // Mostra Top 10 mudanças
+    changes.slice(0, 10).forEach(change => {
+      const tr = document.createElement("tr");
+      const diffClass = change.diff > 0 ? "diff-positive" : "diff-negative"; // CSS precisa ter essas classes
+      const signal = change.diff > 0 ? "+" : "";
+      
+      // Estilo inline para garantir funcionamento imediato
+      const color = change.diff > 0 ? "#4dff91" : "#ff4d4d";
+
+      tr.innerHTML = `
+        <td>
+            <a href="https://peakd.com/@${change.name}" target="_blank" style="color:inherit; text-decoration:none;">
+                @${change.name}
+            </a>
+        </td>
+        <td style="color:#888;">${Math.floor(change.old)}</td>
+        <td style="font-weight:bold">${Math.floor(change.new)}</td>
+        <td style="color:${color}; font-weight:bold;">${signal}${Math.floor(change.diff)} HP</td>
+      `;
+      tbody.appendChild(tr);
+    });
 }
 
 function renderTable(data) {
@@ -105,7 +169,6 @@ function renderTable(data) {
         const lastVote = user.last_vote_date ? timeAgo(user.last_vote_date) : '<span style="color:#666; font-size:0.8em; opacity:0.5; font-weight:bold;">SEM DADOS</span>';
         const lastActivity = user.last_user_post ? timeAgo(user.last_user_post) : '<span style="color:#444; font-size:0.85em">Sem posts</span>';
 
-        // Lógica de Power Down (Datas Filtradas)
         const pdDate = user.next_withdrawal;
         let pdHtml = '<span style="opacity:0.2">—</span>';
         if (pdDate && !pdDate.startsWith("1969") && !pdDate.startsWith("1970")) {
