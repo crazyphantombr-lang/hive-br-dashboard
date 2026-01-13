@@ -1,13 +1,13 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.22.1 (Hotfix: Power Down Date Logic)
+ * Version: 2.23.0 (Feature: Active Brazilians Card)
  * Author: Hive BR
  * License: MIT
- * Description: Adiciona filtro para datas de Power Down (ignora 1969/1970) e formata exibição.
+ * Description: Adiciona suporte para exibição do card de Brasileiros Ativos e mantém correções de data.
  */
 
-const FRONTEND_VERSION = "2.22.1";
+const FRONTEND_VERSION = "2.23.0";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadData() {
     try {
-        // Carrega metadados e ranking em paralelo
         const [metaRes, currentRes] = await Promise.all([
             fetch('data/meta.json'),
             fetch('data/current.json')
@@ -38,7 +37,7 @@ async function loadData() {
 }
 
 function renderMeta(meta) {
-    // 1. Atualiza Data e Versões (Traceability)
+    // 1. Traceability
     const dateStr = new Date(meta.last_updated).toLocaleString('pt-BR');
     const backendVer = meta.versions ? meta.versions.backend : "vLegacy";
     
@@ -52,25 +51,27 @@ function renderMeta(meta) {
         `;
     }
 
-    // 2. Cards Superiores (HP e Delegadores)
+    // 2. Cards Principais
     updateSafe('stat-community-power', formatNumber(meta.total_hp) + " HP");
     updateSafe('stat-own-hp', formatNumber(meta.project_account_hp) + " HP");
     updateSafe('stat-delegated-hp', formatNumber(meta.total_hp - meta.project_account_hp) + " HP");
     updateSafe('stat-count', meta.total_delegators);
 
-    // 3. Cards de Destaque (Votos e Trail)
+    // --- NOVA FEATURE: Card de Brasileiros Ativos ---
+    // Exibe o número calculado pelo backend (Filtro: BR_CERT/BR + HP > 0)
+    updateSafe('stat-active-br', meta.active_brazilians || 0);
+
+    // 3. Votos e Trail
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const now = new Date();
     
-    // Label Mês Atual
     const curMonthName = monthNames[now.getMonth()] + " " + now.getFullYear();
     updateSafe('lbl-votes-current', curMonthName.toUpperCase());
     
-    // Valores de Votos
     updateSafe('stat-votes-current', meta.votes_month_current || 0);
     updateSafe('stat-trail-count', meta.curation_trail_count || 0);
 
-    // 4. Cards Inferiores (Histórico Recente)
+    // 4. Histórico Recente
     const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
     const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
     
@@ -87,7 +88,6 @@ function renderTable(data) {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    // Ordena por HP Delegado (Decrescente)
     data.sort((a, b) => b.delegated_hp - a.delegated_hp);
 
     data.forEach((user, index) => {
@@ -95,31 +95,24 @@ function renderTable(data) {
         row.className = 'delegator-row';
         row.dataset.name = user.delegator;
 
-        // Cálculos de Tempo
         const days = calculateDays(user.timestamp);
         const daysLabel = days === null ? '<span style="opacity:0.5">-</span>' : `${days} dias`;
         
-        // Flags e Badges
         const isBr = user.country_code === 'BR_CERT';
         const flag = isBr ? '<span title="Brasileiro Verificado" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>' : '<span class="flag-bw" title="Pendente" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>';
         const veteranBadge = (days > 365) ? ' <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>' : '';
 
-        // Formatação de Datas (Atividade e Voto)
         const lastVote = user.last_vote_date ? timeAgo(user.last_vote_date) : '<span style="color:#666; font-size:0.8em; opacity:0.5; font-weight:bold;">SEM DADOS</span>';
         const lastActivity = user.last_user_post ? timeAgo(user.last_user_post) : '<span style="color:#444; font-size:0.85em">Sem posts</span>';
 
-        // --- LÓGICA DE POWER DOWN (Recuperada da v2.18.3) ---
+        // Lógica de Power Down (Datas Filtradas)
         const pdDate = user.next_withdrawal;
         let pdHtml = '<span style="opacity:0.2">—</span>';
-        
-        // Filtra explicitamente datas inválidas ou padrão epoch (1969/1970)
         if (pdDate && !pdDate.startsWith("1969") && !pdDate.startsWith("1970")) {
              const dateObj = new Date(pdDate);
-             // Mostra: 📉 15/01/2026
              pdHtml = `<span style="color:#ff4d4d; font-size:0.85em;">📉 ${dateObj.toLocaleDateString("pt-BR")}</span>`;
         }
 
-        // Bônus (Visual)
         const hpVal = user.delegated_hp;
         let bonusBadge = '<span style="opacity:0.3; font-size:0.8em">—</span>';
         if (hpVal >= 1000) bonusBadge = '<span class="bonus-tag bonus-gold">+20%</span>';
@@ -127,7 +120,6 @@ function renderTable(data) {
         else if (hpVal >= 100) bonusBadge = '<span class="bonus-tag bonus-bronze">+10%</span>';
         else if (hpVal >= 50) bonusBadge = '<span class="bonus-tag bonus-honor">+5%</span>';
 
-        // HBR Bonus
         let hbrBadge = '<span style="opacity:0.3; font-size:0.8em">—</span>';
         if (user.token_balance > 0) {
              const hbrTier = Math.min(20, Math.floor(user.token_balance / 1000)); 
@@ -146,19 +138,15 @@ function renderTable(data) {
             </td>
             <td style="font-size:0.9em;">${daysLabel}${veteranBadge}</td>
             <td style="font-family:monospace; color:#888;">${formatNumber(user.total_account_hp)} HP</td>
-            
             <td style="text-align:center;">${pdHtml}</td>
-
             <td style="font-family:monospace; color:${user.token_balance > 0 ? '#4da6ff' : '#444'}; ${user.token_balance > 0 ? 'font-weight:bold;' : ''}">
                 ${formatNumber(user.token_balance)}
             </td>
             <td>${lastActivity}</td>
             <td>${lastVote}</td>
-            
             <td>${bonusBadge}</td>
             <td>${hbrBadge}</td>
             <td>${user.in_curation_trail ? '<span class="bonus-tag bonus-trail">+5%</span>' : '<span style="opacity:0.3; font-size:0.8em">—</span>'}</td>
-            
             <td style="width:140px;">
                 <canvas id="chart-${user.delegator}" width="120" height="40"></canvas>
             </td>
@@ -167,14 +155,11 @@ function renderTable(data) {
     });
 }
 
-// --- Funções Auxiliares ---
-
 function renderGraphs(data) {
     data.forEach(user => {
         const ctx = document.getElementById(`chart-${user.delegator}`);
         if (ctx) {
             const points = user.delegated_hp > 0 ? Array.from({length: 7}, () => user.delegated_hp * (0.95 + Math.random() * 0.1)) : [0,0,0,0,0,0,0];
-            
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -239,25 +224,16 @@ function timeAgo(dateString) {
     return "Recentemente";
 }
 
-function handleSort(column) {
-    console.log("Ordenação disponível na UI");
-}
+function handleSort(column) { console.log("Sort logic ready"); }
 
 function setupSearch() {
     const input = document.getElementById('search-input');
     if(!input) return;
-    
     input.addEventListener('keyup', (e) => {
         const term = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('.delegator-row');
-        
         rows.forEach(row => {
-            const name = row.dataset.name.toLowerCase();
-            if(name.includes(term)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            row.style.display = row.dataset.name.toLowerCase().includes(term) ? '' : 'none';
         });
     });
 }
