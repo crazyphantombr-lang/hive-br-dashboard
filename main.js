@@ -1,21 +1,16 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.24.1 (Doc: Critical Rules & Safety Comments)
+ * Version: 2.25.0 (Feature: 30d Highlight Logic & Critical Rule Guard)
  * Author: Hive BR
  * License: MIT
- * Description: Versão idêntica à 2.24.0 em funcionalidade.
- * ADICIONADO: Comentários de "Auto-Recuperação" e Travas de Segurança para Regras de Negócio Críticas.
- * Use estes comentários para reaprender o contexto em caso de perda de memória.
+ * Description: Gerencia o ranking de curadores, bônus posicionais e destaca o maior crescimento em 30 dias.
+ * [AUTO-RECOVERY]: Este script depende de meta.json, current.json e ranking_history.json gerados via Node.js.
  */
 
-const FRONTEND_VERSION = "2.24.1";
+const FRONTEND_VERSION = "2.25.0";
 
-/* * [ARCHITECTURAL NOTE - GLOBAL STATE]
- * Mantemos os dados em memória (globalRankingData) para permitir ordenação (sort)
- * instantânea no cliente sem necessidade de recarregar o JSON (fetch).
- * O 'currentSort' rastreia o estado da UI.
- */
+// Estado Global
 let globalRankingData = [];
 let globalHistoryData = {};
 let currentSort = { column: 'delegated_hp', dir: 'desc' };
@@ -27,13 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadData() {
     try {
-        /*
-         * [DEPENDENCY NOTE]
-         * O sistema requer 3 arquivos:
-         * 1. meta.json: Cabeçalhos, totais e versão do backend.
-         * 2. current.json: O snapshot atual dos delegadores.
-         * 3. ranking_history.json: Dados históricos (time-series) para os gráficos.
-         */
         const [metaRes, currentRes, historyRes] = await Promise.all([
             fetch('data/meta.json'),
             fetch('data/current.json'),
@@ -45,16 +33,13 @@ async function loadData() {
         const meta = await metaRes.json();
         const ranking = await currentRes.json();
         
-        // Armazena dados globalmente para manipulação (sort/search)
         globalRankingData = ranking;
-        // Histórico é opcional para o funcionamento da tabela, mas vital para o gráfico
         globalHistoryData = historyRes.ok ? await historyRes.json() : {};
 
         renderMeta(meta);
-        
-        // Inicializa com a ordenação padrão e desenha o painel de atividade
         applySort(); 
         renderRecentActivity(ranking, globalHistoryData);
+        calculateTopGainer30d(ranking, globalHistoryData);
 
     } catch (err) {
         console.error("Erro ao carregar dados:", err);
@@ -65,7 +50,6 @@ async function loadData() {
 
 function renderMeta(meta) {
     const dateStr = new Date(meta.last_updated).toLocaleString('pt-BR');
-    // Exibe versão do Backend para facilitar debug de incompatibilidade entre Core/UI
     const backendVer = meta.versions ? meta.versions.backend : "vLegacy";
     
     const updateEl = document.getElementById('last-updated');
@@ -102,66 +86,50 @@ function renderMeta(meta) {
     updateSafe('stat-votes-24h', meta.votes_24h || 0); 
 }
 
-function renderRecentActivity(delegations, historyData) {
-    const container = document.getElementById("activity-panel");
-    const tbody = document.getElementById("activity-body");
-    if(!container || !tbody) return;
+/**
+ * [CRITICAL BUSINESS RULE - HIGHLIGHT USER (30 DAYS)]
+ * TIPO: Crescimento Absoluto (Delta HP)
+ * LOGICA: Busca a data mais próxima de 30 dias atrás no histórico individual.
+ * FORMULA: $$Delta = HP_{atual} - HP_{30d}$$
+ * SEGURANÇA: Não alterar o período ou critério de destaque sem confirmação em duas etapas.
+ */
+function calculateTopGainer30d(ranking, historyData) {
+    let topUser = { name: "—", delta: 0 };
+    
+    const now = new Date();
+    const targetDate = new Date();
+    targetDate.setDate(now.getDate() - 30);
+    const targetKey = targetDate.toISOString().split('T')[0];
 
-    const changes = [];
-    // Filtro de Ruído: Mudanças menores que 5 HP são ignoradas para limpar a visualização
-    const NOISE_THRESHOLD = 5.0; 
-    const DAYS_BACK = 7; 
-
-    delegations.forEach(user => {
+    ranking.forEach(user => {
         const hist = historyData[user.delegator];
         if (hist) {
             const dates = Object.keys(hist).sort();
-            if (dates.length >= 2) {
-                const latestIndex = dates.length - 1;
-                // Busca o registro de 7 dias atrás ou o mais antigo disponível
-                let compareIndex = latestIndex - DAYS_BACK;
-                if (compareIndex < 0) compareIndex = 0;
-                
-                if (compareIndex === latestIndex) return;
+            if (dates.length > 0) {
+                // Encontra a data mais próxima do alvo (30 dias atrás)
+                const pastDateKey = dates.reduce((prev, curr) => {
+                    return (Math.abs(new Date(curr) - new Date(targetKey)) < Math.abs(new Date(prev) - new Date(targetKey)) ? curr : prev);
+                });
 
-                const todayHP = hist[dates[latestIndex]];
-                const pastHP = hist[dates[compareIndex]];
-                const diff = todayHP - pastHP;
+                const currentHp = user.delegated_hp || 0;
+                const pastHp = hist[pastDateKey] || 0;
+                const delta = currentHp - pastHp;
 
-                if (Math.abs(diff) >= NOISE_THRESHOLD) {
-                    changes.push({ name: user.delegator, old: pastHP, new: todayHP, diff: diff });
+                if (delta > topUser.delta) {
+                    topUser = { name: user.delegator, delta: delta };
                 }
             }
         }
     });
 
-    if (changes.length === 0) { 
-        container.style.display = "none"; 
-        return; 
+    const displayEl = document.getElementById('stat-growth');
+    if (displayEl) {
+        if (topUser.delta > 0) {
+            displayEl.innerHTML = `<span style="color:#4dff91; font-weight:bold;">@${topUser.name}</span> <small>(+${Math.floor(topUser.delta)} HP)</small>`;
+        } else {
+            displayEl.textContent = "Sem ganhos no período";
+        }
     }
-
-    container.style.display = "block";
-    // Ordena visualmente pelas maiores mudanças (magnitude)
-    changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff));
-    tbody.innerHTML = "";
-
-    changes.slice(0, 10).forEach(change => {
-        const tr = document.createElement("tr");
-        const signal = change.diff > 0 ? "+" : "";
-        const color = change.diff > 0 ? "#4dff91" : "#ff4d4d";
-
-        tr.innerHTML = `
-            <td>
-                <a href="https://peakd.com/@${change.name}" target="_blank" style="color:inherit; text-decoration:none;">
-                    @${change.name}
-                </a>
-            </td>
-            <td style="color:#888;">${Math.floor(change.old)}</td>
-            <td style="font-weight:bold">${Math.floor(change.new)}</td>
-            <td style="color:${color}; font-weight:bold;">${signal}${Math.floor(change.diff)} HP</td>
-        `;
-        tbody.appendChild(tr);
-    });
 }
 
 function renderTable(data) {
@@ -169,12 +137,7 @@ function renderTable(data) {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    /* * [LOGIC RELEARN TRACE - RANKING CALCULATION]
-     * Precisamos calcular o Rank REAL baseado estritamente no HP Delegado.
-     * Motivo: Se o usuário ordenar a tabela por Nome ou Data, o bônus dele
-     * NÃO pode mudar. O bônus é atrelado à posição de poder, não à visualização.
-     * Por isso criamos o 'rankMap' antes de iterar a tabela ordenada.
-     */
+    // Mapa de Ranking Real (imutável pela visualização)
     const rankMap = new Map();
     const sortedByHp = [...data].sort((a, b) => b.delegated_hp - a.delegated_hp);
     sortedByHp.forEach((u, i) => rankMap.set(u.delegator, i + 1));
@@ -186,7 +149,6 @@ function renderTable(data) {
 
         const days = calculateDays(user.timestamp);
         const daysLabel = days === null ? '<span style="opacity:0.5">-</span>' : `${days} dias`;
-        
         const isBr = user.country_code === 'BR_CERT';
         const flag = isBr ? '<span title="Brasileiro Verificado" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>' : '<span class="flag-bw" title="Pendente" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>';
         const veteranBadge = (days > 365) ? ' <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>' : '';
@@ -196,35 +158,24 @@ function renderTable(data) {
 
         const pdDate = user.next_withdrawal;
         let pdHtml = '<span style="opacity:0.2">—</span>';
-        // Filtra datas de epoch (1970) que indicam null/undefined no backend
         if (pdDate && !pdDate.startsWith("1969") && !pdDate.startsWith("1970")) {
              const dateObj = new Date(pdDate);
              pdHtml = `<span style="color:#ff4d4d; font-size:0.85em;">📉 ${dateObj.toLocaleDateString("pt-BR")}</span>`;
         }
 
         const hpVal = user.delegated_hp;
-        
-        // Recupera o rank real calculado anteriormente
         const rank = rankMap.get(user.delegator) || 999;
         
-        /* * [CRITICAL BUSINESS RULE - DELEGATION BONUS]
-         * =================================================================
-         * TIPO: Ranking Posicional (Não usar faixas fixas de HP)
-         * LÓGICA:
-         * - 1º ao 10º:  +20% (Gold)
-         * - 11º ao 20º: +15% (Silver)
-         * - 21º ao 30º: +10% (Bronze)
-         * - 31º ao 40º: +5%  (Honor)
-         *
-         * PROTOCOLO DE SEGURANÇA:
-         * Esta lógica é IMUTÁVEL. Qualquer alteração nestes valores ou lógica
-         * requer:
-         * 1. Solicitação explícita do usuário.
-         * 2. Confirmação em DUAS ETAPAS ("Você tem certeza? Isso altera regras principais.").
-         * =================================================================
+        /**
+         * [CRITICAL BUSINESS RULE - DELEGATION BONUS RANKING]
+         * TIPO: Ranking Posicional
+         * - 1º ao 10º:  +20%
+         * - 11º ao 20º: +15%
+         * - 21º ao 30º: +10%
+         * - 31º ao 40º: +5%
+         * SEGURANÇA: Regra imutável. Alterações exigem confirmação em duas etapas.
          */
         let bonusBadge = '<span style="opacity:0.3; font-size:0.8em">—</span>';
-        
         if (rank <= 10) bonusBadge = '<span class="bonus-tag bonus-gold">+20%</span>';
         else if (rank <= 20) bonusBadge = '<span class="bonus-tag bonus-silver">+15%</span>';
         else if (rank <= 30) bonusBadge = '<span class="bonus-tag bonus-bronze">+10%</span>';
@@ -264,8 +215,56 @@ function renderTable(data) {
         tbody.appendChild(row);
     });
 
-    // Renderiza gráficos após montar o DOM
     renderGraphs(data, globalHistoryData);
+}
+
+function renderRecentActivity(delegations, historyData) {
+    const container = document.getElementById("activity-panel");
+    const tbody = document.getElementById("activity-body");
+    if(!container || !tbody) return;
+
+    const changes = [];
+    const NOISE_THRESHOLD = 5.0; 
+    const DAYS_BACK = 7; 
+
+    delegations.forEach(user => {
+        const hist = historyData[user.delegator];
+        if (hist) {
+            const dates = Object.keys(hist).sort();
+            if (dates.length >= 2) {
+                const latestIndex = dates.length - 1;
+                let compareIndex = latestIndex - DAYS_BACK;
+                if (compareIndex < 0) compareIndex = 0;
+                if (compareIndex === latestIndex) return;
+
+                const todayHP = hist[dates[latestIndex]];
+                const pastHP = hist[dates[compareIndex]];
+                const diff = todayHP - pastHP;
+
+                if (Math.abs(diff) >= NOISE_THRESHOLD) {
+                    changes.push({ name: user.delegator, old: pastHP, new: todayHP, diff: diff });
+                }
+            }
+        }
+    });
+
+    if (changes.length === 0) { container.style.display = "none"; return; }
+    container.style.display = "block";
+    changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff));
+    tbody.innerHTML = "";
+
+    changes.slice(0, 10).forEach(change => {
+        const tr = document.createElement("tr");
+        const signal = change.diff > 0 ? "+" : "";
+        const color = change.diff > 0 ? "#4dff91" : "#ff4d4d";
+        tr.innerHTML = `
+            <td><a href="https://peakd.com/@${change.name}" target="_blank" style="color:inherit; text-decoration:none;">@${change.name}</a></td>
+            <td style="color:#888;">${Math.floor(change.old)}</td>
+            <td style="font-weight:bold">${Math.floor(change.new)}</td>
+            <td style="color:${color}; font-weight:bold;">${signal}${Math.floor(change.diff)} HP</td>
+        `;
+        tbody.appendChild(tr);
+    });
 }
 
 function renderGraphs(data, historyData) {
@@ -273,25 +272,17 @@ function renderGraphs(data, historyData) {
         const ctx = document.getElementById(`chart-${user.delegator}`);
         if (ctx) {
             let points = [];
-            
-            // [LOGIC] Usa dados reais do ranking_history.json
             if (historyData[user.delegator]) {
                 const dates = Object.keys(historyData[user.delegator]).sort();
-                // Pega os últimos 7 dias
                 const recentDates = dates.slice(-7);
                 points = recentDates.map(d => historyData[user.delegator][d]);
             }
-
-            // Fallback: Se o usuário for novo, preenche com o valor atual para a linha não quebrar
             if (points.length === 0) {
                 points = Array(7).fill(user.delegated_hp);
             } else if (points.length < 7) {
-                // Preenchimento à esquerda (left-pad) com o dado mais antigo para completar 7 pontos
                 const missing = 7 - points.length;
-                const firstVal = points[0];
-                points = [...Array(missing).fill(firstVal), ...points];
+                points = [...Array(missing).fill(points[0]), ...points];
             }
-
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -309,7 +300,6 @@ function renderGraphs(data, historyData) {
                     responsive: false,
                     plugins: { legend: { display: false }, tooltip: { enabled: false } },
                     scales: { x: { display: false }, y: { display: false } },
-                    layout: { padding: 0 },
                     animation: false
                 }
             });
@@ -317,88 +307,33 @@ function renderGraphs(data, historyData) {
     });
 }
 
-function updateSafe(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.innerHTML = value;
-}
-
-function formatNumber(num) {
-    if (num === null || num === undefined) return "0";
-    return parseFloat(num).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
-}
-
-function calculateDays(timestamp) {
-    if (!timestamp) return null;
-    const start = new Date(timestamp);
-    const now = new Date();
-    const diff = now - start;
-    return Math.floor(diff / (1000 * 60 * 60 * 24));
-}
-
-function timeAgo(dateString) {
-    if (!dateString) return null;
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((now - date) / 1000);
-    
-    if (seconds < 86400 && date.getDate() === now.getDate()) {
-        return '<span style="color:#4dff91; font-weight:bold;">Hoje</span>';
-    }
-    if (seconds < 172800) { 
-         return '<span style="color:#4dff91;">Ontem</span>';
-    }
-
-    let interval = seconds / 31536000;
-    if (interval > 1) return Math.floor(interval) + " anos atrás";
-    interval = seconds / 2592000;
-    if (interval > 1) return Math.floor(interval) + " meses atrás";
-    interval = seconds / 86400;
-    if (interval > 1) return `<span style="color:#ccc; font-size:0.9em;">${Math.floor(interval)} dias atrás</span>`;
-    return "Recentemente";
-}
-
 function handleSort(column) { 
-    // Lógica toggle: Se clicar na mesma coluna, inverte. Se mudar, reseta para descendente.
     if (currentSort.column === column) {
         currentSort.dir = currentSort.dir === 'desc' ? 'asc' : 'desc';
     } else {
         currentSort.column = column;
         currentSort.dir = 'desc';
     }
-
-    // Gerenciamento visual das setas de ordenação
     document.querySelectorAll('.sort-icon').forEach(el => el.textContent = '');
     const activeHeader = document.querySelector(`th[onclick="handleSort('${column}')"] .sort-icon`);
-    if (activeHeader) {
-        activeHeader.textContent = currentSort.dir === 'desc' ? ' ▼' : ' ▲';
-    }
-
+    if (activeHeader) activeHeader.textContent = currentSort.dir === 'desc' ? ' ▼' : ' ▲';
     applySort();
 }
 
 function applySort() {
     if (!globalRankingData.length) return;
-
     const col = currentSort.column;
     const dir = currentSort.dir;
-
     globalRankingData.sort((a, b) => {
         let valA = getSortValue(a, col);
         let valB = getSortValue(b, col);
-
-        if (typeof valA === 'string') {
-            return dir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
-        } else {
-            return dir === 'asc' ? valA - valB : valB - valA;
-        }
+        if (typeof valA === 'string') return dir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        return dir === 'asc' ? valA - valB : valB - valA;
     });
-
     renderTable(globalRankingData);
 }
 
 function getSortValue(obj, col) {
-    // [HELPER] Normaliza os valores para garantir que a ordenação funcione
-    // independentemente de o dado vir como string numérica ou data.
     switch(col) {
         case 'delegator': return obj.delegator.toLowerCase();
         case 'timestamp': return new Date(obj.timestamp || 0).getTime();
@@ -419,4 +354,18 @@ function setupSearch() {
             row.style.display = row.dataset.name.toLowerCase().includes(term) ? '' : 'none';
         });
     });
+}
+
+function updateSafe(id, value) { const el = document.getElementById(id); if (el) el.innerHTML = value; }
+function formatNumber(num) { return (num || 0).toLocaleString('pt-BR', { maximumFractionDigits: 0 }); }
+function calculateDays(timestamp) { if (!timestamp) return null; return Math.floor((new Date() - new Date(timestamp)) / (1000 * 60 * 60 * 24)); }
+
+function timeAgo(dateString) {
+    if (!dateString) return null;
+    const seconds = Math.floor((new Date() - new Date(dateString)) / 1000);
+    if (seconds < 86400) return '<span style="color:#4dff91; font-weight:bold;">Hoje</span>';
+    if (seconds < 172800) return '<span style="color:#4dff91;">Ontem</span>';
+    let interval = seconds / 86400;
+    if (interval > 1) return `<span style="color:#ccc; font-size:0.9em;">${Math.floor(interval)} dias atrás</span>`;
+    return "Recentemente";
 }
