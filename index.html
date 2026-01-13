@@ -1,27 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0B2JEW0JXF"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hive BR Dashboard</title>
+  
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script src="moz-extension://9fbcfce3-75f1-4b06-83b3-733da2056863/./hive_keychain.js"></script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-0B2JEW0JXF"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-0B2JEW0JXF');
   </script>
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hive BR Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script defer src="main.js"></script>
+  <script defer="" src="main.js"></script>
 </head>
 <body>
   
   <div class="container">
     <header>
-      <div class="last-updated" id="last-updated">Carregando...</div>
+      <div class="last-updated" id="last-updated">Carregando dados...</div>
       <h1>HIVE BR <span class="highlight">DASHBOARD</span></h1>
       <p class="subtitle">Ranking de Curadoria e Estatísticas</p>
     </header>
@@ -51,13 +53,19 @@
         <h3>Delegadores</h3>
         <p id="stat-count">0</p>
       </div>
+      
       <div class="stat-card">
-        <h3>Delegador Destaque do Mês</h3>
+        <h3>Brasileiros Ativos</h3>
+        <p id="stat-active-br" style="color: #009c3b; font-weight: bold;">0</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>Delegador Destaque</h3>
         <p id="stat-growth">—</p>
       </div>
     </div>
 
-    <div id="activity-panel" class="activity-container" style="display:none;">
+    <div id="activity-panel" class="activity-container" style="display: none;">
       <h3 class="section-title">⚡ Últimas Alterações nas Delegações (7 dias)</h3>
       <table class="activity-table">
         <thead>
@@ -79,7 +87,7 @@
                 <span style="font-size: 3rem;">🗳️</span>
             </div>
             <div class="project-info">
-                <h3 id="lbl-votes-current">VOTOS NO MÊS ATUAL</h3>
+                <h3 id="lbl-votes-current">MÊS ATUAL</h3>
                 <p id="stat-votes-current" style="color: #ffcc00;">0</p>
             </div>
         </div>
@@ -138,7 +146,8 @@
             <th>Histórico de<br>Delegação</th>
           </tr>
         </thead>
-        <tbody id="ranking-body"></tbody>
+        <tbody id="ranking-body">
+            </tbody>
       </table>
     </div>
 
