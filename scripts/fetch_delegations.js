@@ -1,6 +1,6 @@
 /**
  * Script: Hive BR Data Fetcher
- * Version: 2.25.10 (HAFSQL API Only)
+ * Version: 2.25.11 (Hotfix: Correct Variable Definition)
  * Author: Hive BR
  */
 
@@ -8,7 +8,7 @@ const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
 
-const SCRIPT_VERSION = "2.25.10";
+const SCRIPT_VERSION = "2.25.11";
 const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
 const TOKEN_SYMBOL = "HBR";
@@ -63,6 +63,8 @@ async function run() {
         console.log(`🚀 Iniciando Coleta v${SCRIPT_VERSION} via HAFSQL...`);
         
         const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
+        if (!globals) throw new Error("Falha ao obter propriedades globais da rede.");
+
         const hp_ratio = parseFloat(globals.total_vesting_fund_hive) / parseFloat(globals.total_vesting_shares);
 
         const res = await fetch(HAF_API);
@@ -81,9 +83,12 @@ async function run() {
             const del = delegators.find(d => d.delegator === name);
             const he = heBalances.find(b => b.account === name);
 
+            /**
+             * [FIX v2.25.11] Referenciando 'del' corretamente em vez de 'd'
+             */
             return {
                 delegator: name,
-                delegated_hp: del ? (parseFloat(d.vesting_shares || 0) * hp_ratio) : 0,
+                delegated_hp: del ? (parseFloat(del.vesting_shares || 0) * hp_ratio) : 0,
                 total_account_hp: acc.vesting_shares ? (parseFloat(acc.vesting_shares) * hp_ratio) : 0,
                 token_balance: he ? parseFloat(he.stake || 0) : 0,
                 last_user_post: acc.last_post || null,
@@ -105,7 +110,7 @@ async function run() {
             curation_trail_count: (listConfig.curation_trail || []).length
         }, null, 2));
 
-        console.log("✅ Dados capturados com sucesso.");
+        console.log("✅ Dados capturados e corrigidos com sucesso.");
     } catch (e) {
         console.error("❌ Erro:", e.message);
         process.exit(1);
