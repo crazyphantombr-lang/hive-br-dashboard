@@ -1,9 +1,11 @@
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.25.2 (Hotfix: Table Layout & Tooltips)
+ * Version: 2.25.4 (New HBR Rules & Data Transparency)
+ * Author: Hive BR
+ * Description: Gerencia o ranking com nova regra HBR: +1% a cada 10 tokens (max 20%).
  */
 
-const FRONTEND_VERSION = "2.25.2";
+const FRONTEND_VERSION = "2.25.4";
 let globalRankingData = [];
 let globalHistoryData = {};
 let currentSort = { column: 'delegated_hp', dir: 'desc' };
@@ -20,14 +22,13 @@ async function loadData() {
             fetch('data/current.json'),
             fetch('data/ranking_history.json')
         ]);
-        if (!metaRes.ok || !currentRes.ok) throw new Error("Erro ao carregar dados");
+        if (!metaRes.ok || !currentRes.ok) throw new Error("Carga de dados falhou");
         const meta = await metaRes.json();
         const ranking = await currentRes.json();
         globalRankingData = ranking;
         globalHistoryData = historyRes.ok ? await historyRes.json() : {};
         renderMeta(meta);
         applySort();
-        renderRecentActivity(ranking, globalHistoryData);
         calculateTopGainer30d(ranking, globalHistoryData);
     } catch (err) {
         console.error(err);
@@ -38,13 +39,11 @@ async function loadData() {
 function renderMeta(meta) {
     const now = new Date();
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    const dateStr = now.toLocaleString('pt-BR');
-    
     const voteLabel = `VOTOS DISTRIBUÍDOS EM ${months[now.getMonth()].toUpperCase()} ${now.getFullYear()}`;
-    const lblVotes = document.getElementById('lbl-votes-current');
-    if (lblVotes) lblVotes.textContent = voteLabel;
-
-    document.getElementById('last-updated').innerHTML = `Atualizado: ${dateStr}<br><small>v${FRONTEND_VERSION}</small>`;
+    
+    document.getElementById('lbl-votes-current').textContent = voteLabel;
+    document.getElementById('last-updated').innerHTML = `Atualizado: ${now.toLocaleString('pt-BR')}<br><small>v${FRONTEND_VERSION}</small>`;
+    
     updateSafe('stat-community-power', formatNumber(meta.total_hp) + " HP");
     updateSafe('stat-own-hp', formatNumber(meta.project_account_hp) + " HP");
     updateSafe('stat-delegated-hp', formatNumber(meta.total_hp - meta.project_account_hp) + " HP");
@@ -52,9 +51,6 @@ function renderMeta(meta) {
     updateSafe('stat-active-br', meta.active_brazilians || 0);
     updateSafe('stat-votes-current', meta.votes_month_current || 0);
     updateSafe('stat-trail-count', meta.curation_trail_count || 0);
-    updateSafe('stat-votes-m1', meta.votes_month_prev1 || 0);
-    updateSafe('stat-votes-m2', meta.votes_month_prev2 || 0);
-    updateSafe('stat-votes-24h', meta.votes_24h || 0);
 }
 
 function calculateTopGainer30d(ranking, historyData) {
@@ -81,61 +77,56 @@ function renderTable(data) {
     tbody.innerHTML = '';
     const rankMap = new Map();
     [...data].sort((a, b) => b.delegated_hp - a.delegated_hp).forEach((u, i) => rankMap.set(u.delegator, i + 1));
+    
     data.forEach(user => {
         const rank = rankMap.get(user.delegator);
         const row = document.createElement('tr');
         row.className = 'delegator-row';
         row.dataset.name = user.delegator;
-        const hpVal = user.delegated_hp || 0;
-        let bonusBadge = '<span style="opacity:0.2">—</span>';
-        if (rank <= 10) bonusBadge = '<span class="bonus-tag bonus-gold">+20%</span>';
-        else if (rank <= 20) bonusBadge = '<span class="bonus-tag bonus-silver">+15%</span>';
-        else if (rank <= 30) bonusBadge = '<span class="bonus-tag bonus-bronze">+10%</span>';
-        else if (rank <= 40) bonusBadge = '<span class="bonus-tag bonus-honor">+5%</span>';
+        
+        // Bônus Posicional
+        let bonusRankHtml = '<span style="opacity:0.2">—</span>';
+        if (rank <= 10) bonusRankHtml = '<span class="bonus-tag bonus-gold">+20%</span>';
+        else if (rank <= 20) bonusRankHtml = '<span class="bonus-tag bonus-silver">+15%</span>';
+        else if (rank <= 30) bonusRankHtml = '<span class="bonus-tag bonus-bronze">+10%</span>';
+        else if (rank <= 40) bonusRankHtml = '<span class="bonus-tag bonus-honor">+5%</span>';
+
+        /**
+         * [BUSINESS RULE v2.25.4 - NEW HBR RATIO]
+         * Formula: $$Bonus = \min(20, \lfloor \text{Stake} / 10 \rfloor)$$
+         */
+        let bonusHbrHtml = '<span style="opacity:0.2">—</span>';
+        const hbrValue = Math.min(20, Math.floor((user.token_balance || 0) / 10));
+        if (hbrValue > 0) {
+            bonusHbrHtml = `<span class="bonus-tag bonus-hbr">+${hbrValue}%</span>`;
+        }
+
+        let bonusTrailHtml = '<span style="opacity:0.2">—</span>';
+        if (user.in_curation_trail) {
+            bonusTrailHtml = '<span class="bonus-tag bonus-trail">+5%</span>';
+        }
+
         row.innerHTML = `
             <td class="sticky-col">
                 <span style="color:#666; font-weight:bold; width:25px; display:inline-block;">#${rank}</span>
                 <img src="https://images.hive.blog/u/${user.delegator}/avatar/small" style="width:20px; border-radius:50%; margin-right:5px;">
                 <a href="https://peakd.com/@${user.delegator}" target="_blank">@${user.delegator}</a>
             </td>
-            <td style="font-weight:bold; color:#4dff91;">${formatNumber(hpVal)}</td>
+            <td style="font-weight:bold; color:#4dff91;">${formatNumber(user.delegated_hp)}</td>
             <td>${calculateDays(user.timestamp) || 0}d</td>
             <td style="color:#888;">${formatNumber(user.total_account_hp)}</td>
             <td>${user.next_withdrawal && !user.next_withdrawal.startsWith("19") ? '📉' : '—'}</td>
             <td>${formatNumber(user.token_balance)}</td>
             <td>${timeAgo(user.last_user_post)}</td>
             <td>${timeAgo(user.last_vote_date)}</td>
-            <td>${bonusBadge}</td>
-            <td>${user.token_balance >= 1000 ? '<span class="bonus-tag bonus-hbr">HBR</span>' : '—'}</td>
-            <td>${user.in_curation_trail ? '👣' : '—'}</td>
+            <td>${bonusRankHtml}</td>
+            <td>${bonusHbrHtml}</td>
+            <td>${bonusTrailHtml}</td>
             <td><canvas id="chart-${user.delegator}" width="100" height="30"></canvas></td>
         `;
         tbody.appendChild(row);
     });
     renderGraphs(data, globalHistoryData);
-}
-
-function renderRecentActivity(delegations, historyData) {
-    const container = document.getElementById("activity-panel");
-    const tbody = document.getElementById("activity-body");
-    const changes = [];
-    delegations.forEach(user => {
-        const hist = historyData[user.delegator];
-        if (hist) {
-            const dates = Object.keys(hist).sort();
-            if (dates.length >= 2) {
-                const diff = hist[dates[dates.length-1]] - hist[dates[dates.length-2]];
-                if (Math.abs(diff) > 5) changes.push({ name: user.delegator, old: hist[dates[dates.length-2]], new: hist[dates[dates.length-1]], diff });
-            }
-        }
-    });
-    if (changes.length > 0) {
-        container.style.display = "block";
-        tbody.innerHTML = "";
-        changes.sort((a,b) => Math.abs(b.diff) - Math.abs(a.diff)).slice(0,5).forEach(c => {
-            tbody.innerHTML += `<tr><td>@${c.name}</td><td>${Math.floor(c.old)}</td><td>${Math.floor(c.new)}</td><td style="color:${c.diff>0?'#4dff91':'#ff4d4d'}">${c.diff>0?'+':''}${Math.floor(c.diff)}</td></tr>`;
-        });
-    }
 }
 
 function renderGraphs(data, historyData) {
