@@ -10,13 +10,22 @@
         .sticky-col {
             position: sticky;
             left: 0;
-            background-color: #13131f !important; /* Cor de fundo opaca do dashboard */
+            background-color: #13131f !important;
             z-index: 10;
-            min-width: 150px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+            min-width: 160px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.4);
         }
-        table { border-collapse: separate; border-spacing: 0; }
+        table { border-collapse: separate; border-spacing: 0; width: 100%; }
+        .stat-card h3, .project-card h3 { cursor: help; }
     </style>
+    <script src="moz-extension://9fbcfce3-75f1-4b06-83b3-733da2056863/./hive_keychain.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0B2JEW0JXF"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-0B2JEW0JXF');
+    </script>
     <script defer src="main.js"></script>
 </head>
 <body>
@@ -27,10 +36,55 @@
             <p class="subtitle">Ranking de Curadoria e Estatísticas</p>
         </header>
 
-        <div class="highlight-cards-grid">
-            
+        <div class="project-stats-container">
+            <div class="project-card">
+                <div class="project-icon">
+                    <img src="https://images.hive.blog/u/hive-br/avatar/small" alt="Hive BR">
+                </div>
+                <div class="project-info">
+                    <h3>PODER DE VOTO DA COMUNIDADE</h3>
+                    <p id="stat-community-power">0 HP</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>HP Próprio</h3>
+                <p id="stat-own-hp" style="color: #4da6ff;">0 HP</p>
+            </div>
+            <div class="stat-card">
+                <h3>HP Delegado</h3>
+                <p id="stat-delegated-hp" style="color:var(--accent-purple);">0 HP</p>
+            </div>
+            <div class="stat-card">
+                <h3>Delegadores</h3>
+                <p id="stat-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>DELEGADOR DESTAQUE (30D)</h3>
+                <p id="stat-growth">—</p>
+            </div>
+        </div>
+
+        <div id="activity-panel" class="activity-container" style="display: none;">
+            <h3 class="section-title">⚡ Últimas Alterações nas Delegações (7 dias)</h3>
+            <table class="activity-table">
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>Antes</th>
+                        <th>Agora</th>
+                        <th>Diferença</th>
+                    </tr>
+                </thead>
+                <tbody id="activity-body"></tbody>
+            </table>
+        </div>
+
+        <div class="highlight-cards-grid" style="margin-top: 50px;">
             <div class="project-card" style="border-color: #ffcc00;">
-                <div class="project-icon" title="Total de votos realizados pela curadoria da HiveBR em Janeiro 2026.">
+                <div class="project-icon" title="Total de votos realizados pela curadoria da HiveBR no mês vigente.">
                     <span style="font-size: 3rem;">🗳️</span>
                 </div>
                 <div class="project-info">
@@ -50,7 +104,7 @@
             </div>
 
             <div class="project-card" style="border-color: #009c3b;">
-                <div class="project-icon" title="Brasileiros (verificados ou não) com atividade (post/comentário) nos últimos 30 dias.">
+                <div class="project-icon" title="Brasileiros (verificados ou não) com atividade (post ou comentário) nos últimos 30 dias.">
                     <span style="font-size: 3rem;">🇧🇷</span>
                 </div>
                 <div class="project-info">
@@ -60,21 +114,40 @@
             </div>
         </div>
 
+        <div class="stats-grid" style="margin-bottom: 20px;">
+            <div class="stat-card">
+                <h3>Votos (24h)</h3>
+                <p id="stat-votes-24h" style="color:#ffcc00;">0</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="lbl-votes-m1">Mês Anterior</h3>
+                <p id="stat-votes-m1" style="color:#a3a3cc;">0</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="lbl-votes-m2">2 Meses Atrás</h3>
+                <p id="stat-votes-m2" style="color:#a3a3cc;">0</p>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="🔍 Buscar usuário..." autocomplete="off">
+        </div>
+
         <div class="table-wrapper">
             <table id="main-table">
                 <thead>
                     <tr>
-                        <th class="sticky-col">Usuário</th>
-                        <th>Delegação</th>
-                        <th>Tempo</th>
-                        <th>HP Próprio</th>
-                        <th>Power Down</th>
-                        <th>HBR Stake</th>
-                        <th>Última Atividade</th>
-                        <th>Última Curadoria</th>
-                        <th>Bônus Rank</th>
-                        <th>Bônus HBR</th>
-                        <th>Trilha</th>
+                        <th class="sticky-col sortable" onclick="handleSort('delegator')">Usuário <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('delegated_hp')">Delegação <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('timestamp')">Tempo <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('total_account_hp')">HP Próprio <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('next_withdrawal')">Power Down <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('token_balance')">HBR Stake <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('last_user_post')">Atividade <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('last_vote_date')">Curadoria <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('delegated_hp')">Bônus Rank <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('token_balance')">Bônus HBR <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('in_curation_trail')">Trilha <span class="sort-icon"></span></th>
                         <th>Histórico</th>
                     </tr>
                 </thead>
