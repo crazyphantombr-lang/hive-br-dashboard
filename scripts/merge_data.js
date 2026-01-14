@@ -1,7 +1,10 @@
+// File: scripts/merge_data.js
 /**
- * Script: Merge Data & update Meta
- * Version: 2.24.2 (Global History)
- * Description: Merges current ranking with history and SAVES daily global stats (votes, trail, active BRs) for future reports.
+ * Script: Merge Data & History Master
+ * Version: 2.25.0 (Consolidated)
+ * Author: Hive BR
+ * Description: Consolida o ranking atual com o histórico individual (30 dias) e global.
+ * [SAFE-RELEARN]: Este script absorveu o 'merge_history.js'. Ele é o único ponto de verdade para persistência.
  */
 
 const fs = require("fs");
@@ -12,7 +15,7 @@ const CURRENT_FILE = path.join(DATA_DIR, "current.json");
 const HISTORY_FILE = path.join(DATA_DIR, "ranking_history.json");
 const META_FILE = path.join(DATA_DIR, "meta.json");
 const LISTS_FILE = path.join(DATA_DIR, "lists.json");
-const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json"); // Novo Arquivo
+const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
 
 function readJsonSafe(filepath, fallbackValue) {
     if (!fs.existsSync(filepath)) return fallbackValue;
@@ -22,97 +25,70 @@ function readJsonSafe(filepath, fallbackValue) {
 
 async function run() {
     try {
-        console.log("🔄 Iniciando fusão de dados e histórico global...");
+        console.log("🔄 Iniciando fusão de dados v2.25.0...");
 
         // 1. Carregar Dados
-        const currentData = readJsonSafe(CURRENT_FILE, { ranking: [] });
+        const ranking = readJsonSafe(CURRENT_FILE, []);
         let history = readJsonSafe(HISTORY_FILE, {});
         let meta = readJsonSafe(META_FILE, {});
-        const lists = readJsonSafe(LISTS_FILE, { 
-            verificado_br: [], watchlist: [], curation_trail: [] 
-        });
+        const lists = readJsonSafe(LISTS_FILE, { verificado_br: [], curation_trail: [] });
 
-        const ranking = Array.isArray(currentData) ? currentData : (currentData.ranking || []);
         const todayKey = new Date().toISOString().split('T')[0];
 
-        // 2. Atualizar Histórico Individual (HP por usuário)
+        // 2. Atualizar Histórico Individual (Base para o Destaque 30d e Gráficos)
+        // [BUSINESS RULE]: Salvamos o HP de cada usuário diariamente para permitir o cálculo de delta no Frontend.
         ranking.forEach(user => {
             const username = user.delegator;
-            const hp = user.delegated_hp;
+            const hp = user.delegated_hp || 0;
 
             if (!history[username]) history[username] = {};
-            
-            // Otimização: Salva apenas se mudar ou se for dia 1º ou 15 (para economizar espaço)
-            // Mas para o MVP de 30 dias funcionar perfeito, idealmente salvamos todo dia se tiver mudança
             history[username][todayKey] = hp;
         });
 
-        // 3. Calcular Métricas Globais (Recálculo fresco)
+        // 3. Recálculo de Métricas Globais (Garantia de Integridade)
         const totalHp = ranking.reduce((acc, user) => acc + (user.delegated_hp || 0), 0);
-        
-        // Membros Ativos = Delegadores + Trilha (sem duplicatas)
         const delegatorsSet = new Set(ranking.map(u => u.delegator));
         const trailSet = new Set(lists.curation_trail || []);
         const allMembers = new Set([...delegatorsSet, ...trailSet]);
-        
-        // Brasileiros Ativos (Intersecção: (Delegadores OU Trilha OU Watchlist) E (Postou nos últimos 30d))
-        // Nota: O script fetch_delegations.js já deve ter populado 'last_user_post' no ranking.
-        // Se o usuário está na Watchlist mas não é delegador, ele não aparece no ranking.json normalmente.
-        // *Melhoria Futura*: Ter um arquivo separado de 'atividade_social'. 
-        // Por hora, contamos Brasileiros que são Delegadores E postaram.
+
+        // Brasileiros Ativos (Filtro por Atividade 30 dias)
         const oneMonthAgo = new Date();
         oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
         
-        // Lista oficial de BRs (Verificados + Pendentes + Watchlist)
-        const allBrazilians = new Set([
-            ...(lists.verificado_br || []), 
-            ...(lists.pendente_br || []),
-            ...(lists.watchlist || []) // Watchlist assume interesse/potencial BR
-        ]);
+        const brList = new Set([...(lists.verificado_br || []), ...(lists.pendente_br || [])]);
+        let activeBrCount = 0;
 
-        let activeBrasiliansCount = 0;
-        
-        // Verifica atividade no Ranking (Delegadores)
         ranking.forEach(user => {
-            if (allBrazilians.has(user.delegator)) {
-                if (user.last_user_post) {
-                    const lastPostDate = new Date(user.last_user_post);
-                    if (lastPostDate >= oneMonthAgo) {
-                        activeBrasiliansCount++;
-                    }
-                }
+            if (brList.has(user.delegator) && user.last_user_post) {
+                if (new Date(user.last_user_post) >= oneMonthAgo) activeBrCount++;
             }
         });
 
-        // Atualiza Meta
+        // 4. Atualizar Objeto Meta
         meta.last_updated = new Date().toISOString();
         meta.total_hp = totalHp;
         meta.active_community_members = allMembers.size;
-        meta.curation_trail_count = trailSet.size;
-        meta.active_brazilians = activeBrasiliansCount; 
-        // votes_month_current e votes_24h vêm do script de votos (fetch_votes.js), não alteramos aqui
+        meta.active_brazilians = activeBrCount;
 
-        // 4. SALVAR HISTÓRICO GLOBAL (NOVIDADE)
+        // 5. Atualizar Histórico Global (Snapshots Diários da Comunidade)
         let globalHistory = readJsonSafe(GLOBAL_HISTORY_FILE, {});
-        
         globalHistory[todayKey] = {
             total_votes: meta.votes_month_current || 0,
-            trail_count: meta.curation_trail_count || 0,
-            active_brazilians: meta.active_brazilians || 0,
-            total_hp: Math.floor(meta.total_hp || 0),
-            active_members: meta.active_community_members || 0
+            trail_count: trailSet.size,
+            active_brazilians: activeBrCount,
+            total_hp: Math.floor(totalHp),
+            active_members: allMembers.size
         };
 
-        // 5. Escrever Arquivos
-        fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2)); // Histórico Individual
-        fs.writeFileSync(META_FILE, JSON.stringify(meta, null, 2));       // Meta Atual
-        fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(globalHistory, null, 2)); // Histórico Global
+        // 6. Persistência Atômica
+        fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
+        fs.writeFileSync(META_FILE, JSON.stringify(meta, null, 2));
+        fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(globalHistory, null, 2));
 
-        console.log(`✅ Dados fundidos com sucesso.`);
-        console.log(`📊 Snapshot Global salvo para ${todayKey}: ${meta.active_brazilians} BRs Ativos, ${meta.curation_trail_count} na Trilha.`);
+        console.log(`✅ Sucesso: Snapshot v2.25.0 salvo para ${todayKey}.`);
 
     } catch (error) {
-        console.error("❌ Erro no merge:", error);
+        console.error("❌ Erro Crítico no Merge:", error);
         process.exit(1);
     }
 }
