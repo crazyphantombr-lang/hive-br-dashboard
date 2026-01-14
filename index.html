@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hive BR Dashboard v2.25.11</title>
+  <title>Hive BR Dashboard v2.25.12</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="moz-extension://9fbcfce3-75f1-4b06-83b3-733da2056863/./hive_keychain.js"></script>
@@ -19,7 +19,7 @@
 <body>
   <div class="container">
     <header>
-      <div class="last-updated" id="last-updated">Restaurando integridade...</div>
+      <div class="last-updated" id="last-updated">Restaurando dados estáveis...</div>
       <h1>HIVE BR <span class="highlight">DASHBOARD</span></h1>
       <p class="subtitle">Ranking de Curadoria e Estatísticas</p>
     </header>
@@ -31,7 +31,7 @@
         </div>
         <div class="project-info">
             <h3>PODER DE VOTO DA COMUNIDADE</h3>
-            <p id="stat-community-power">Carregando...</p>
+            <p id="stat-community-power">Calculando...</p>
         </div>
       </div>
     </div>
@@ -44,7 +44,7 @@
     </div>
 
     <div id="activity-panel" class="activity-container" style="display: none;">
-      <h3 class="section-title">⚡ Alterações Recentes (7 dias)</h3>
+      <h3 class="section-title">⚡ Alterações nas Delegações (7 dias)</h3>
       <table class="activity-table">
         <thead>
           <tr>
@@ -59,21 +59,21 @@
     </div>
 
     <div class="highlight-cards-grid" style="margin-top: 50px;">
-        <div class="project-card" style="border-color: #ffcc00;">
+        <div class="project-card" style="border-color: #ffcc00; background: linear-gradient(90deg, rgba(255, 204, 0, 0.1), rgba(19, 19, 31, 0.8));">
             <div class="project-icon"><span style="font-size: 3rem;">🗳️</span></div>
             <div class="project-info">
                 <h3 id="lbl-votes-current">MÊS ATUAL</h3>
                 <p id="stat-votes-current" style="color: #ffcc00;">0</p>
             </div>
         </div>
-        <div class="project-card" style="border-color: #bb86fc;">
+        <div class="project-card" style="border-color: #bb86fc; background: linear-gradient(90deg, rgba(187, 134, 252, 0.1), rgba(19, 19, 31, 0.8));">
             <div class="project-icon"><span style="font-size: 3rem;">👣</span></div>
             <div class="project-info">
                 <h3>TRILHA DE CURADORIA</h3>
                 <p id="stat-trail-count" style="color: #bb86fc;">0</p>
             </div>
         </div>
-        <div class="project-card" style="border-color: #009c3b;">
+        <div class="project-card" style="border-color: #009c3b; background: linear-gradient(90deg, rgba(0, 156, 59, 0.1), rgba(19, 19, 31, 0.8));">
             <div class="project-icon"><span style="font-size: 3rem;">🇧🇷</span></div>
             <div class="project-info">
                 <h3>BRASILEIROS ATIVOS</h3>
@@ -83,7 +83,7 @@
     </div>
 
     <div class="search-container">
-      <input type="text" id="search-input" placeholder="🔍 Buscar usuário..." autocomplete="off">
+      <input type="text" id="search-input" placeholder="🔍 Filtrar usuários..." autocomplete="off">
     </div>
 
     <div class="table-wrapper">
@@ -92,12 +92,12 @@
           <tr>
             <th class="sticky-col sortable" onclick="handleSort('delegator')">Usuário</th>
             <th class="sortable" onclick="handleSort('delegated_hp')">Delegação</th>
-            <th class="sortable" onclick="handleSort('timestamp')">Tempo</th>
+            <th>Tempo</th>
             <th class="sortable" onclick="handleSort('total_account_hp')">HP Próprio</th>
             <th>Power Down</th>
             <th class="sortable" onclick="handleSort('token_balance')">HBR Stake</th>
-            <th class="sortable" onclick="handleSort('last_user_post')">Atividade</th>
-            <th class="sortable" onclick="handleSort('last_vote_date')">Curadoria</th>
+            <th>Atividade</th>
+            <th>Curadoria</th>
             <th>Bônus Rank</th>
             <th>Bônus HBR</th>
             <th>Trilha</th>
