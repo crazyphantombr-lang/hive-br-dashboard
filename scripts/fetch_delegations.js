@@ -1,6 +1,6 @@
 /**
  * Script: Hive BR Data Fetcher
- * Version: 2.25.6 (Emergency Recovery: Full User Mapping)
+ * Version: 2.25.4 (Core Data Persistence) - ESTÁVEL
  */
 
 const fs = require('fs');
@@ -16,7 +16,7 @@ const HIVE_RPC = 'https://api.hive.blog';
 async function callHive(method, params) {
     const response = await fetch(HIVE_RPC, {
         method: 'POST',
-        body: JSON.stringify({ jsonrpc: '2.0', method, params, id: 1 })
+        body: JSON.stringify({ jsonrpc: '2.0', method: method, params: params, id: 1 })
     });
     const json = await response.json();
     return json.result;
@@ -24,24 +24,15 @@ async function callHive(method, params) {
 
 async function run() {
     try {
-        console.log("🚀 Iniciando Recuperação de Dados v2.25.6...");
-
+        console.log("🚀 Coleta de dados v2.25.4...");
         const lists = JSON.parse(fs.readFileSync(LISTS_FILE, 'utf8'));
-        
-        // 1. Capturar Delegadores Reais
+        const targetAccounts = lists.verificado_br || [];
+
+        const [mainAccount] = await callHive('condenser_api.get_accounts', [['hive-br.voter']]);
         const delegations = await callHive('condenser_api.get_vesting_delegations', ['hive-br.voter', '', 1000]);
-        
-        // 2. Unificar TODOS os nomes (Delegadores + Config)
-        const allUsernames = [...new Set([
-            ...delegations.map(d => d.delegator),
-            ...(lists.verificado_br || []),
-            ...(lists.pendente_br || []),
-            ...(lists.watchlist || [])
-        ])];
+        const delegatorNames = delegations.map(d => d.delegator);
 
-        console.log(`📊 Processando ${allUsernames.length} usuários totais...`);
-
-        // 3. Coleta de Detalhes da Conta
+        const allUsernames = [...new Set([...targetAccounts, ...delegatorNames])];
         const userDetails = [];
         for (let i = 0; i < allUsernames.length; i += 50) {
             const batch = allUsernames.slice(i, i + 50);
@@ -51,14 +42,12 @@ async function run() {
 
         const ranking = userDetails.map(acc => {
             const del = delegations.find(d => d.delegator === acc.name);
-            const rawPD = acc.next_vesting_withdrawal;
-            
             return {
                 delegator: acc.name,
                 delegated_hp: del ? parseFloat(del.vesting_shares) : 0,
                 timestamp: del ? del.min_delegation_time : null,
                 total_account_hp: parseFloat(acc.vesting_shares),
-                next_withdrawal: (rawPD && !rawPD.startsWith("1970")) ? rawPD : null,
+                next_withdrawal: acc.next_vesting_withdrawal,
                 token_balance: parseFloat(acc.balance),
                 last_user_post: acc.last_post,
                 last_vote_date: acc.last_vote_time,
@@ -69,18 +58,16 @@ async function run() {
         if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
         fs.writeFileSync(CURRENT_FILE, JSON.stringify(ranking, null, 2));
 
-        const [mainAcc] = await callHive('condenser_api.get_accounts', [['hive-br.voter']]);
-        fs.writeFileSync(META_FILE, JSON.stringify({
+        const meta = {
             last_updated: new Date().toISOString(),
-            total_delegators: delegations.length,
-            project_account_hp: parseFloat(mainAcc.vesting_shares)
-        }, null, 2));
-
-        console.log("✅ Sistema Restaurado com Sucesso.");
-    } catch (e) {
-        console.error("❌ Falha Crítica:", e);
+            total_delegators: delegatorNames.length,
+            project_account_hp: parseFloat(mainAccount.vesting_shares)
+        };
+        fs.writeFileSync(META_FILE, JSON.stringify(meta, null, 2));
+        console.log("✅ Coleta concluída com sucesso.");
+    } catch (error) {
+        console.error("Erro fatal:", error);
         process.exit(1);
     }
 }
-
 run();
