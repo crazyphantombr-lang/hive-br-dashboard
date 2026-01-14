@@ -30,13 +30,18 @@ jobs:
     - name: Generate AI Report
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      # Opcional: Define FORCE_REPORT como true se quiser forçar o relatório hoje
+      # run: FORCE_REPORT=true node scripts/generate_report.js
       run: node scripts/generate_report.js
 
     - name: Commit and Push Changes
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-        git add data/*.json config/lists.json reports/*.md
-        # O comando abaixo commita apenas se houver mudanças, sem quebrar o erro se não houver
-        git commit -m "auto: update data and generate report [v2.19.0]" || echo "No changes to commit"
+        
+        # IMPORTANTE: Adiciona a pasta inteira para pegar subdiretórios (history/snapshots)
+        git add data/ config/lists.json reports/
+        
+        # Commita apenas se houver mudanças, sem quebrar se não houver
+        git commit -m "auto: update data and snapshots [v2.26.0]" || echo "No changes to commit"
         git push

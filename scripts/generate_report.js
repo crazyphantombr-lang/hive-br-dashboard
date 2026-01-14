@@ -1,7 +1,9 @@
+// File: scripts/generate_report.js
 /**
  * Script: AI Report Generator
- * Version: 2.20.5 (Hotfix)
- * Description: Robust JSON loading. Ignores corrupted files (HTML) instead of crashing.
+ * Version: 2.21.0 (Feature: Rich Data & Enthusiastic Prompt)
+ * Description: Gera relatórios mensais narrativos usando dados granulares de histórico (30 dias).
+ * Calcula Top Movers, Novos Delegadores e fornece contexto rico para a IA.
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -11,15 +13,14 @@ const path = require("path");
 // --- CONFIGURAÇÕES ---
 const COVER_IMAGE_URL = "https://files.peakd.com/file/peakd-hive/crazyphantombr/23tknNzYZVr2stDGwN8Sv9BpmnRmeRgcZNaC1ZhHFB1U99MTAe5qfGrcsZd4a51PPnRkZ.png";
 const DISCORD_LINK = "https://discord.gg/NgfkeVJT5w";
-const MODEL_NAME = "gemini-2.5-flash";
+const MODEL_NAME = "gemini-2.5-flash"; // Usando modelo mais recente se disponível, ou fallback
 
 const DATA_DIR = "data";
 const REPORT_DIR = "reports";
 const META_FILE = path.join(DATA_DIR, "meta.json");
 const CURRENT_FILE = path.join(DATA_DIR, "current.json");
 const HISTORY_FILE = path.join(DATA_DIR, "ranking_history.json"); 
-const MONTHLY_FILE = path.join(DATA_DIR, "monthly_stats.json");   
-const LISTS_FILE = path.join(DATA_DIR, "lists.json");
+// monthly_stats.json foi removido da lógica de cálculo individual para evitar erros
 
 if (!fs.existsSync(REPORT_DIR)) fs.mkdirSync(REPORT_DIR, { recursive: true });
 
@@ -31,9 +32,15 @@ function readJsonSafe(filepath, fallbackValue) {
         return JSON.parse(raw);
     } catch (e) {
         console.warn(`⚠️ AVISO: Arquivo corrompido ignorado: ${path.basename(filepath)}`);
-        console.warn(`   Erro: ${e.message.slice(0, 50)}...`);
         return fallbackValue;
     }
+}
+
+// --- UTILITÁRIOS DE DATA ---
+function getPastDate(daysAgo) {
+    const d = new Date();
+    d.setDate(d.getDate() - daysAgo);
+    return d.toISOString().split('T')[0];
 }
 
 async function run() {
@@ -57,114 +64,147 @@ async function run() {
     if (isForced) console.log("⚠️ MODO MANUAL ATIVADO.");
 
     try {
-        console.log("📂 Carregando dados de forma segura...");
+        console.log("📂 Carregando e processando dados ricos...");
 
-        // Leitura com Fallbacks (evita crash por HTML/JSON inválido)
-        const meta = readJsonSafe(META_FILE, { 
-            active_community_members: 0, total_hp: 0, votes_month_current: 0, curation_trail_count: 0 
-        });
-        
+        const meta = readJsonSafe(META_FILE, { total_hp: 0, active_community_members: 0 });
         const rawCurrent = readJsonSafe(CURRENT_FILE, []);
-        const listsData = readJsonSafe(LISTS_FILE, { new_delegators: [] });
-        const dailyHistory = readJsonSafe(HISTORY_FILE, []);
-        const monthlyHistory = readJsonSafe(MONTHLY_FILE, []);
+        const historyData = readJsonSafe(HISTORY_FILE, {}); // Histórico diário: { "user": { "date": hp } }
 
-        // Tratamento do Current (Array vs Objeto)
-        let currentList = [];
-        if (Array.isArray(rawCurrent)) {
-            currentList = rawCurrent;
-        } else if (rawCurrent.ranking && Array.isArray(rawCurrent.ranking)) {
-            currentList = rawCurrent.ranking;
-        }
+        let currentList = Array.isArray(rawCurrent) ? rawCurrent : (rawCurrent.ranking || []);
         
-        // Ordenação de Segurança
-        currentList.sort((a, b) => (b.delegated_hp || 0) - (a.delegated_hp || 0));
-
-        // --- 2. CÁLCULOS ANALÍTICOS ---
-
-        // A. Comparação de 15 Dias
-        let stats15DaysAgo = null;
-        if (Array.isArray(dailyHistory) && dailyHistory.length >= 15) {
-            stats15DaysAgo = dailyHistory[dailyHistory.length - 15];
-        }
-
-        // B. Comparação Mês Anterior
-        const lastMonthStats = (Array.isArray(monthlyHistory) && monthlyHistory.length >= 2) 
-            ? monthlyHistory[monthlyHistory.length - 2] 
-            : null;
-
-        // C. Delegador Destaque (MVP)
-        let topGainer = { name: "N/A", increase: 0 };
-        let lastRankingMap = new Map();
+        // --- 2. CÁLCULOS AVANÇADOS (Regra de 30 Dias) ---
+        // Alinhado com a lógica do Frontend v2.23.3
         
-        if (lastMonthStats && lastMonthStats.ranking) {
-             lastRankingMap = new Map(lastMonthStats.ranking.map(u => [u.username, u.hp]));
-        }
+        const targetDateStr = getPastDate(30);
+        const movers = [];      // Quem cresceu
+        const newJoiners = [];  // Quem entrou (0 -> X)
+        const droppers = [];    // Quem saiu (X -> 0 ou reduziu muito)
 
         currentList.forEach(user => {
-            const name = user.delegator || user.username;
-            const currentHp = user.delegated_hp || user.hp || 0;
-            const lastHp = lastRankingMap.get(name) || 0;
-            const diff = currentHp - lastHp;
+            const name = user.delegator;
+            const currentHP = user.delegated_hp || 0;
             
-            if (diff > topGainer.increase) {
-                topGainer = { name: name, increase: diff, total: currentHp };
+            // Busca histórico
+            let pastHP = 0;
+            const userHist = historyData[name];
+            
+            if (userHist) {
+                // Encontra a data mais próxima no passado (<= 30 dias atrás)
+                const dates = Object.keys(userHist).sort();
+                let foundDate = null;
+                for (const d of dates) {
+                    if (d <= targetDateStr) foundDate = d;
+                    else break;
+                }
+                if (foundDate) pastHP = userHist[foundDate];
+            }
+
+            const diff = currentHP - pastHP;
+
+            // Classificação
+            if (pastHP === 0 && currentHP > 0) {
+                newJoiners.push({ name, hp: currentHP });
+                movers.push({ name, diff: currentHP, total: currentHP, type: "NEW" });
+            } else if (diff > 0.1) {
+                movers.push({ name, diff: diff, total: currentHP, type: "GROWTH" });
+            } else if (diff < -0.1) {
+                droppers.push({ name, diff: diff, total: currentHP });
             }
         });
 
-        // --- 3. GERAÇÃO ---
+        // Ordenações
+        movers.sort((a, b) => b.diff - a.diff);
+        const topGainer = movers.length > 0 ? movers[0] : { name: "Ninguém", diff: 0 };
+        const totalGrowth30d = movers.reduce((acc, cur) => acc + cur.diff, 0) + droppers.reduce((acc, cur) => acc + cur.diff, 0);
+
+        // --- 3. PAYLOAD PARA A IA ---
         const dataPayload = {
             date: now.toLocaleDateString("pt-BR"),
-            stats: {
-                active_members: meta.active_community_members || 0,
+            community_stats: {
                 total_hp: Math.floor(meta.total_hp || 0),
-                votes_month: meta.votes_month_current || 0,
-                trail_followers: meta.curation_trail_count || 0
+                members_count: meta.active_community_members || 0,
+                growth_30d_hp: Math.floor(totalGrowth30d),
+                growth_30d_percent: ((totalGrowth30d / (meta.total_hp - totalGrowth30d)) * 100).toFixed(2) + "%"
             },
-            comparison: {
-                last_month: lastMonthStats ? {
-                    total_hp: lastMonthStats.total_power,
-                } : "Sem dados",
+            mvp: {
+                name: topGainer.name,
+                growth_amount: Math.floor(topGainer.diff),
+                total_delegated: Math.floor(topGainer.total)
             },
-            highlight: {
-                delegator_of_month: topGainer.increase > 0 ? topGainer : null,
-                new_delegators: listsData.new_delegators || []
-            },
-            top_ranking: currentList.slice(0, 10) 
+            top_movers_5: movers.slice(0, 5).map(m => ({ 
+                name: m.name, 
+                added: Math.floor(m.diff), 
+                status: m.type === "NEW" ? "Novo Membro!" : "Aumentou aposta"
+            })),
+            new_members: newJoiners.slice(0, 10).map(u => u.name), // Top 10 novos
+            top_ranking_10: currentList.slice(0, 10).map((u, i) => ({
+                rank: i + 1,
+                name: u.delegator,
+                hp: Math.floor(u.delegated_hp),
+                is_br: u.country_code === "BR_CERT"
+            }))
         };
 
+        // --- 4. PROMPT ENGENHADO ---
         const prompt = `
-ATUE COMO: O Gerente de Comunidade da Hive BR.
-OBJETIVO: Escrever o "Relatório Mensal" (Markdown).
+ATUE COMO: "Hiver", o mascote digital entusiasta, otimista e analítico da comunidade Hive BR.
+OBJETIVO: Escrever o Relatório Mensal da Hive BR (Markdown).
 
-DADOS:
-${JSON.stringify(dataPayload)}
+DADOS DO MÊS (ANÁLISE PROFUNDA):
+${JSON.stringify(dataPayload, null, 2)}
 
-ESTRUTURA:
-1. Capa: ![Capa](${COVER_IMAGE_URL})
-2. Título Criativo (${now.toLocaleDateString()}).
-3. Destaque do Mês: ${topGainer.name} (+${Math.floor(topGainer.increase)} HP).
-4. Dados Gerais: Total HP ${Math.floor(meta.total_hp || 0)}, Membros ${meta.active_community_members || 0}.
-5. Ranking Top 10 (Tabela).
-6. CTA para Discord: ${DISCORD_LINK}
+DIRETRIZES DE TOM E ESTILO:
+- Tom: Vibrante, celebrativo, cheio de energia, mas profissional nos dados.
+- Use emojis estrategicamente (🚀, 🐝, 🍯, 📈).
+- Linguagem: Português Brasileiro (PT-BR). Use termos da Hive (HP, Power Up, Delegação).
 
-TOM: Celebrativo e Profissional. PT-BR.
+ESTRUTURA DO RELATÓRIO:
+
+1. CAPA VISUAL
+   - Insira esta imagem no topo: ![Capa](${COVER_IMAGE_URL})
+
+2. TÍTULO CRIATIVO
+   - Crie um título chamativo com a data (${now.toLocaleDateString()}). Ex: "O Mel Está Pingando!", "Explosão de HP!".
+
+3. INTRODUÇÃO: O PULSO DA COLMEIA
+   - Comente sobre o Total de HP (${dataPayload.community_stats.total_hp}) e o crescimento líquido (${dataPayload.community_stats.growth_30d_hp} HP).
+   - Se o crescimento for positivo, celebre a força da união.
+
+4. 🏆 DESTAQUE DO MÊS (MVP)
+   - Conte uma mini-história sobre @${topGainer.name}. 
+   - Ele(a) adicionou +${Math.floor(topGainer.diff)} HP. Diga que ele é a "Abelha Rainha" deste ciclo.
+
+5. 🚀 QUEM ESTÁ TURBINANDO (TOP MOVERS)
+   - Não mostre apenas uma tabela chata. Liste os Top 5 Movers de forma dinâmica.
+   - Exalte quem está na lista "top_movers_5".
+
+6. 👋 BOAS-VINDAS AOS NOVATOS
+   - Se houver "new_members", cite-os nominalmente. Diga "Bem-vindos ao enxame!".
+   - Se a lista for vazia, incentive novos usuários a entrar.
+
+7. O TOP 10 (A ELITE)
+   - Apresente a tabela do Top 10 Ranking.
+   - Faça um breve comentário sobre a disputa entre o 2º e o 3º lugar (se os números forem próximos).
+
+8. CHAMADA PARA AÇÃO (CTA)
+   - Convide para o Discord: ${DISCORD_LINK}
+   - Encerre com uma frase de efeito motivacional sobre Web3 e comunidade.
 `;
 
-        console.log(`🤖 Gerando Relatório v2.20.5...`);
+        console.log(`🤖 Gerando Relatório Narrativo v2.21.0...`);
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const result = await model.generateContent(prompt);
         const text = result.response.text();
 
-        const suffix = isForced ? "_MANUAL_INSPECTION" : "_MENSAL";
-        const filename = `relatorio_${now.toISOString().slice(0, 7)}${suffix}.md`;
+        const suffix = isForced ? "_MANUAL" : `_${now.toISOString().slice(0, 7)}`;
+        const filename = `relatorio${suffix}.md`;
         
         fs.writeFileSync(path.join(REPORT_DIR, filename), text);
-        console.log(`✅ Relatório salvo: ${filename}`);
+        console.log(`✅ Relatório narrativo salvo: ${filename}`);
 
     } catch (error) {
-        console.error("❌ Falha Crítica:", error.message);
+        console.error("❌ Falha Crítica na IA:", error.message);
         process.exit(1);
     }
 }
