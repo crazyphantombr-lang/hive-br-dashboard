@@ -1,13 +1,13 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.23.2 (Feature: Destaque 30 dias)
+ * Version: 2.23.3 (Fix: Regra de Bônus por Ranking)
  * Author: Hive BR
  * License: MIT
- * Description: Implementa lógica de cálculo para o 'Delegador Destaque' (maior crescimento líquido de delegação em 30 dias).
+ * Description: Correção da regra de negócio de bônus de delegação. Agora baseada estritamente na posição do ranking (1-40).
  */
 
-const FRONTEND_VERSION = "2.23.2";
+const FRONTEND_VERSION = "2.23.3";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -35,7 +35,7 @@ async function loadData() {
         renderTable(ranking);
         renderGraphs(ranking);
         renderRecentActivity(ranking, historyData); 
-        renderHighlight30d(ranking, historyData); // <-- Nova Função
+        renderHighlight30d(ranking, historyData); 
 
     } catch (err) {
         console.error("Erro ao carregar dados:", err);
@@ -118,8 +118,6 @@ function renderHighlight30d(ranking, historyData) {
             if (foundDate) {
                 pastHP = hist[foundDate];
             }
-            // Se não encontrou data <= 30 dias atrás, significa que o usuário
-            // entrou a menos de 30 dias, logo pastHP continua 0.
         }
 
         const growth = currentHP - pastHP;
@@ -162,11 +160,9 @@ function renderRecentActivity(delegations, historyData) {
         const dates = Object.keys(hist).sort();
         if (dates.length >= 2) {
           const latestIndex = dates.length - 1;
-          // Pega o registro de X dias atrás (ou o mais antigo disponível)
           let compareIndex = latestIndex - DAYS_BACK;
           if (compareIndex < 0) compareIndex = 0;
           
-          // Se só tem 1 dia de registro, não tem como comparar
           if (compareIndex === latestIndex) return;
 
           const todayHP = hist[dates[latestIndex]];
@@ -189,13 +185,9 @@ function renderRecentActivity(delegations, historyData) {
     changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff)); // Ordena por magnitude
     tbody.innerHTML = "";
 
-    // Mostra Top 10 mudanças
     changes.slice(0, 10).forEach(change => {
       const tr = document.createElement("tr");
-      const diffClass = change.diff > 0 ? "diff-positive" : "diff-negative"; // CSS precisa ter essas classes
       const signal = change.diff > 0 ? "+" : "";
-      
-      // Estilo inline para garantir funcionamento imediato
       const color = change.diff > 0 ? "#4dff91" : "#ff4d4d";
 
       tr.innerHTML = `
@@ -217,6 +209,7 @@ function renderTable(data) {
     if (!tbody) return;
     tbody.innerHTML = '';
 
+    // Ordenação obrigatória para garantir que o índice corresponda ao ranking
     data.sort((a, b) => b.delegated_hp - a.delegated_hp);
 
     data.forEach((user, index) => {
@@ -243,10 +236,26 @@ function renderTable(data) {
 
         const hpVal = user.delegated_hp;
         let bonusBadge = '<span style="opacity:0.3; font-size:0.8em">—</span>';
-        if (hpVal >= 1000) bonusBadge = '<span class="bonus-tag bonus-gold">+20%</span>';
-        else if (hpVal >= 500) bonusBadge = '<span class="bonus-tag bonus-silver">+15%</span>';
-        else if (hpVal >= 100) bonusBadge = '<span class="bonus-tag bonus-bronze">+10%</span>';
-        else if (hpVal >= 50) bonusBadge = '<span class="bonus-tag bonus-honor">+5%</span>';
+
+        /* * REGRA DE NEGÓCIO IMUTÁVEL: BÔNUS DE DELEGAÇÃO
+         * A porcentagem é definida ESTRITAMENTE pela posição no ranking (Index),
+         * independente do valor absoluto de HP delegado.
+         * * 1º ao 10º (Top 10):  +20% (Gold)
+         * 11º ao 20º:          +15% (Silver)
+         * 21º ao 30º:          +10% (Bronze)
+         * 31º ao 40º:          +5%  (Honor)
+         */
+        const rankPosition = index + 1;
+
+        if (rankPosition <= 10) {
+            bonusBadge = '<span class="bonus-tag bonus-gold">+20%</span>';
+        } else if (rankPosition <= 20) {
+            bonusBadge = '<span class="bonus-tag bonus-silver">+15%</span>';
+        } else if (rankPosition <= 30) {
+            bonusBadge = '<span class="bonus-tag bonus-bronze">+10%</span>';
+        } else if (rankPosition <= 40) {
+            bonusBadge = '<span class="bonus-tag bonus-honor">+5%</span>';
+        }
 
         let hbrBadge = '<span style="opacity:0.3; font-size:0.8em">—</span>';
         if (user.token_balance > 0) {
@@ -256,7 +265,7 @@ function renderTable(data) {
 
         row.innerHTML = `
             <td class="sticky-col">
-                <span style="color:#666; margin-right:8px; font-weight:bold;">#${index + 1}</span>
+                <span style="color:#666; margin-right:8px; font-weight:bold;">#${rankPosition}</span>
                 <img src="https://images.hive.blog/u/${user.delegator}/avatar/small" style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:5px;">
                 <a href="https://peakd.com/@${user.delegator}" target="_blank">@${user.delegator}</a>
                 ${flag}
