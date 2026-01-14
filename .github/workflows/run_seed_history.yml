@@ -1,0 +1,45 @@
+name: Populate 2025 History
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Digite SIM para confirmar a recriação do histórico'
+        required: true
+        default: 'SIM'
+
+permissions:
+  contents: write
+
+jobs:
+  seed-history:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run History Seeder
+        run: node scripts/seed_2025_history.js
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add data/monthly_stats.json
+          
+          if git diff --staged --quiet; then
+            echo "Nenhuma alteração no histórico encontrada."
+          else
+            git commit -m "Data: Atualização do histórico de votos de 2025"
+            git push
+          fi
