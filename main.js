@@ -1,11 +1,9 @@
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.25.5 (Hotfix: Power Down Calculation)
- * Author: Hive BR
- * Description: Gerencia a interface e lógica de exibição, incluindo Power Down amigável.
+ * Version: 2.25.6 (Emergency Recovery & Date Shield)
  */
 
-const FRONTEND_VERSION = "2.25.5";
+const FRONTEND_VERSION = "2.25.6";
 let globalRankingData = [];
 let globalHistoryData = {};
 let currentSort = { column: 'delegated_hp', dir: 'desc' };
@@ -22,7 +20,7 @@ async function loadData() {
             fetch('data/current.json'),
             fetch('data/ranking_history.json')
         ]);
-        if (!metaRes.ok || !currentRes.ok) throw new Error("Falha ao carregar arquivos JSON");
+        if (!metaRes.ok || !currentRes.ok) throw new Error("Erro de carga");
         const meta = await metaRes.json();
         const ranking = await currentRes.json();
         globalRankingData = ranking;
@@ -31,8 +29,7 @@ async function loadData() {
         applySort();
         calculateTopGainer30d(ranking, globalHistoryData);
     } catch (err) {
-        console.error(err);
-        document.getElementById('last-updated').textContent = "Erro na carga de dados.";
+        console.error("Falha ao iniciar dashboard:", err);
     }
 }
 
@@ -41,7 +38,9 @@ function renderMeta(meta) {
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const voteLabel = `VOTOS DISTRIBUÍDOS EM ${months[now.getMonth()].toUpperCase()} ${now.getFullYear()}`;
     
-    document.getElementById('lbl-votes-current').textContent = voteLabel;
+    const lblVotes = document.getElementById('lbl-votes-current');
+    if (lblVotes) lblVotes.textContent = voteLabel;
+    
     document.getElementById('last-updated').innerHTML = `Atualizado: ${now.toLocaleString('pt-BR')}<br><small>v${FRONTEND_VERSION}</small>`;
     
     updateSafe('stat-community-power', formatNumber(meta.total_hp) + " HP");
@@ -53,28 +52,11 @@ function renderMeta(meta) {
     updateSafe('stat-trail-count', meta.curation_trail_count || 0);
 }
 
-function calculateTopGainer30d(ranking, historyData) {
-    let topUser = { name: "—", delta: 0 };
-    const targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() - 30);
-    const targetKey = targetDate.toISOString().split('T')[0];
-    ranking.forEach(user => {
-        const hist = historyData[user.delegator];
-        if (hist) {
-            const dates = Object.keys(hist).sort();
-            const pastDateKey = dates.reduce((prev, curr) => Math.abs(new Date(curr) - new Date(targetKey)) < Math.abs(new Date(prev) - new Date(targetKey)) ? curr : prev);
-            const delta = (user.delegated_hp || 0) - (hist[pastDateKey] || 0);
-            if (delta > topUser.delta) topUser = { name: user.delegator, delta: delta };
-        }
-    });
-    const displayEl = document.getElementById('stat-growth');
-    if (displayEl) displayEl.innerHTML = topUser.delta > 0 ? `<span style="color:#4dff91;">@${topUser.name}</span> <small>(+${Math.floor(topUser.delta)})</small>` : "—";
-}
-
 function renderTable(data) {
     const tbody = document.getElementById('ranking-body');
     if (!tbody) return;
     tbody.innerHTML = '';
+    
     const rankMap = new Map();
     [...data].sort((a, b) => b.delegated_hp - a.delegated_hp).forEach((u, i) => rankMap.set(u.delegator, i + 1));
     
@@ -84,89 +66,64 @@ function renderTable(data) {
         row.className = 'delegator-row';
         row.dataset.name = user.delegator;
         
-        // Bônus Posicional
-        let bonusRankHtml = '<span style="opacity:0.2">—</span>';
-        if (rank <= 10) bonusRankHtml = '<span class="bonus-tag bonus-gold">+20%</span>';
-        else if (rank <= 20) bonusRankHtml = '<span class="bonus-tag bonus-silver">+15%</span>';
-        else if (rank <= 30) bonusRankHtml = '<span class="bonus-tag bonus-bronze">+10%</span>';
-        else if (rank <= 40) bonusRankHtml = '<span class="bonus-tag bonus-honor">+5%</span>';
-
-        // Bônus HBR: +1% a cada 10 tokens (max 20%)
-        let bonusHbrHtml = '<span style="opacity:0.2">—</span>';
-        const hbrValue = Math.min(20, Math.floor((user.token_balance || 0) / 10));
-        if (hbrValue > 0) {
-            bonusHbrHtml = `<span class="bonus-tag bonus-hbr">+${hbrValue}%</span>`;
-        }
-
-        // Bônus Trilha
-        let bonusTrailHtml = '<span style="opacity:0.2">—</span>';
-        if (user.in_curation_trail) {
-            bonusTrailHtml = '<span class="bonus-tag bonus-trail">+5%</span>';
-        }
-
-        // [HOTFIX v2.25.5] Lógica de Exibição de Power Down
-        let powerDownHtml = '<span style="opacity:0.2">—</span>';
+        // Bônus
+        let bonusRank = rank <= 10 ? '+20%' : rank <= 20 ? '+15%' : rank <= 30 ? '+10%' : rank <= 40 ? '+5%' : '—';
+        let bonusHbr = Math.min(20, Math.floor((user.token_balance || 0) / 10));
+        let pdHtml = '—';
+        
+        // Proteção 31/12: Só exibe se houver data válida e futura
         if (user.next_withdrawal) {
-            const days = calculateDaysUntil(user.next_withdrawal);
-            const dateObj = new Date(user.next_withdrawal);
-            const formattedDate = dateObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-            powerDownHtml = `<span class="pd-active" title="Próximo saque em: ${user.next_withdrawal}">📉 ${formattedDate} (${days}d)</span>`;
+            const pdDate = new Date(user.next_withdrawal);
+            if (!isNaN(pdDate) && pdDate > new Date()) {
+                const days = calculateDaysUntil(user.next_withdrawal);
+                pdHtml = `<span class="pd-active">📉 ${pdDate.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'})} (${days}d)</span>`;
+            }
         }
 
         row.innerHTML = `
-            <td class="sticky-col">
-                <span style="color:#666; font-weight:bold; width:25px; display:inline-block;">#${rank}</span>
-                <img src="https://images.hive.blog/u/${user.delegator}/avatar/small" style="width:20px; border-radius:50%; margin-right:5px;">
-                <a href="https://peakd.com/@${user.delegator}" target="_blank">@${user.delegator}</a>
-            </td>
-            <td style="font-weight:bold; color:#4dff91;">${formatNumber(user.delegated_hp)}</td>
-            <td>${calculateDaysSince(user.timestamp) || 0}d</td>
-            <td style="color:#888;">${formatNumber(user.total_account_hp)}</td>
-            <td>${powerDownHtml}</td>
+            <td class="sticky-col">#${rank} @${user.delegator}</td>
+            <td style="color:#4dff91; font-weight:bold;">${formatNumber(user.delegated_hp)}</td>
+            <td>${calculateDaysSince(user.timestamp)}d</td>
+            <td>${formatNumber(user.total_account_hp)}</td>
+            <td>${pdHtml}</td>
             <td>${formatNumber(user.token_balance)}</td>
             <td>${timeAgo(user.last_user_post)}</td>
             <td>${timeAgo(user.last_vote_date)}</td>
-            <td>${bonusRankHtml}</td>
-            <td>${bonusHbrHtml}</td>
-            <td>${bonusTrailHtml}</td>
-            <td><canvas id="chart-${user.delegator}" width="100" height="30"></canvas></td>
+            <td><span class="bonus-tag">${bonusRank}</span></td>
+            <td><span class="bonus-tag">${bonusHbr > 0 ? '+' + bonusHbr + '%' : '—'}</span></td>
+            <td><span class="bonus-tag">${user.in_curation_trail ? '+5%' : '—'}</span></td>
+            <td><canvas id="chart-${user.delegator}" width="80" height="25"></canvas></td>
         `;
         tbody.appendChild(row);
     });
-    renderGraphs(data, globalHistoryData);
 }
 
-function renderGraphs(data, historyData) {
-    data.forEach(user => {
-        const ctx = document.getElementById(`chart-${user.delegator}`);
-        if (ctx) {
-            const hist = historyData[user.delegator] || {};
-            const points = Object.values(hist).slice(-7);
-            new Chart(ctx, { type: 'line', data: { labels: points.map((_,i)=>i), datasets: [{ data: points, borderColor: '#4da6ff', borderWidth: 1, pointRadius: 0, fill: false }]}, options: { responsive: false, plugins: { legend: { display: false }}, scales: { x: { display: false }, y: { display: false }}, animation: false }});
-        }
-    });
+function timeAgo(ts) {
+    if (!ts || ts.startsWith("1970")) return "—";
+    const diff = new Date() - new Date(ts);
+    if (diff < 0) return "Agora"; // Proteção contra o erro -1
+    const days = Math.floor(diff / 86400000);
+    return days === 0 ? "Hoje" : days === 1 ? "Ontem" : `${days}d`;
 }
+
+function updateSafe(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+function formatNumber(n) { return Math.floor(n || 0).toLocaleString('pt-BR'); }
+function calculateDaysSince(ts) { if (!ts) return 0; return Math.floor((new Date() - new Date(ts)) / 86400000); }
+function calculateDaysUntil(ts) { const d = Math.ceil((new Date(ts) - new Date()) / 86400000); return d < 0 ? 0 : d; }
 
 function handleSort(column) {
-    if (currentSort.column === column) currentSort.dir = currentSort.dir === 'desc' ? 'asc' : 'desc';
-    else { currentSort.column = column; currentSort.dir = 'desc'; }
+    currentSort.dir = (currentSort.column === column && currentSort.dir === 'desc') ? 'asc' : 'desc';
+    currentSort.column = column;
     applySort();
 }
 
 function applySort() {
     globalRankingData.sort((a, b) => {
-        let vA = getSortValue(a, currentSort.column);
-        let vB = getSortValue(b, currentSort.column);
+        let vA = a[currentSort.column] || 0;
+        let vB = b[currentSort.column] || 0;
         return currentSort.dir === 'asc' ? (vA > vB ? 1 : -1) : (vA < vB ? 1 : -1);
     });
     renderTable(globalRankingData);
-}
-
-function getSortValue(obj, col) {
-    if (['timestamp', 'last_user_post', 'last_vote_date', 'next_withdrawal'].includes(col)) {
-        return new Date(obj[col] || 0).getTime();
-    }
-    return obj[col] || 0;
 }
 
 function setupSearch() {
@@ -175,9 +132,3 @@ function setupSearch() {
         document.querySelectorAll('.delegator-row').forEach(row => row.style.display = row.dataset.name.toLowerCase().includes(term) ? '' : 'none');
     });
 }
-
-function updateSafe(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
-function formatNumber(n) { return Math.floor(n || 0).toLocaleString('pt-BR'); }
-function calculateDaysSince(ts) { if (!ts) return 0; return Math.floor((new Date() - new Date(ts)) / 86400000); }
-function calculateDaysUntil(ts) { if (!ts) return 0; const d = Math.ceil((new Date(ts) - new Date()) / 86400000); return d < 0 ? 0 : d; }
-function timeAgo(ts) { if (!ts) return "—"; const d = Math.floor((new Date() - new Date(ts)) / 86400000); return d === 0 ? "Hoje" : d === 1 ? "Ontem" : `${d}d`; }
