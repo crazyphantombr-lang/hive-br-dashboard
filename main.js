@@ -1,9 +1,9 @@
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.25.10 (Integrity Restoration)
+ * Version: 2.25.11 (Hotfix: Integrity Restoration)
  */
 
-const FRONTEND_VERSION = "2.25.10";
+const FRONTEND_VERSION = "2.25.11";
 let globalRankingData = [];
 let globalHistoryData = {};
 let currentSort = { column: 'delegated_hp', dir: 'desc' };
