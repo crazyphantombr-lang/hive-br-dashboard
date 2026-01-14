@@ -1,6 +1,6 @@
 /**
- * Script: Merge Data & History
- * Version: 2.25.8 (History Healing & Safety Traps)
+ * Script: Merge Data & Vaccine
+ * Version: 2.25.10 (Healing: Hard Expunge 14/01)
  */
 
 const fs = require("fs");
@@ -14,38 +14,33 @@ const META_FILE = path.join(DATA_DIR, "meta.json");
 
 async function run() {
     try {
-        console.log("🔄 Executando Fusão e Limpeza de Histórico v2.25.8...");
+        console.log("🔄 Executando Sanitização v2.25.10...");
 
         const ranking = JSON.parse(fs.readFileSync(CURRENT_FILE, 'utf8'));
         const meta = JSON.parse(fs.readFileSync(META_FILE, 'utf8'));
         const lists = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
-        
-        let history = {};
-        if (fs.existsSync(HISTORY_FILE)) {
-            history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'));
-        }
+        let history = fs.existsSync(HISTORY_FILE) ? JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8')) : {};
 
-        // --- FUNÇÃO DE LIMPEZA (DELETAR ENTRADA PREMATURA/CORROMPIDA) ---
-        const badDate = "2026-01-14";
+        // --- VACINA: REMOVER DEFINITIVAMENTE O DIA CORROMPIDO ---
+        const poisonDate = "2026-01-14";
+        let cleanedCount = 0;
         Object.keys(history).forEach(user => {
-            if (history[user] && history[user][badDate] !== undefined) {
-                delete history[user][badDate];
+            if (history[user][poisonDate] !== undefined) {
+                delete history[user][poisonDate];
+                cleanedCount++;
             }
         });
+        console.log(`🧹 Sanitização: ${cleanedCount} entradas de ${poisonDate} removidas.`);
 
-        // --- TRAVA DE SEGURANÇA ---
-        // Só salva o snapshot de hoje se o HP total for significativo (evita apagar histórico por erro de RPC)
-        const currentTotalHp = ranking.reduce((acc, u) => acc + (u.delegated_hp || 0), 0);
+        const todayKey = new Date().toISOString().split('T')[0];
         
-        if (currentTotalHp > 0) {
-            const todayKey = new Date().toISOString().split('T')[0];
+        // Registrar novo snapshot se houver dados reais
+        const currentTotalHp = ranking.reduce((acc, u) => acc + (u.delegated_hp || 0), 0);
+        if (currentTotalHp > 0 && todayKey !== poisonDate) {
             ranking.forEach(user => {
                 if (!history[user.delegator]) history[user.delegator] = {};
                 history[user.delegator][todayKey] = user.delegated_hp;
             });
-            console.log(`✅ Snapshot de ${todayKey} registrado com ${Math.floor(currentTotalHp)} HP.`);
-        } else {
-            console.warn("⚠️ Coleta retornou ZERO HP. Snapshot ignorado para proteger o histórico.");
         }
 
         // Contagem de Brasileiros Ativos
@@ -61,15 +56,14 @@ async function run() {
         });
 
         meta.active_brazilians = activeBrCount;
-        meta.curation_trail_count = (lists.curation_trail || []).length;
-        meta.total_hp = currentTotalHp > 0 ? (currentTotalHp + meta.project_account_hp) : meta.total_hp;
+        meta.total_hp = currentTotalHp + meta.project_account_hp;
 
         fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
         fs.writeFileSync(META_FILE, JSON.stringify(meta, null, 2));
 
-        console.log(`✅ Restauração finalizada. Histórico limpo.`);
+        console.log(`✅ Integridade restaurada. Brasileiros ativos: ${activeBrCount}`);
     } catch (e) {
-        console.error("Erro no Merge:", e);
+        console.error(e);
         process.exit(1);
     }
 }
