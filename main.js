@@ -1,13 +1,13 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.23.3 (Fix: Regra de Bônus por Ranking)
+ * Version: 2.23.4 (UI: Text Labels Update)
  * Author: Hive BR
  * License: MIT
- * Description: Correção da regra de negócio de bônus de delegação. Agora baseada estritamente na posição do ranking (1-40).
+ * Description: Ajuste nos rótulos de datas (Votos distribuídos em...) e manutenção da regra de bônus.
  */
 
-const FRONTEND_VERSION = "2.23.3";
+const FRONTEND_VERSION = "2.23.4";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadData() {
     try {
-        // 1. Carrega TODOS os arquivos necessários (incluindo histórico)
         const [metaRes, currentRes, historyRes] = await Promise.all([
             fetch('data/meta.json'),
             fetch('data/current.json'),
@@ -27,8 +26,6 @@ async function loadData() {
 
         const meta = await metaRes.json();
         const ranking = await currentRes.json();
-        
-        // Histórico é opcional (se falhar, o site ainda abre, só não mostra o painel)
         const historyData = historyRes.ok ? await historyRes.json() : {};
 
         renderMeta(meta);
@@ -67,15 +64,22 @@ function renderMeta(meta) {
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const now = new Date();
     
-    updateSafe('lbl-votes-current', (monthNames[now.getMonth()] + " " + now.getFullYear()).toUpperCase());
+    // LABEL 1: Mês Atual
+    const labelCurrent = `Votos distribuídos em ${(monthNames[now.getMonth()] + " " + now.getFullYear()).toUpperCase()}`;
+    updateSafe('lbl-votes-current', labelCurrent);
+    
     updateSafe('stat-votes-current', meta.votes_month_current || 0);
     updateSafe('stat-trail-count', meta.curation_trail_count || 0);
 
     const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
     const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
     
-    updateSafe('lbl-votes-m1', `${monthNames[d1.getMonth()]} ${d1.getFullYear()}`);
-    updateSafe('lbl-votes-m2', `${monthNames[d2.getMonth()]} ${d2.getFullYear()}`);
+    // LABEL 2 & 3: Meses Anteriores
+    const labelM1 = `Votos distribuídos em ${(monthNames[d1.getMonth()] + " " + d1.getFullYear()).toUpperCase()}`;
+    const labelM2 = `Votos distribuídos em ${(monthNames[d2.getMonth()] + " " + d2.getFullYear()).toUpperCase()}`;
+
+    updateSafe('lbl-votes-m1', labelM1);
+    updateSafe('lbl-votes-m2', labelM2);
     
     updateSafe('stat-votes-m1', meta.votes_month_prev1 || 0);
     updateSafe('stat-votes-m2', meta.votes_month_prev2 || 0);
@@ -91,38 +95,30 @@ function renderHighlight30d(ranking, historyData) {
     let maxGrowth = -Infinity;
     const DAYS_TARGET = 30;
 
-    // Calcula a data alvo (30 dias atrás)
     const targetDate = new Date();
     targetDate.setDate(targetDate.getDate() - DAYS_TARGET);
     const targetDateStr = targetDate.toISOString().split('T')[0];
 
     ranking.forEach(user => {
         const currentHP = user.delegated_hp || 0;
-        let pastHP = 0; // Assume 0 para novos usuários
+        let pastHP = 0; 
 
         const hist = historyData[user.delegator];
         if (hist) {
-            // Obtém datas ordenadas
             const dates = Object.keys(hist).sort();
-            
-            // Encontra a data mais próxima (mas não futura em relação ao target) de 30 dias atrás
             let foundDate = null;
             for (const dateStr of dates) {
                 if (dateStr <= targetDateStr) {
                     foundDate = dateStr;
                 } else {
-                    break; // Passou da data alvo
+                    break;
                 }
             }
-
-            if (foundDate) {
-                pastHP = hist[foundDate];
-            }
+            if (foundDate) pastHP = hist[foundDate];
         }
 
         const growth = currentHP - pastHP;
 
-        // Regra de Negócio: Maior crescimento LÍQUIDO positivo
         if (growth > maxGrowth) {
             maxGrowth = growth;
             bestUser = user.delegator;
@@ -130,7 +126,6 @@ function renderHighlight30d(ranking, historyData) {
     });
 
     if (bestUser && maxGrowth > 0) {
-        // Renderiza com formatação
         el.innerHTML = `
             <a href="https://peakd.com/@${bestUser}" target="_blank" style="color:inherit; text-decoration:none;">
                 @${bestUser}
@@ -151,7 +146,7 @@ function renderRecentActivity(delegations, historyData) {
     if(!container || !tbody) return;
 
     const changes = [];
-    const NOISE_THRESHOLD = 5.0; // Mínimo de mudança para aparecer (5 HP)
+    const NOISE_THRESHOLD = 5.0; 
     const DAYS_BACK = 7; 
 
     delegations.forEach(user => {
@@ -182,7 +177,7 @@ function renderRecentActivity(delegations, historyData) {
     }
 
     container.style.display = "block";
-    changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff)); // Ordena por magnitude
+    changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff)); 
     tbody.innerHTML = "";
 
     changes.slice(0, 10).forEach(change => {
@@ -209,7 +204,6 @@ function renderTable(data) {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    // Ordenação obrigatória para garantir que o índice corresponda ao ranking
     data.sort((a, b) => b.delegated_hp - a.delegated_hp);
 
     data.forEach((user, index) => {
@@ -237,25 +231,12 @@ function renderTable(data) {
         const hpVal = user.delegated_hp;
         let bonusBadge = '<span style="opacity:0.3; font-size:0.8em">—</span>';
 
-        /* * REGRA DE NEGÓCIO IMUTÁVEL: BÔNUS DE DELEGAÇÃO
-         * A porcentagem é definida ESTRITAMENTE pela posição no ranking (Index),
-         * independente do valor absoluto de HP delegado.
-         * * 1º ao 10º (Top 10):  +20% (Gold)
-         * 11º ao 20º:          +15% (Silver)
-         * 21º ao 30º:          +10% (Bronze)
-         * 31º ao 40º:          +5%  (Honor)
-         */
+        // REGRA DE BÔNUS (IMUTÁVEL): Baseada em Posição no Ranking
         const rankPosition = index + 1;
-
-        if (rankPosition <= 10) {
-            bonusBadge = '<span class="bonus-tag bonus-gold">+20%</span>';
-        } else if (rankPosition <= 20) {
-            bonusBadge = '<span class="bonus-tag bonus-silver">+15%</span>';
-        } else if (rankPosition <= 30) {
-            bonusBadge = '<span class="bonus-tag bonus-bronze">+10%</span>';
-        } else if (rankPosition <= 40) {
-            bonusBadge = '<span class="bonus-tag bonus-honor">+5%</span>';
-        }
+        if (rankPosition <= 10) bonusBadge = '<span class="bonus-tag bonus-gold">+20%</span>';
+        else if (rankPosition <= 20) bonusBadge = '<span class="bonus-tag bonus-silver">+15%</span>';
+        else if (rankPosition <= 30) bonusBadge = '<span class="bonus-tag bonus-bronze">+10%</span>';
+        else if (rankPosition <= 40) bonusBadge = '<span class="bonus-tag bonus-honor">+5%</span>';
 
         let hbrBadge = '<span style="opacity:0.3; font-size:0.8em">—</span>';
         if (user.token_balance > 0) {
