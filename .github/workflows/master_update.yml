@@ -1,9 +1,15 @@
+# File: .github/workflows/master_update.yml
+# Version: 2.25.1 (Fix: Remove NPM Cache dependency)
+# Author: Hive BR
+# Description: Orquestrador Master para coleta, merge de dados e geração de relatórios.
+# [AUTO-RECOVERY]: Este arquivo garante a automação a cada 6h. Removido 'cache' para evitar erro de lockfile ausente.
+
 name: HiveBR Master Update
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Roda rigorosamente a cada 6 horas
-  workflow_dispatch:        # Permite execução manual para testes
+    - cron: '0 */6 * * *'  # Execução a cada 6 horas
+  workflow_dispatch:        # Permite execução manual para inspeção
 
 permissions:
   contents: write
@@ -20,10 +26,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18'
-        cache: 'npm' # Otimização: Cache de dependências para velocidade
+        # [FIX v2.25.1]: Removido o parâmetro 'cache: npm' pois o repositório não contém package-lock.json.
+        # Isso evita o erro de interrupção do workflow.
 
     - name: 3. Install Dependencies
-      run: npm install node-fetch@2 # Garante suporte a fetch no Node 18
+      run: npm install node-fetch@2
 
     - name: 4. Fetch Delegations (Core)
       run: node scripts/fetch_delegations.js
@@ -34,20 +41,21 @@ jobs:
     - name: 6. Generate AI Report
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      run: node scripts/generate_report.js || echo "Relatório ignorado (Não é fechamento mensal)"
+      run: node scripts/generate_report.js || echo "Relatório ignorado (Fora da data de fechamento)"
 
-    - name: 7. Commit and Push Changes [v2.25.0]
+    - name: 7. Commit and Push Changes [v2.25.1]
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
+        # Sincronização pré-push para evitar conflitos de histórico
         git pull --rebase --autostash origin main
         
         git add data/*.json config/lists.json reports/*.md
         
         if git diff --staged --quiet; then
-          echo "Sem alterações para commitar."
+          echo "Nada para atualizar no momento."
         else
-          git commit -m "auto: update master dashboard data [v2.25.0]"
+          git commit -m "auto: master update workflow fix [v2.25.1]"
           git push
         fi
