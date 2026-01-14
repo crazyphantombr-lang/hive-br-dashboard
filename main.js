@@ -1,9 +1,9 @@
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.25.8 (Data Integrity Guard)
+ * Version: 2.25.10 (Integrity Restoration)
  */
 
-const FRONTEND_VERSION = "2.25.8";
+const FRONTEND_VERSION = "2.25.10";
 let globalRankingData = [];
 let globalHistoryData = {};
 let currentSort = { column: 'delegated_hp', dir: 'desc' };
@@ -20,7 +20,7 @@ async function loadData() {
             fetch('data/current.json'),
             fetch('data/ranking_history.json')
         ]);
-        if (!metaRes.ok || !currentRes.ok) throw new Error("Erro na carga de dados");
+        if (!metaRes.ok || !currentRes.ok) throw new Error("Carga de dados falhou");
         const meta = await metaRes.json();
         const ranking = await currentRes.json();
         globalRankingData = ranking;
@@ -31,7 +31,7 @@ async function loadData() {
         calculateTopGainer30d(ranking, globalHistoryData);
     } catch (err) {
         console.error(err);
-        document.getElementById('last-updated').textContent = "Erro ao carregar dashboard.";
+        document.getElementById('last-updated').textContent = "Aguardando sincronização de dados.";
     }
 }
 
@@ -43,7 +43,7 @@ function renderMeta(meta) {
     updateSafe('stat-community-power', formatNumber(meta.total_hp) + " HP");
     updateSafe('stat-own-hp', formatNumber(meta.project_account_hp) + " HP");
     updateSafe('stat-delegated-hp', formatNumber(meta.total_hp - meta.project_account_hp) + " HP");
-    updateSafe('stat-count', meta.total_delegators);
+    updateSafe('stat-count', meta.total_delegators || 0);
     updateSafe('stat-active-br', meta.active_brazilians || 0);
     updateSafe('stat-trail-count', meta.curation_trail_count || 0);
     updateSafe('stat-votes-current', meta.votes_month_current || 0);
@@ -57,10 +57,12 @@ function calculateTopGainer30d(ranking, historyData) {
     ranking.forEach(user => {
         const hist = historyData[user.delegator];
         if (hist) {
-            const dates = Object.keys(hist).sort();
-            const pastDateKey = dates.reduce((prev, curr) => Math.abs(new Date(curr) - new Date(targetKey)) < Math.abs(new Date(prev) - new Date(targetKey)) ? curr : prev);
-            const delta = (user.delegated_hp || 0) - (hist[pastDateKey] || 0);
-            if (delta > topUser.delta) topUser = { name: user.delegator, delta: delta };
+            const dates = Object.keys(hist).filter(d => d !== "2026-01-14").sort();
+            if (dates.length > 0) {
+                const pastDateKey = dates.reduce((prev, curr) => Math.abs(new Date(curr) - new Date(targetKey)) < Math.abs(new Date(prev) - new Date(targetKey)) ? curr : prev);
+                const delta = (user.delegated_hp || 0) - (hist[pastDateKey] || 0);
+                if (delta > topUser.delta) topUser = { name: user.delegator, delta: delta };
+            }
         }
     });
     const displayEl = document.getElementById('stat-growth');
@@ -80,9 +82,7 @@ function renderTable(data) {
         row.className = 'delegator-row';
         row.dataset.name = user.delegator;
         
-        // Bônus Posicional
         let bonusRank = rank <= 10 ? '+20%' : rank <= 20 ? '+15%' : rank <= 30 ? '+10%' : rank <= 40 ? '+5%' : '—';
-        // Bônus HBR (v2.25.8): +1% a cada 10 tokens (max 20%)
         let bonusHbrVal = Math.min(20, Math.floor((user.token_balance || 0) / 10));
         let bonusHbr = bonusHbrVal > 0 ? `+${bonusHbrVal}%` : '—';
         
@@ -115,7 +115,7 @@ function renderGraphs(data, historyData) {
         const ctx = document.getElementById(`chart-${user.delegator}`);
         if (ctx) {
             const hist = historyData[user.delegator] || {};
-            const points = Object.values(hist).slice(-7);
+            const points = Object.keys(hist).filter(d => d !== "2026-01-14").sort().slice(-7).map(d => hist[d]);
             new Chart(ctx, { type: 'line', data: { labels: points.map((_,i)=>i), datasets: [{ data: points, borderColor: '#4da6ff', borderWidth: 1.5, pointRadius: 0, fill: false }]}, options: { responsive: false, plugins: { legend: { display: false }}, scales: { x: { display: false }, y: { display: false }}, animation: false }});
         }
     });
@@ -129,10 +129,10 @@ function renderRecentActivity(delegations, historyData) {
     delegations.forEach(user => {
         const hist = historyData[user.delegator];
         if (hist) {
-            const dates = Object.keys(hist).sort();
+            const dates = Object.keys(hist).filter(d => d !== "2026-01-14").sort();
             if (dates.length >= 2) {
-                const diff = (user.delegated_hp || 0) - (hist[dates[dates.length-2]] || 0);
-                if (Math.abs(diff) >= 1) changes.push({ name: user.delegator, old: hist[dates[dates.length-2]], new: user.delegated_hp, diff });
+                const diff = (user.delegated_hp || 0) - (hist[dates[dates.length-1]] || 0);
+                if (Math.abs(diff) >= 1) changes.push({ name: user.delegator, old: hist[dates[dates.length-1]], new: user.delegated_hp, diff });
             }
         }
     });
