@@ -2,8 +2,14 @@ name: Update Dashboard Data
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Roda a cada 6 horas
-  workflow_dispatch:       # Permite rodar manualmente
+    - cron: '0 */6 * * *'  # Executa a cada 6 horas automaticamente
+  workflow_dispatch:       # Gatilho manual com opções
+    inputs:
+      force_report:
+        description: 'Forçar Relatório Mensal (IA)?'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -30,8 +36,8 @@ jobs:
     - name: Generate AI Report
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      # Opcional: Define FORCE_REPORT como true se quiser forçar o relatório hoje
-      # run: FORCE_REPORT=true node scripts/generate_report.js
+        # Mapeia a escolha do usuário para a variável que o script entende
+        FORCE_REPORT: ${{ inputs.force_report }} 
       run: node scripts/generate_report.js
 
     - name: Commit and Push Changes
@@ -39,9 +45,9 @@ jobs:
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
         
-        # IMPORTANTE: Adiciona a pasta inteira para pegar subdiretórios (history/snapshots)
+        # Adiciona pastas recursivamente para garantir que novos relatórios sejam pegos
         git add data/ config/lists.json reports/
         
-        # Commita apenas se houver mudanças, sem quebrar se não houver
-        git commit -m "auto: update data and snapshots [v2.26.0]" || echo "No changes to commit"
+        # Commita apenas se houver mudanças
+        git commit -m "auto: update data [manual trigger]" || echo "No changes to commit"
         git push
