@@ -1,6 +1,6 @@
 /**
  * Script: Merge Data & Vaccine
- * Version: 2.25.10 (Healing: Hard Expunge 14/01)
+ * Version: 2.25.11 (Healing: 14/01 Sanitization)
  */
 
 const fs = require("fs");
@@ -14,7 +14,7 @@ const META_FILE = path.join(DATA_DIR, "meta.json");
 
 async function run() {
     try {
-        console.log("🔄 Executando Sanitização v2.25.10...");
+        console.log("🔄 Executando Sanitização v2.25.11...");
 
         const ranking = JSON.parse(fs.readFileSync(CURRENT_FILE, 'utf8'));
         const meta = JSON.parse(fs.readFileSync(META_FILE, 'utf8'));
@@ -34,7 +34,7 @@ async function run() {
 
         const todayKey = new Date().toISOString().split('T')[0];
         
-        // Registrar novo snapshot se houver dados reais
+        // Registrar novo snapshot se houver dados reais e se não for a data "proibida"
         const currentTotalHp = ranking.reduce((acc, u) => acc + (u.delegated_hp || 0), 0);
         if (currentTotalHp > 0 && todayKey !== poisonDate) {
             ranking.forEach(user => {
