@@ -1,15 +1,14 @@
 /**
  * Script: Merge Data & History
- * Version: 2.25.4 (Hotfix: Inclusive BR Counting & Path Fix)
+ * Version: 2.25.5 (Stability Sync)
  * Author: Hive BR
- * Description: Unifica listas BR para contagem de atividade nos últimos 30 dias.
  */
 
 const fs = require("fs");
 const path = require("path");
 
 const DATA_DIR = "data";
-const CONFIG_PATH = path.join("config", "lists.json"); // Fonte de verdade para listas
+const CONFIG_PATH = path.join("config", "lists.json");
 const CURRENT_FILE = path.join(DATA_DIR, "current.json");
 const HISTORY_FILE = path.join(DATA_DIR, "ranking_history.json");
 const META_FILE = path.join(DATA_DIR, "meta.json");
@@ -23,18 +22,16 @@ function readJsonSafe(filepath, fallbackValue) {
 
 async function run() {
     try {
-        console.log("🔄 Executando Fusão de Dados v2.25.4...");
+        console.log("🔄 Executando Fusão de Dados v2.25.5...");
 
         const ranking = readJsonSafe(CURRENT_FILE, []);
         let history = readJsonSafe(HISTORY_FILE, {});
         let meta = readJsonSafe(META_FILE, {});
-        
-        // Carregamento das Listas de Brasileiros
         const lists = readJsonSafe(CONFIG_PATH, { verificado_br: [], pendente_br: [], watchlist: [] });
 
         const todayKey = new Date().toISOString().split('T')[0];
 
-        // 1. Atualizar Histórico Individual (Snapshots diários)
+        // 1. Snapshot Histórico
         ranking.forEach(user => {
             const username = user.delegator;
             const hp = user.delegated_hp || 0;
@@ -42,15 +39,11 @@ async function run() {
             history[username][todayKey] = hp;
         });
 
-        /**
-         * [BUSINESS RULE v2.25.4 - INCLUSIVE ACTIVE BRAZILIANS]
-         * Regra: Qualquer usuário presente em 'verificado_br', 'pendente_br' ou 'watchlist' 
-         * que possua 'last_user_post' nos últimos 30 dias é contabilizado.
-         */
+        // 2. Contagem de Brasileiros Ativos (Regra 30 dias)
         const oneMonthAgo = new Date();
         oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
         
-        const allBrUsernames = new Set([
+        const brList = new Set([
             ...(lists.verificado_br || []), 
             ...(lists.pendente_br || []),
             ...(lists.watchlist || [])
@@ -58,23 +51,18 @@ async function run() {
 
         let activeBrCount = 0;
         ranking.forEach(user => {
-            if (allBrUsernames.has(user.delegator)) {
-                if (user.last_user_post) {
-                    const lastPostDate = new Date(user.last_user_post);
-                    if (lastPostDate >= oneMonthAgo) {
-                        activeBrCount++;
-                    }
-                }
+            if (brList.has(user.delegator) && user.last_user_post) {
+                if (new Date(user.last_user_post) >= oneMonthAgo) activeBrCount++;
             }
         });
 
-        // 2. Atualizar Objeto Meta
+        // 3. Atualizar Meta Global
         const totalHp = ranking.reduce((acc, u) => acc + (u.delegated_hp || 0), 0);
         meta.last_updated = new Date().toISOString();
         meta.total_hp = totalHp;
         meta.active_brazilians = activeBrCount;
 
-        // 3. Persistência
+        // 4. Salvar Snapshots
         fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2));
         fs.writeFileSync(META_FILE, JSON.stringify(meta, null, 2));
         
@@ -85,10 +73,10 @@ async function run() {
         };
         fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(globalHistory, null, 2));
 
-        console.log(`✅ Sucesso. ${activeBrCount} brasileiros ativos (regra 30 dias).`);
+        console.log(`✅ Sucesso. Versão 2.25.5 estável.`);
 
     } catch (error) {
-        console.error("❌ Falha crítica no script de fusão:", error);
+        console.error("Erro no Merge:", error);
         process.exit(1);
     }
 }
