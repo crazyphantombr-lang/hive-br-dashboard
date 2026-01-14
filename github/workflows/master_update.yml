@@ -1,0 +1,53 @@
+name: HiveBR Master Update
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Roda rigorosamente a cada 6 horas
+  workflow_dispatch:        # Permite execução manual para testes
+
+permissions:
+  contents: write
+
+jobs:
+  dashboard-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Checkout repository
+      uses: actions/checkout@v3
+
+    - name: 2. Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm' # Otimização: Cache de dependências para velocidade
+
+    - name: 3. Install Dependencies
+      run: npm install node-fetch@2 # Garante suporte a fetch no Node 18
+
+    - name: 4. Fetch Delegations (Core)
+      run: node scripts/fetch_delegations.js
+
+    - name: 5. Merge Data & History
+      run: node scripts/merge_data.js
+
+    - name: 6. Generate AI Report
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      run: node scripts/generate_report.js || echo "Relatório ignorado (Não é fechamento mensal)"
+
+    - name: 7. Commit and Push Changes [v2.25.0]
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        git pull --rebase --autostash origin main
+        
+        git add data/*.json config/lists.json reports/*.md
+        
+        if git diff --staged --quiet; then
+          echo "Sem alterações para commitar."
+        else
+          git commit -m "auto: update master dashboard data [v2.25.0]"
+          git push
+        fi
