@@ -1,14 +1,13 @@
 /**
  * Script: Fetch Delegations & Global Sync
- * Version: 2.25.13 (HAFSQL Core + Global Vaccine)
- * Author: Hive BR
+ * Version: 2.25.14 (Stable HAFSQL Restoration)
  */
 
 const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
 
-const SCRIPT_VERSION = "2.25.13";
+const SCRIPT_VERSION = "2.25.14";
 const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
 const TOKEN_SYMBOL = "HBR";
@@ -19,6 +18,10 @@ const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 const CONFIG_PATH = path.join("config", "lists.json");
 const DATA_DIR = "data";
 const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
+
+// Carrega listas
+let listConfig = { verificado_br: [], curation_trail: [], watchlist: [] };
+try { if (fs.existsSync(CONFIG_PATH)) listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH)); } catch (e) {}
 
 async function hiveRpc(method, params) {
   for (const node of RPC_NODES) {
@@ -51,6 +54,7 @@ async function fetchSmartVoteHistory() {
     let votes24h = 0;
     const now = new Date();
     const time24h = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+    
     const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 1000]);
     if (history) {
         history.reverse().forEach(tx => {
@@ -60,8 +64,8 @@ async function fetchSmartVoteHistory() {
                 const votedUser = op[1].author;
                 if (!lastVotesMap[votedUser]) lastVotesMap[votedUser] = tx[1].timestamp + "Z";
                 if (ts >= time24h) votes24h++;
-                const label = ts.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
-                historyNamed[label] = (historyNamed[label] || 0) + 1;
+                const month = ts.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+                historyNamed[month] = (historyNamed[month] || 0) + 1;
             }
         });
     }
@@ -70,23 +74,15 @@ async function fetchSmartVoteHistory() {
 
 function updateGlobalHistory(data) {
     let globalData = {};
-    try {
-        if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
-            globalData = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE));
-        }
-    } catch (e) {}
-
-    // --- VACINA GLOBAL: EXCLUIR 14/01 CORROMPIDO ---
-    const poisonDate = "2026-01-14";
-    if (globalData[poisonDate]) {
-        delete globalData[poisonDate];
-        console.log(`🧹 Vacina Global: Entrada ${poisonDate} expurgada.`);
+    if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
+        try { globalData = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE)); } catch (e) {}
     }
 
-    const todayKey = new Date().toISOString().split('T')[0];
+    // VACINA GLOBAL: Deletar 14/01 envenenado
+    delete globalData["2026-01-14"];
 
-    // Só grava se o HP total for válido (> 0)
-    if (data.total_hp + data.project_account_hp > 0 && todayKey !== poisonDate) {
+    const todayKey = new Date().toISOString().split('T')[0];
+    if (data.total_hp > 1000 && todayKey !== "2026-01-14") {
         globalData[todayKey] = {
             total_votes: data.votes_24h,
             trail_count: data.curation_trail_count,
@@ -96,15 +92,12 @@ function updateGlobalHistory(data) {
             active_members: data.active_community_members,
             script_version: SCRIPT_VERSION
         };
-        const sorted = {};
-        Object.keys(globalData).sort().forEach(key => sorted[key] = globalData[key]);
-        fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(sorted, null, 2));
     }
+    fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(globalData, null, 2));
 }
 
 async function run() {
     try {
-        console.log(`🚀 Iniciando Coleta v${SCRIPT_VERSION} via HAFSQL...`);
         const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
         const hp_ratio = parseFloat(globals.total_vesting_fund_hive) / parseFloat(globals.total_vesting_shares);
 
@@ -112,11 +105,9 @@ async function run() {
         const incoming = await res.json();
         const delegators = Array.isArray(incoming) ? incoming : [];
 
-        const listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
-        const allUsers = [...new Set([...delegators.map(d => d.delegator), ...(listConfig.verificado_br || [])])];
-
+        const allUsers = [...new Set([...delegators.map(d => d.delegator), ...(listConfig.verificado_br || []), ...(listConfig.watchlist || [])])];
         const accounts = await hiveRpc("condenser_api.get_accounts", [allUsers]);
-        const projectAcc = await hiveRpc("condenser_api.get_accounts", [[VOTER_ACCOUNT]]);
+        const [voterAcc] = await hiveRpc("condenser_api.get_accounts", [[VOTER_ACCOUNT]]);
         const heBalances = await fetchHiveEngineBalances(allUsers);
         const voteData = await fetchSmartVoteHistory();
 
@@ -124,17 +115,17 @@ async function run() {
             const acc = accounts.find(a => a.name === name) || {};
             const del = delegators.find(d => d.delegator === name);
             const he = heBalances.find(b => b.account === name);
-            const totalAccountHp = acc.vesting_shares ? (parseFloat(acc.vesting_shares) * hp_ratio) + (parseFloat(acc.received_vesting_shares) * hp_ratio) : 0;
+            const ownHp = acc.vesting_shares ? (parseFloat(acc.vesting_shares) * hp_ratio) + (parseFloat(acc.received_vesting_shares) * hp_ratio) : 0;
 
             return {
                 delegator: name,
                 delegated_hp: del ? parseFloat(del.vesting_shares) * hp_ratio : 0,
-                total_account_hp: totalAccountHp,
+                total_account_hp: ownHp,
                 token_balance: he ? parseFloat(he.stake || 0) : 0,
                 last_user_post: acc.last_post || null,
                 next_withdrawal: acc.next_vesting_withdrawal || null,
                 timestamp: del ? del.timestamp : null,
-                in_curation_trail: (listConfig.curation_trail || []).includes(name),
+                in_curation_trail: listConfig.curation_trail.includes(name),
                 last_vote_date: voteData.lastVotesMap[name] || null
             };
         });
@@ -142,23 +133,21 @@ async function run() {
         fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(ranking, null, 2));
 
         const now = new Date();
-        const curLabel = now.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
         const metaData = {
             last_updated: now.toISOString(),
             total_hp: ranking.reduce((acc, curr) => acc + curr.delegated_hp, 0),
-            project_account_hp: parseFloat(projectAcc[0].vesting_shares) * hp_ratio,
+            project_account_hp: parseFloat(voterAcc.vesting_shares) * hp_ratio,
             total_delegators: ranking.filter(r => r.delegated_hp > 0).length,
-            curation_trail_count: (listConfig.curation_trail || []).length,
+            curation_trail_count: listConfig.curation_trail.length,
             active_brazilians: ranking.filter(u => listConfig.verificado_br.includes(u.delegator) && u.delegated_hp > 0).length,
             active_community_members: allUsers.length,
-            votes_24h: voteData.votes_24h,
-            votes_month_current: voteData.historyNamed[curLabel] || 0
+            votes_24h: voteData.votes24h,
+            votes_month_current: voteData.historyNamed[now.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })] || 0
         };
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
         updateGlobalHistory(metaData);
-
-        console.log("✅ Coleta v2.25.13 finalizada.");
+        console.log("✅ Coleta v2.25.14 concluída com HAFSQL.");
     } catch (e) {
         console.error("❌ Erro fatal:", e.message);
         process.exit(1);
