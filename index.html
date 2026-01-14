@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hive BR Dashboard v2.25.2</title>
+    <title>Hive BR Dashboard v2.25.4</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -12,11 +12,24 @@
             left: 0;
             background-color: #13131f !important;
             z-index: 10;
-            min-width: 160px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.4);
+            min-width: 170px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.5);
         }
         table { border-collapse: separate; border-spacing: 0; width: 100%; }
-        .stat-card h3, .project-card h3 { cursor: help; }
+        .bonus-tag {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.82em;
+            font-weight: bold;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .bonus-gold { background: rgba(255, 204, 0, 0.15); color: #ffcc00; border: 1px solid #ffcc00; }
+        .bonus-silver { background: rgba(192, 192, 192, 0.15); color: #c0c0c0; border: 1px solid #c0c0c0; }
+        .bonus-bronze { background: rgba(205, 127, 50, 0.15); color: #cd7f32; border: 1px solid #cd7f32; }
+        .bonus-honor { background: rgba(187, 134, 252, 0.15); color: #bb86fc; border: 1px solid #bb86fc; }
+        .bonus-hbr { background: rgba(77, 166, 255, 0.15); color: #4da6ff; border: 1px solid #4da6ff; }
+        .bonus-trail { background: rgba(187, 134, 252, 0.15); color: #bb86fc; border: 1px solid #bb86fc; }
     </style>
     <script src="moz-extension://9fbcfce3-75f1-4b06-83b3-733da2056863/./hive_keychain.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0B2JEW0JXF"></script>
@@ -67,21 +80,6 @@
             </div>
         </div>
 
-        <div id="activity-panel" class="activity-container" style="display: none;">
-            <h3 class="section-title">⚡ Últimas Alterações nas Delegações (7 dias)</h3>
-            <table class="activity-table">
-                <thead>
-                    <tr>
-                        <th>Usuário</th>
-                        <th>Antes</th>
-                        <th>Agora</th>
-                        <th>Diferença</th>
-                    </tr>
-                </thead>
-                <tbody id="activity-body"></tbody>
-            </table>
-        </div>
-
         <div class="highlight-cards-grid" style="margin-top: 50px;">
             <div class="project-card" style="border-color: #ffcc00;">
                 <div class="project-icon" title="Total de votos realizados pela curadoria da HiveBR no mês vigente.">
@@ -104,7 +102,7 @@
             </div>
 
             <div class="project-card" style="border-color: #009c3b;">
-                <div class="project-icon" title="Brasileiros (verificados ou não) com atividade (post ou comentário) nos últimos 30 dias.">
+                <div class="project-icon" title="Brasileiros (verificados ou não) com atividade nos últimos 30 dias.">
                     <span style="font-size: 3rem;">🇧🇷</span>
                 </div>
                 <div class="project-info">
@@ -112,25 +110,6 @@
                     <p id="stat-active-br" style="color: #009c3b;">0</p>
                 </div>
             </div>
-        </div>
-
-        <div class="stats-grid" style="margin-bottom: 20px;">
-            <div class="stat-card">
-                <h3>Votos (24h)</h3>
-                <p id="stat-votes-24h" style="color:#ffcc00;">0</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="lbl-votes-m1">Mês Anterior</h3>
-                <p id="stat-votes-m1" style="color:#a3a3cc;">0</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="lbl-votes-m2">2 Meses Atrás</h3>
-                <p id="stat-votes-m2" style="color:#a3a3cc;">0</p>
-            </div>
-        </div>
-
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="🔍 Buscar usuário..." autocomplete="off">
         </div>
 
         <div class="table-wrapper">
