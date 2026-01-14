@@ -1,11 +1,11 @@
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.25.4 (New HBR Rules & Data Transparency)
+ * Version: 2.25.5 (Hotfix: Power Down Calculation)
  * Author: Hive BR
- * Description: Gerencia o ranking com nova regra HBR: +1% a cada 10 tokens (max 20%).
+ * Description: Gerencia a interface e lógica de exibição, incluindo Power Down amigável.
  */
 
-const FRONTEND_VERSION = "2.25.4";
+const FRONTEND_VERSION = "2.25.5";
 let globalRankingData = [];
 let globalHistoryData = {};
 let currentSort = { column: 'delegated_hp', dir: 'desc' };
@@ -22,7 +22,7 @@ async function loadData() {
             fetch('data/current.json'),
             fetch('data/ranking_history.json')
         ]);
-        if (!metaRes.ok || !currentRes.ok) throw new Error("Carga de dados falhou");
+        if (!metaRes.ok || !currentRes.ok) throw new Error("Falha ao carregar arquivos JSON");
         const meta = await metaRes.json();
         const ranking = await currentRes.json();
         globalRankingData = ranking;
@@ -91,19 +91,26 @@ function renderTable(data) {
         else if (rank <= 30) bonusRankHtml = '<span class="bonus-tag bonus-bronze">+10%</span>';
         else if (rank <= 40) bonusRankHtml = '<span class="bonus-tag bonus-honor">+5%</span>';
 
-        /**
-         * [BUSINESS RULE v2.25.4 - NEW HBR RATIO]
-         * Formula: $$Bonus = \min(20, \lfloor \text{Stake} / 10 \rfloor)$$
-         */
+        // Bônus HBR: +1% a cada 10 tokens (max 20%)
         let bonusHbrHtml = '<span style="opacity:0.2">—</span>';
         const hbrValue = Math.min(20, Math.floor((user.token_balance || 0) / 10));
         if (hbrValue > 0) {
             bonusHbrHtml = `<span class="bonus-tag bonus-hbr">+${hbrValue}%</span>`;
         }
 
+        // Bônus Trilha
         let bonusTrailHtml = '<span style="opacity:0.2">—</span>';
         if (user.in_curation_trail) {
             bonusTrailHtml = '<span class="bonus-tag bonus-trail">+5%</span>';
+        }
+
+        // [HOTFIX v2.25.5] Lógica de Exibição de Power Down
+        let powerDownHtml = '<span style="opacity:0.2">—</span>';
+        if (user.next_withdrawal) {
+            const days = calculateDaysUntil(user.next_withdrawal);
+            const dateObj = new Date(user.next_withdrawal);
+            const formattedDate = dateObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+            powerDownHtml = `<span class="pd-active" title="Próximo saque em: ${user.next_withdrawal}">📉 ${formattedDate} (${days}d)</span>`;
         }
 
         row.innerHTML = `
@@ -113,9 +120,9 @@ function renderTable(data) {
                 <a href="https://peakd.com/@${user.delegator}" target="_blank">@${user.delegator}</a>
             </td>
             <td style="font-weight:bold; color:#4dff91;">${formatNumber(user.delegated_hp)}</td>
-            <td>${calculateDays(user.timestamp) || 0}d</td>
+            <td>${calculateDaysSince(user.timestamp) || 0}d</td>
             <td style="color:#888;">${formatNumber(user.total_account_hp)}</td>
-            <td>${user.next_withdrawal && !user.next_withdrawal.startsWith("19") ? '📉' : '—'}</td>
+            <td>${powerDownHtml}</td>
             <td>${formatNumber(user.token_balance)}</td>
             <td>${timeAgo(user.last_user_post)}</td>
             <td>${timeAgo(user.last_vote_date)}</td>
@@ -156,7 +163,9 @@ function applySort() {
 }
 
 function getSortValue(obj, col) {
-    if (['timestamp', 'last_user_post', 'last_vote_date'].includes(col)) return new Date(obj[col] || 0).getTime();
+    if (['timestamp', 'last_user_post', 'last_vote_date', 'next_withdrawal'].includes(col)) {
+        return new Date(obj[col] || 0).getTime();
+    }
     return obj[col] || 0;
 }
 
@@ -169,5 +178,6 @@ function setupSearch() {
 
 function updateSafe(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
 function formatNumber(n) { return Math.floor(n || 0).toLocaleString('pt-BR'); }
-function calculateDays(ts) { if (!ts) return 0; return Math.floor((new Date() - new Date(ts)) / 86400000); }
+function calculateDaysSince(ts) { if (!ts) return 0; return Math.floor((new Date() - new Date(ts)) / 86400000); }
+function calculateDaysUntil(ts) { if (!ts) return 0; const d = Math.ceil((new Date(ts) - new Date()) / 86400000); return d < 0 ? 0 : d; }
 function timeAgo(ts) { if (!ts) return "—"; const d = Math.floor((new Date() - new Date(ts)) / 86400000); return d === 0 ? "Hoje" : d === 1 ? "Ontem" : `${d}d`; }
