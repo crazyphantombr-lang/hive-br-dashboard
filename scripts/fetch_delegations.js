@@ -1,10 +1,10 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.25.0 (Global History + Versioning)
+ * Version: 2.26.0 (Feature: History Snapshots & Backfill)
  * Author: Hive BR
  * License: MIT
- * Description: Coleta dados, gera ranking, salva histórico diário e informa versões.
+ * Description: Coleta dados, gera ranking, salva histórico diário e agora gerencia SNAPSHOTS MENSAIS para Data Lake.
  */
 
 const fetch = require("node-fetch");
@@ -12,7 +12,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO DO SISTEMA ---
-const SCRIPT_VERSION = "2.25.0";
+const SCRIPT_VERSION = "2.26.0";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -24,6 +24,7 @@ const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 
 const CONFIG_PATH = path.join("config", "lists.json");
 const DATA_DIR = "data";
+const HISTORY_DIR = path.join(DATA_DIR, "history"); // Nova pasta para Data Lake
 const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
 
 // Carrega listas
@@ -32,8 +33,9 @@ try { if (fs.existsSync(CONFIG_PATH)) listConfig = JSON.parse(fs.readFileSync(CO
 const CURATION_TRAIL_USERS = listConfig.curation_trail || [];
 const FIXED_USERS = listConfig.watchlist || [];
 
-// Garante pasta de dados
+// Garante pastas
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!fs.existsSync(HISTORY_DIR)) fs.mkdirSync(HISTORY_DIR, { recursive: true });
 
 // --- FUNÇÕES AUXILIARES ---
 async function hiveRpc(method, params) {
@@ -66,7 +68,7 @@ function getMonthLabel(dateObj) {
     return `${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
 }
 
-// --- SISTEMA DE VOTOS (Smart Scan - Limit 1000 Safe) ---
+// --- SISTEMA DE VOTOS (Smart Scan) ---
 async function fetchSmartVoteHistory() {
     console.log("🗳️ Iniciando varredura inteligente de votos...");
     
@@ -80,7 +82,7 @@ async function fetchSmartVoteHistory() {
     limitDate.setDate(limitDate.getDate() - 90); 
 
     let start = -1;
-    let limit = 1000; // Limite seguro
+    let limit = 1000; 
     let active = true;
     let totalScanned = 0;
     const MAX_SCAN = 50000; 
@@ -155,7 +157,6 @@ function updateMonthlyStats(metaData) {
     fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
 }
 
-// --- SALVA HISTÓRICO GLOBAL (NOVA FEATURE) ---
 function updateGlobalHistory(data) {
     let globalData = {};
     try {
@@ -164,7 +165,6 @@ function updateGlobalHistory(data) {
         }
     } catch (e) { console.warn("Criando novo arquivo de histórico global."); }
 
-    // Chave do dia (YYYY-MM-DD)
     const todayKey = new Date().toISOString().split('T')[0];
 
     globalData[todayKey] = {
@@ -177,12 +177,54 @@ function updateGlobalHistory(data) {
         script_version: SCRIPT_VERSION
     };
 
-    // Ordena chaves por data
     const sorted = {};
     Object.keys(globalData).sort().forEach(key => sorted[key] = globalData[key]);
 
     fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(sorted, null, 2));
     console.log(`📅 Histórico Global atualizado para ${todayKey}`);
+}
+
+// --- NOVO: GERENCIAMENTO DE SNAPSHOTS MENSAIS ---
+function manageSnapshots(ranking, metaData) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = now.getDate();
+    
+    // Pasta do ano atual (Ex: data/history/2026)
+    const yearDir = path.join(HISTORY_DIR, String(year));
+    if (!fs.existsSync(yearDir)) fs.mkdirSync(yearDir, { recursive: true });
+
+    // Snapshot Completo
+    const snapshotData = {
+        meta: metaData,
+        ranking: ranking, // Lista detalhada completa
+        snapshot_date: now.toISOString()
+    };
+
+    // 1. Snapshot Mensal Padrão (Dia 01)
+    if (day === 1) {
+        const filename = `${year}-${month}-01_snapshot.json`;
+        const filepath = path.join(yearDir, filename);
+        
+        // Evita sobrescrever se já rodou hoje, mas garante salvar se não existir
+        if (!fs.existsSync(filepath)) {
+            fs.writeFileSync(filepath, JSON.stringify(snapshotData, null, 2));
+            console.log(`📸 Snapshot Mensal salvo: ${filename}`);
+        }
+    }
+
+    // 2. Backfill Estratégico (Janeiro 2026)
+    // Se estivermos em 2026 e o arquivo de 01/01 não existir, cria-o HOJE.
+    if (year === 2026) {
+        const backfillFile = path.join(yearDir, "2026-01-01_snapshot.json");
+        if (!fs.existsSync(backfillFile)) {
+            console.warn("⚠️ Backfill: Criando snapshot retroativo de 01/01/2026 com dados atuais.");
+            // Marcamos no JSON que foi um backfill
+            snapshotData.note = "Backfill created on " + now.toISOString().split('T')[0];
+            fs.writeFileSync(backfillFile, JSON.stringify(snapshotData, null, 2));
+        }
+    }
 }
 
 // --- MAIN ---
@@ -285,7 +327,7 @@ async function run() {
             total_hbr_staked: tokenSum,
             curation_trail_count: CURATION_TRAIL_USERS.length,
             active_community_members: uniqueMembers.size,
-            active_brazilians: activeBraziliansCount, // Campo recuperado
+            active_brazilians: activeBraziliansCount,
             
             votes_24h: voteData.votes24h,
             vote_history_named: voteData.historyNamed,
@@ -296,11 +338,12 @@ async function run() {
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
         
-        // 7. Atualizar Históricos
+        // 7. Atualizar Históricos e Snapshots
         updateMonthlyStats(metaData);
-        updateGlobalHistory(metaData); // Salva o histórico diário novo
+        updateGlobalHistory(metaData);
+        manageSnapshots(ranking, metaData); // <--- Nova chamada
         
-        console.log(`✅ Sucesso! Dados globais e ranking atualizados.`);
+        console.log(`✅ Sucesso! Dados globais, ranking e snapshots processados.`);
 
     } catch (err) {
         console.error("❌ Erro fatal:", err.message);
