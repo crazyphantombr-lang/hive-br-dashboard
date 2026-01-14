@@ -1,8 +1,6 @@
 /**
  * Script: Hive BR Data Fetcher
- * Version: 2.25.5 (Bugfix: Power Down Mapping)
- * Author: Hive BR
- * Description: Captura delegadores, stake e o campo correto de Power Down da API Condenser.
+ * Version: 2.25.6 (Emergency Recovery: Full User Mapping)
  */
 
 const fs = require('fs');
@@ -13,42 +11,38 @@ const DATA_DIR = 'data';
 const CURRENT_FILE = path.join(DATA_DIR, 'current.json');
 const META_FILE = path.join(DATA_DIR, 'meta.json');
 const LISTS_FILE = path.join('config', 'lists.json');
-
 const HIVE_RPC = 'https://api.hive.blog';
 
 async function callHive(method, params) {
     const response = await fetch(HIVE_RPC, {
         method: 'POST',
-        body: JSON.stringify({
-            jsonrpc: '2.0',
-            method: method,
-            params: params,
-            id: 1
-        })
+        body: JSON.stringify({ jsonrpc: '2.0', method, params, id: 1 })
     });
     const json = await response.json();
-    if (json.error) throw new Error(JSON.stringify(json.error));
     return json.result;
 }
 
 async function run() {
     try {
-        console.log("🚀 Iniciando Coleta v2.25.5...");
+        console.log("🚀 Iniciando Recuperação de Dados v2.25.6...");
 
-        if (!fs.existsSync(LISTS_FILE)) {
-            console.error("ERRO: config/lists.json não encontrado.");
-            process.exit(1);
-        }
         const lists = JSON.parse(fs.readFileSync(LISTS_FILE, 'utf8'));
-        const targetAccounts = lists.verificado_br || [];
-
-        const [mainAccount] = await callHive('condenser_api.get_accounts', [['hive-br.voter']]);
-        const delegations = await callHive('condenser_api.get_vesting_delegations', ['hive-br.voter', '', 1000]);
-        const delegatorNames = delegations.map(d => d.delegator);
-
-        const allUsernames = [...new Set([...targetAccounts, ...delegatorNames])];
-        const userDetails = [];
         
+        // 1. Capturar Delegadores Reais
+        const delegations = await callHive('condenser_api.get_vesting_delegations', ['hive-br.voter', '', 1000]);
+        
+        // 2. Unificar TODOS os nomes (Delegadores + Config)
+        const allUsernames = [...new Set([
+            ...delegations.map(d => d.delegator),
+            ...(lists.verificado_br || []),
+            ...(lists.pendente_br || []),
+            ...(lists.watchlist || [])
+        ])];
+
+        console.log(`📊 Processando ${allUsernames.length} usuários totais...`);
+
+        // 3. Coleta de Detalhes da Conta
+        const userDetails = [];
         for (let i = 0; i < allUsernames.length; i += 50) {
             const batch = allUsernames.slice(i, i + 50);
             const accounts = await callHive('condenser_api.get_accounts', [batch]);
@@ -57,21 +51,15 @@ async function run() {
 
         const ranking = userDetails.map(acc => {
             const del = delegations.find(d => d.delegator === acc.name);
-            
-            /**
-             * [FIELD FIX v2.25.5]
-             * O campo next_vesting_withdrawal retorna '1970-01-01T00:00:00' quando inativo.
-             */
             const rawPD = acc.next_vesting_withdrawal;
-            const isPDActive = rawPD && !rawPD.startsWith("1970");
-
+            
             return {
                 delegator: acc.name,
                 delegated_hp: del ? parseFloat(del.vesting_shares) : 0,
                 timestamp: del ? del.min_delegation_time : null,
                 total_account_hp: parseFloat(acc.vesting_shares),
-                next_withdrawal: isPDActive ? rawPD : null, // Mapeado para o frontend
-                token_balance: parseFloat(acc.balance), 
+                next_withdrawal: (rawPD && !rawPD.startsWith("1970")) ? rawPD : null,
+                token_balance: parseFloat(acc.balance),
                 last_user_post: acc.last_post,
                 last_vote_date: acc.last_vote_time,
                 in_curation_trail: (lists.curation_trail || []).includes(acc.name)
@@ -81,18 +69,16 @@ async function run() {
         if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
         fs.writeFileSync(CURRENT_FILE, JSON.stringify(ranking, null, 2));
 
-        const meta = {
+        const [mainAcc] = await callHive('condenser_api.get_accounts', [['hive-br.voter']]);
+        fs.writeFileSync(META_FILE, JSON.stringify({
             last_updated: new Date().toISOString(),
-            total_delegators: delegatorNames.length,
-            project_account_hp: parseFloat(mainAccount.vesting_shares),
-            active_brazilians: 0 // Será populado pelo script de merge
-        };
-        fs.writeFileSync(META_FILE, JSON.stringify(meta, null, 2));
+            total_delegators: delegations.length,
+            project_account_hp: parseFloat(mainAcc.vesting_shares)
+        }, null, 2));
 
-        console.log(`✅ Coleta v2.25.5 finalizada.`);
-
-    } catch (error) {
-        console.error("Falha Crítica:", error);
+        console.log("✅ Sistema Restaurado com Sucesso.");
+    } catch (e) {
+        console.error("❌ Falha Crítica:", e);
         process.exit(1);
     }
 }
