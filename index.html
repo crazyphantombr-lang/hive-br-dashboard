@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hive BR Dashboard v2.25.4</title>
+    <title>Hive BR Dashboard v2.25.5</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -30,6 +30,7 @@
         .bonus-honor { background: rgba(187, 134, 252, 0.15); color: #bb86fc; border: 1px solid #bb86fc; }
         .bonus-hbr { background: rgba(77, 166, 255, 0.15); color: #4da6ff; border: 1px solid #4da6ff; }
         .bonus-trail { background: rgba(187, 134, 252, 0.15); color: #bb86fc; border: 1px solid #bb86fc; }
+        .pd-active { color: #ff4d4d; font-weight: bold; font-size: 0.85em; }
     </style>
     <script src="moz-extension://9fbcfce3-75f1-4b06-83b3-733da2056863/./hive_keychain.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0B2JEW0JXF"></script>
@@ -120,7 +121,7 @@
                         <th class="sortable" onclick="handleSort('delegated_hp')">Delegação <span class="sort-icon"></span></th>
                         <th class="sortable" onclick="handleSort('timestamp')">Tempo <span class="sort-icon"></span></th>
                         <th class="sortable" onclick="handleSort('total_account_hp')">HP Próprio <span class="sort-icon"></span></th>
-                        <th class="sortable" onclick="handleSort('next_withdrawal')">Power Down <span class="sort-icon"></span></th>
+                        <th class="sortable" onclick="handleSort('next_withdrawal')">Próximo Saque <span class="sort-icon"></span></th>
                         <th class="sortable" onclick="handleSort('token_balance')">HBR Stake <span class="sort-icon"></span></th>
                         <th class="sortable" onclick="handleSort('last_user_post')">Atividade <span class="sort-icon"></span></th>
                         <th class="sortable" onclick="handleSort('last_vote_date')">Curadoria <span class="sort-icon"></span></th>
