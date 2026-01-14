@@ -1,98 +1,113 @@
 /**
  * Script: Hive BR Data Fetcher
- * Version: 2.25.8 (Real HP & Incoming Delegation Correction)
+ * Version: 2.25.10 (HAFSQL API Only)
  * Author: Hive BR
  */
 
-const fs = require('fs');
-const path = require('path');
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
+const fs = require("fs");
+const path = require("path");
 
-const DATA_DIR = 'data';
-const CURRENT_FILE = path.join(DATA_DIR, 'current.json');
-const META_FILE = path.join(DATA_DIR, 'meta.json');
-const LISTS_FILE = path.join('config', 'lists.json');
-const HIVE_RPC = 'https://api.hive.blog';
+const SCRIPT_VERSION = "2.25.10";
+const VOTER_ACCOUNT = "hive-br.voter";
+const PROJECT_ACCOUNT = "hive-br";
+const TOKEN_SYMBOL = "HBR";
+const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=1000`;
+const RPC_NODES = ["https://api.deathwing.me", "https://api.hive.blog"];
+const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 
-async function callHive(method, params) {
-    const response = await fetch(HIVE_RPC, {
-        method: 'POST',
-        body: JSON.stringify({ jsonrpc: '2.0', method, params, id: 1 })
+const DATA_DIR = "data";
+const CONFIG_PATH = path.join("config", "lists.json");
+
+async function hiveRpc(method, params) {
+  for (const node of RPC_NODES) {
+    try {
+      const response = await fetch(node, {
+        method: "POST", body: JSON.stringify({ jsonrpc: "2.0", method, params, id: 1 }),
+        headers: { "Content-Type": "application/json" }, timeout: 10000 
+      });
+      const json = await response.json();
+      if (json.result) return json.result;
+    } catch (e) {}
+  }
+  return null;
+}
+
+async function fetchHiveEngineBalances(accounts) {
+  try {
+    const response = await fetch(HE_RPC, {
+      method: "POST", body: JSON.stringify({ jsonrpc: "2.0", method: "find", params: { contract: "tokens", table: "balances", query: { symbol: TOKEN_SYMBOL, account: { "$in": accounts } } }, id: 1 }),
+      headers: { "Content-Type": "application/json" }
     });
     const json = await response.json();
-    return json.result;
+    return json.result || [];
+  } catch (e) { return []; }
+}
+
+async function fetchSmartVoteHistory() {
+    let lastVotesMap = {}; 
+    const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 1000]);
+    if (history) {
+        history.reverse().forEach(tx => {
+            const op = tx[1].op;
+            if (op[0] === 'vote' && op[1].voter === VOTER_ACCOUNT) {
+                if (!lastVotesMap[op[1].author]) lastVotesMap[op[1].author] = tx[1].timestamp + "Z";
+            }
+        });
+    }
+    return lastVotesMap;
 }
 
 async function run() {
     try {
-        console.log("🚀 Iniciando Coleta v2.25.8 com Conversão de HP...");
-
-        // 1. Cálculo dinâmico do fator de conversão de HP
-        const props = await callHive('condenser_api.get_dynamic_global_properties', []);
-        const tvf = parseFloat(props.total_vesting_fund_hive);
-        const tvs = parseFloat(props.total_vesting_shares);
-        const hp_per_vest = tvf / tvs;
-
-        const lists = JSON.parse(fs.readFileSync(LISTS_FILE, 'utf8'));
-        const verified = lists.verificado_br || [];
-
-        // 2. Capturar delegações RECEBIDAS
-        // Para este dashboard, precisamos saber quem delegou PARA @hive-br.voter
-        // Usamos database_api para listar delegações de entrada.
-        const delegationsRes = await callHive('database_api.list_vesting_delegations', {
-            start: ["hive-br.voter", ""],
-            limit: 1000,
-            order: "by_received"
-        });
+        console.log(`🚀 Iniciando Coleta v${SCRIPT_VERSION} via HAFSQL...`);
         
-        const incomingDelegations = delegationsRes.delegations || [];
-        const delegatorNames = incomingDelegations.map(d => d.delegator);
+        const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
+        const hp_ratio = parseFloat(globals.total_vesting_fund_hive) / parseFloat(globals.total_vesting_shares);
 
-        // 3. Unificar usuários para coleta de perfis
-        const allUsernames = [...new Set([...verified, ...delegatorNames])];
-        const userDetails = [];
-        for (let i = 0; i < allUsernames.length; i += 50) {
-            const batch = allUsernames.slice(i, i + 50);
-            const accounts = await callHive('condenser_api.get_accounts', [batch]);
-            userDetails.push(...accounts);
-        }
+        const res = await fetch(HAF_API);
+        const incoming = await res.json();
+        const delegators = Array.isArray(incoming) ? incoming : [];
 
-        const ranking = userDetails.map(acc => {
-            const delEntry = incomingDelegations.find(d => d.delegator === acc.name);
-            
-            // Conversão Correta: Vests * Fator = HP
-            const delegatedVests = delEntry ? parseFloat(delEntry.vesting_shares) : 0;
-            const delegatedHp = delegatedVests * hp_per_vest;
-            const accountVests = parseFloat(acc.vesting_shares);
-            const accountHp = accountVests * hp_per_vest;
+        const listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+        const allUsers = [...new Set([...delegators.map(d => d.delegator), ...(listConfig.verificado_br || [])])];
+
+        const accounts = await hiveRpc("condenser_api.get_accounts", [allUsers]);
+        const heBalances = await fetchHiveEngineBalances(allUsers);
+        const voteMap = await fetchSmartVoteHistory();
+
+        const ranking = allUsers.map(name => {
+            const acc = accounts.find(a => a.name === name) || {};
+            const del = delegators.find(d => d.delegator === name);
+            const he = heBalances.find(b => b.account === name);
 
             return {
-                delegator: acc.name,
-                delegated_hp: delegatedHp,
-                timestamp: delEntry ? delEntry.min_delegation_time : null,
-                total_account_hp: accountHp,
-                next_withdrawal: acc.next_vesting_withdrawal,
-                token_balance: parseFloat(acc.balance), // Placeholder para HBR
-                last_user_post: acc.last_post,
-                last_vote_date: acc.last_vote_time,
-                in_curation_trail: (lists.curation_trail || []).includes(acc.name)
+                delegator: name,
+                delegated_hp: del ? (parseFloat(d.vesting_shares || 0) * hp_ratio) : 0,
+                total_account_hp: acc.vesting_shares ? (parseFloat(acc.vesting_shares) * hp_ratio) : 0,
+                token_balance: he ? parseFloat(he.stake || 0) : 0,
+                last_user_post: acc.last_post || null,
+                next_withdrawal: acc.next_vesting_withdrawal || null,
+                timestamp: del ? del.timestamp : null,
+                in_curation_trail: (listConfig.curation_trail || []).includes(name),
+                last_vote_date: voteMap[name] || null
             };
         });
 
-        if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
-        fs.writeFileSync(CURRENT_FILE, JSON.stringify(ranking, null, 2));
+        fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(ranking, null, 2));
 
-        const [mainAcc] = await callHive('condenser_api.get_accounts', [['hive-br.voter']]);
-        fs.writeFileSync(META_FILE, JSON.stringify({
+        const [voterAcc] = await hiveRpc("condenser_api.get_accounts", [[VOTER_ACCOUNT]]);
+        fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify({
             last_updated: new Date().toISOString(),
-            total_delegators: delegatorNames.length,
-            project_account_hp: parseFloat(mainAcc.vesting_shares) * hp_per_vest,
-            total_hp: (parseFloat(mainAcc.vesting_shares) + parseFloat(mainAcc.received_vesting_shares)) * hp_per_vest
+            total_hp: ranking.reduce((acc, curr) => acc + curr.delegated_hp, 0),
+            project_account_hp: parseFloat(voterAcc.vesting_shares) * hp_ratio,
+            total_delegators: ranking.filter(r => r.delegated_hp > 0).length,
+            curation_trail_count: (listConfig.curation_trail || []).length
         }, null, 2));
 
-        console.log(`✅ Coleta v2.25.8 finalizada: ${ranking.length} perfis.`);
-    } catch (error) {
-        console.error("❌ Falha crítica na coleta:", error);
+        console.log("✅ Dados capturados com sucesso.");
+    } catch (e) {
+        console.error("❌ Erro:", e.message);
         process.exit(1);
     }
 }
