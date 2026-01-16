@@ -1,13 +1,13 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.24.0 (Feature: Donation Widget)
+ * Version: 2.23.4 (UI: Text Labels Update)
  * Author: Hive BR
  * License: MIT
- * Description: Adicionado função de doação apontando para crazyphantombr.
+ * Description: Ajuste nos rótulos de datas (Votos distribuídos em...) e manutenção da regra de bônus.
  */
 
-const FRONTEND_VERSION = "2.24.0";
+const FRONTEND_VERSION = "2.23.4";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -354,33 +354,4 @@ function setupSearch() {
             row.style.display = row.dataset.name.toLowerCase().includes(term) ? '' : 'none';
         });
     });
-}
-
-// --- FUNÇÃO DE DOAÇÃO (Value-for-Value) ---
-function donate() {
-    const amountInput = document.getElementById('donate-amount');
-    const amount = parseFloat(amountInput.value).toFixed(3);
-    
-    if (!amount || amount <= 0) {
-        alert("Por favor, insira um valor válido.");
-        return;
-    }
-
-    if (window.hive_keychain) {
-        window.hive_keychain.requestTransfer(
-            null,                // Username (usuário escolhe)
-            'crazyphantombr',    // DESTINATÁRIO
-            amount,              // Valor
-            'Dashboard Support ⚡', // Memo
-            'HIVE',              // Moeda
-            (response) => {
-                if (response.success) {
-                    console.log("Doação iniciada!");
-                }
-            },
-            null
-        );
-    } else {
-        alert("Ops! Você precisa da extensão Hive Keychain instalada para doar.");
-    }
 }
