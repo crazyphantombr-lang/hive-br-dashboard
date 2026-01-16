@@ -1,11 +1,10 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.26.1 (Fix: Power Down Detection & Missing Accounts)
+ * Version: 2.26.3 (Feature: Strict API Source)
  * Author: Hive BR
  * License: MIT
- * Description: Coleta dados, gera ranking, salva histórico diário e gerencia SNAPSHOTS.
- * FIX 2.26.1: Garante que contas fixas/voter sejam consultadas na API e valida taxa de Power Down.
+ * Description: Coleta dados, gera ranking, snapshots e busca Trilha via API (sem fallback local).
  */
 
 const fetch = require("node-fetch");
@@ -13,12 +12,14 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO DO SISTEMA ---
-const SCRIPT_VERSION = "2.26.1";
+const SCRIPT_VERSION = "2.26.3";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
 const TOKEN_SYMBOL = "HBR";
+const TRAIL_API_URL = "https://hive.vote/api.php?i=1&user=hive-br.voter";
+
 const HAF_API = `https://rpc.mahdiyari.info/hafsql/delegations/${VOTER_ACCOUNT}/incoming?limit=1000`;
 const RPC_NODES = ["https://api.deathwing.me", "https://api.hive.blog", "https://api.openhive.network"];
 const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
@@ -28,10 +29,16 @@ const DATA_DIR = "data";
 const HISTORY_DIR = path.join(DATA_DIR, "history");
 const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
 
-// Carrega listas
-let listConfig = { verificado_br: [], curation_trail: [] };
-try { if (fs.existsSync(CONFIG_PATH)) listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH)); } catch (e) {}
-const CURATION_TRAIL_USERS = listConfig.curation_trail || [];
+// Carrega apenas listas estáticas (Watchlist/Verificados), ignorando trail local
+let listConfig = { verificado_br: [], curation_trail: [], watchlist: [] };
+try { 
+    if (fs.existsSync(CONFIG_PATH)) {
+        listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH)); 
+    }
+} catch (e) {
+    console.warn("⚠️ Arquivo lists.json não encontrado ou inválido.");
+}
+
 const FIXED_USERS = listConfig.watchlist || [];
 
 // Garante pastas
@@ -53,6 +60,28 @@ async function hiveRpc(method, params) {
   return null;
 }
 
+// NOVA FUNÇÃO: Busca Trilha via API (Sem Fallback Local)
+async function fetchCurationTrail() {
+    console.log("👣 Buscando dados da Curation Trail (Hive.vote)...");
+    try {
+        const response = await fetch(TRAIL_API_URL, { timeout: 8000 });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+            const followers = data.map(item => item.follower);
+            console.log(`✅ Trilha carregada via API: ${followers.length} seguidores.`);
+            return followers;
+        }
+    } catch (e) {
+        // Se der erro, assumimos que está OFFLINE (retorna vazio)
+        console.error(`❌ Erro na API Hive.vote: ${e.message}. Retornando lista vazia.`);
+        return [];
+    }
+    return [];
+}
+
 async function fetchHiveEngineBalances(accounts) {
   try {
     const response = await fetch(HE_RPC, {
@@ -72,7 +101,6 @@ function getMonthLabel(dateObj) {
 // --- SISTEMA DE VOTOS (Smart Scan) ---
 async function fetchSmartVoteHistory() {
     console.log("🗳️ Iniciando varredura inteligente de votos...");
-    
     let lastVotesMap = {}; 
     let historyNamed = {}; 
     let votes24h = 0;
@@ -90,7 +118,6 @@ async function fetchSmartVoteHistory() {
 
     while (active && totalScanned < MAX_SCAN) {
         const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, start, limit]);
-        
         if (!history || history.length === 0) break;
 
         for (let i = history.length - 1; i >= 0; i--) {
@@ -98,18 +125,12 @@ async function fetchSmartVoteHistory() {
             const op = tx[1].op;
             const ts = new Date(tx[1].timestamp + "Z");
 
-            if (ts < limitDate) {
-                active = false;
-                break;
-            }
+            if (ts < limitDate) { active = false; break; }
 
             if (op[0] === 'vote' && op[1].voter === VOTER_ACCOUNT) {
                 const votedUser = op[1].author;
-                if (!lastVotesMap[votedUser]) {
-                    lastVotesMap[votedUser] = tx[1].timestamp + "Z";
-                }
+                if (!lastVotesMap[votedUser]) lastVotesMap[votedUser] = tx[1].timestamp + "Z";
                 if (ts >= time24h) votes24h++;
-                
                 const label = getMonthLabel(ts);
                 historyNamed[label] = (historyNamed[label] || 0) + 1;
             }
@@ -156,9 +177,7 @@ function updateMonthlyStats(metaData) {
 function updateGlobalHistory(data) {
     let globalData = {};
     try {
-        if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
-            globalData = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE));
-        }
+        if (fs.existsSync(GLOBAL_HISTORY_FILE)) globalData = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE));
     } catch (e) { console.warn("Criando novo arquivo de histórico global."); }
 
     const todayKey = new Date().toISOString().split('T')[0];
@@ -197,15 +216,6 @@ function manageSnapshots(ranking, metaData) {
             console.log(`📸 Snapshot Mensal salvo: ${filename}`);
         }
     }
-
-    if (year === 2026) {
-        const backfillFile = path.join(yearDir, "2026-01-01_snapshot.json");
-        if (!fs.existsSync(backfillFile)) {
-            console.warn("⚠️ Backfill: Criando snapshot retroativo de 01/01/2026.");
-            snapshotData.note = "Backfill created on " + now.toISOString().split('T')[0];
-            fs.writeFileSync(backfillFile, JSON.stringify(snapshotData, null, 2));
-        }
-    }
 }
 
 // --- MAIN ---
@@ -213,6 +223,7 @@ async function run() {
     try {
         console.log(`🚀 Iniciando Hive BR Dashboard (v${SCRIPT_VERSION})...`);
         
+        // 1. Dados Globais
         const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
         const totalVests = parseFloat(globals.total_vesting_shares);
         const totalFund = parseFloat(globals.total_vesting_fund_hive);
@@ -221,25 +232,37 @@ async function run() {
             return (vests * totalFund / totalVests);
         };
 
+        // 2. Delegações
         const res = await fetch(HAF_API);
         let delegations = await res.json();
         if (!Array.isArray(delegations)) delegations = [];
 
-        // Lista base de contas para exibição
+        // 3. Trilha de Curadoria (Automática e Estrita)
+        const curationTrailUsers = await fetchCurationTrail();
+
+        // 4. Lista Base de Contas
         const currentDelegators = new Set(delegations.map(d => d.delegator));
-        
-        // Adiciona contas fixas que podem não estar delegando
         FIXED_USERS.forEach(u => {
             if (!currentDelegators.has(u)) delegations.push({ delegator: u, vesting_shares: 0, hp_equivalent: 0 });
         });
 
-        // 3. Histórico de Votos
+        // 5. Histórico de Votos
         const voteData = await fetchSmartVoteHistory();
 
-        // 4. Contas e Tokens (CORREÇÃO DE LISTA AQUI)
-        // Precisamos garantir que TODOS os nomes (Delegadores + Fixos + Projeto + Voter) sejam consultados
-        const allAccountsToFetch = new Set([...currentDelegators, ...FIXED_USERS, PROJECT_ACCOUNT, VOTER_ACCOUNT]);
-        const accounts = await hiveRpc("condenser_api.get_accounts", [[...allAccountsToFetch]]);
+        // 6. Dados Detalhados das Contas
+        const allAccountsToFetch = new Set([...currentDelegators, ...FIXED_USERS, ...curationTrailUsers, PROJECT_ACCOUNT, VOTER_ACCOUNT]);
+        
+        // Batch fetch
+        const allAccountsArray = [...allAccountsToFetch];
+        let accounts = [];
+        const BATCH_SIZE = 100;
+        
+        console.log(`📡 Buscando detalhes de ${allAccountsArray.length} contas...`);
+        for (let i = 0; i < allAccountsArray.length; i += BATCH_SIZE) {
+            const batch = allAccountsArray.slice(i, i + BATCH_SIZE);
+            const batchRes = await hiveRpc("condenser_api.get_accounts", [batch]);
+            if (batchRes) accounts = accounts.concat(batchRes);
+        }
         
         let projectHp = 0;
         let accountsMap = {};
@@ -249,12 +272,13 @@ async function run() {
             accountsMap[acc.name] = acc;
         });
 
-        const heBalances = await fetchHiveEngineBalances([...allAccountsToFetch]); // Consulta tokens para todos também
+        // 7. Tokens Hive-Engine
+        const heBalances = await fetchHiveEngineBalances([...allAccountsToFetch]);
         let tokenMap = {};
         heBalances.forEach(b => { tokenMap[b.account] = parseFloat(b.stake || 0); });
         const tokenSum = heBalances.reduce((acc, curr) => acc + parseFloat(curr.stake || 0), 0);
 
-        // 5. Ranking & Processamento
+        // 8. Processamento do Ranking
         let activeBraziliansCount = 0;
 
         const ranking = delegations.map(d => {
@@ -268,13 +292,10 @@ async function run() {
             
             if ((isBr || d.delegator === 'hive-br') && finalHp > 0) activeBraziliansCount++;
 
-            // DETECÇÃO DE POWER DOWN (CORREÇÃO)
+            // Power Down Check
             let pdDate = null;
             const withdrawRate = acc.vesting_withdraw_rate ? parseFloat(acc.vesting_withdraw_rate) : 0;
-            // Só exibe data se houver taxa de saque positiva E data válida
-            if (withdrawRate > 0 && acc.next_vesting_withdrawal) {
-                 pdDate = acc.next_vesting_withdrawal;
-            }
+            if (withdrawRate > 0 && acc.next_vesting_withdrawal) pdDate = acc.next_vesting_withdrawal;
 
             const lastVote = voteData.lastVotesMap[d.delegator] || null;
 
@@ -285,9 +306,9 @@ async function run() {
                 token_balance: tokenMap[d.delegator] || 0,
                 country_code: isBr ? "BR_CERT" : "BR",
                 last_user_post: acc.last_post || null,
-                next_withdrawal: pdDate, // Agora validado
+                next_withdrawal: pdDate,
                 timestamp: d.timestamp,
-                in_curation_trail: CURATION_TRAIL_USERS.includes(d.delegator),
+                in_curation_trail: curationTrailUsers.includes(d.delegator), // Verifica na lista da API
                 last_vote_date: lastVote, 
                 votes_month: 0 
             };
@@ -296,12 +317,13 @@ async function run() {
         ranking.sort((a, b) => b.delegated_hp - a.delegated_hp);
         fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(ranking, null, 2));
 
+        // 9. Metadados
         const now = new Date();
         const curLabel = getMonthLabel(now);
         const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
         const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
 
-        const uniqueMembers = new Set([...delegations.map(d => d.delegator), ...CURATION_TRAIL_USERS]);
+        const uniqueMembers = new Set([...delegations.map(d => d.delegator), ...curationTrailUsers]);
         const totalDelegatedHp = ranking.reduce((acc, curr) => acc + curr.delegated_hp, 0);
 
         const metaData = {
@@ -311,7 +333,7 @@ async function run() {
             total_hp: totalDelegatedHp,
             project_account_hp: projectHp,
             total_hbr_staked: tokenSum,
-            curation_trail_count: CURATION_TRAIL_USERS.length,
+            curation_trail_count: curationTrailUsers.length, // Se API falhar, isso será 0
             active_community_members: uniqueMembers.size,
             active_brazilians: activeBraziliansCount,
             votes_24h: voteData.votes24h,
