@@ -309,45 +309,6 @@ tr:hover .sticky-col {
 th.asc .sort-icon::after { content: '↑'; opacity: 1; }
 th.desc .sort-icon::after { content: '↓'; opacity: 1; }
 
-/* --- DONATION WIDGET --- */
-.donation-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.input-donate {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid #444;
-  color: #fff;
-  padding: 6px;
-  width: 60px;
-  border-radius: 5px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
-.btn-donate {
-  background: linear-gradient(45deg, #ffd700, #ffa500);
-  color: #000;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 5px;
-  font-weight: 800;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-donate:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
-}
-
 /* --- RESPONSIVE --- */
 @media (max-width: 768px) {
   .sticky-col { position: static; border-right: none; }
