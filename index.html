@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <script src="moz-extension://9fbcfce3-75f1-4b06-83b3-733da2056863/./hive_keychain.js"></script>
+  
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-0B2JEW0JXF"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -56,6 +57,14 @@
       <div class="stat-card">
         <h3>Delegador Destaque nos últimos 30 dias</h3>
         <p id="stat-growth">—</p>
+      </div>
+      <div class="stat-card" style="border-color: #ffd700; background: linear-gradient(145deg, rgba(20,20,20,1) 0%, rgba(40,35,10,0.4) 100%);">
+        <h3 style="color: #ffd700;">Apoie o Dev ⚡</h3>
+        <p style="font-size: 0.75em; opacity: 0.7; margin-bottom: 8px;">Value-for-Value</p>
+        <div class="donation-wrapper">
+            <input type="number" id="donate-amount" class="input-donate" value="10" step="1" min="1">
+            <button onclick="donate()" class="btn-donate">DOAR HIVE</button>
+        </div>
       </div>
     </div>
 
