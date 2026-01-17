@@ -1,10 +1,10 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.26.3 (Feature: Strict API Source)
+ * Version: 2.26.4 (Feature: Rich History & Restored Logging)
  * Author: Hive BR
  * License: MIT
- * Description: Coleta dados, gera ranking, snapshots e busca Trilha via API (sem fallback local).
+ * Description: Coleta dados e salva histórico enriquecido (HP + Status da Trilha).
  */
 
 const fetch = require("node-fetch");
@@ -12,7 +12,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO DO SISTEMA ---
-const SCRIPT_VERSION = "2.26.3";
+const SCRIPT_VERSION = "2.26.4";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -29,19 +29,18 @@ const DATA_DIR = "data";
 const HISTORY_DIR = path.join(DATA_DIR, "history");
 const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
 
-// Carrega apenas listas estáticas (Watchlist/Verificados), ignorando trail local
+// Carrega listas
 let listConfig = { verificado_br: [], curation_trail: [], watchlist: [] };
 try { 
     if (fs.existsSync(CONFIG_PATH)) {
         listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH)); 
     }
 } catch (e) {
-    console.warn("⚠️ Arquivo lists.json não encontrado ou inválido.");
+    console.warn("⚠️ lists.json não encontrado. Usando padrões vazios.");
 }
 
 const FIXED_USERS = listConfig.watchlist || [];
 
-// Garante pastas
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(HISTORY_DIR)) fs.mkdirSync(HISTORY_DIR, { recursive: true });
 
@@ -60,23 +59,16 @@ async function hiveRpc(method, params) {
   return null;
 }
 
-// NOVA FUNÇÃO: Busca Trilha via API (Sem Fallback Local)
+// Busca Trilha via API (Strict Mode)
 async function fetchCurationTrail() {
-    console.log("👣 Buscando dados da Curation Trail (Hive.vote)...");
+    console.log("👣 Buscando dados da Curation Trail...");
     try {
         const response = await fetch(TRAIL_API_URL, { timeout: 8000 });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
         const data = await response.json();
-        
-        if (Array.isArray(data)) {
-            const followers = data.map(item => item.follower);
-            console.log(`✅ Trilha carregada via API: ${followers.length} seguidores.`);
-            return followers;
-        }
+        if (Array.isArray(data)) return data.map(item => item.follower);
     } catch (e) {
-        // Se der erro, assumimos que está OFFLINE (retorna vazio)
-        console.error(`❌ Erro na API Hive.vote: ${e.message}. Retornando lista vazia.`);
+        console.error(`❌ Erro API Hive.vote: ${e.message}. Retornando lista vazia.`);
         return [];
     }
     return [];
@@ -98,7 +90,6 @@ function getMonthLabel(dateObj) {
     return `${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
 }
 
-// --- SISTEMA DE VOTOS (Smart Scan) ---
 async function fetchSmartVoteHistory() {
     console.log("🗳️ Iniciando varredura inteligente de votos...");
     let lastVotesMap = {}; 
@@ -110,13 +101,9 @@ async function fetchSmartVoteHistory() {
     const limitDate = new Date(); 
     limitDate.setDate(limitDate.getDate() - 90); 
 
-    let start = -1;
-    let limit = 1000; 
-    let active = true;
-    let totalScanned = 0;
-    const MAX_SCAN = 50000; 
-
-    while (active && totalScanned < MAX_SCAN) {
+    let start = -1; let limit = 1000; let active = true; let totalScanned = 0;
+    
+    while (active && totalScanned < 50000) {
         const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, start, limit]);
         if (!history || history.length === 0) break;
 
@@ -141,10 +128,31 @@ async function fetchSmartVoteHistory() {
             if (firstId <= 0) break;
             start = firstId - 1;
             limit = Math.min(1000, start);
-            if (totalScanned % 5000 === 0) console.log(`... ${totalScanned} txs analisadas`);
         }
     }
     return { lastVotesMap, historyNamed, votes24h };
+}
+
+// RESTAURADA E MELHORADA: Salva Histórico Rico (Objeto)
+function updateRankingHistory(ranking) {
+    const historyFile = path.join(DATA_DIR, "ranking_history.json");
+    let history = {};
+    try { if (fs.existsSync(historyFile)) history = JSON.parse(fs.readFileSync(historyFile)); } catch (e) {}
+
+    const today = new Date().toISOString().split('T')[0];
+
+    ranking.forEach(user => {
+        if (!history[user.delegator]) history[user.delegator] = {};
+        
+        // Agora salvamos um objeto rico, não apenas um número
+        history[user.delegator][today] = {
+            hp: parseFloat(user.delegated_hp.toFixed(2)),
+            trail: user.in_curation_trail // Boolean
+        };
+    });
+
+    fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
+    console.log(`📜 Histórico diário atualizado (Rich Data).`);
 }
 
 function updateMonthlyStats(metaData) {
@@ -157,14 +165,11 @@ function updateMonthlyStats(metaData) {
 
     const currentStats = {
         date: monthKey,
-        total_power: (metaData.total_hp + metaData.project_account_hp),
-        own_hp: metaData.project_account_hp,
-        delegators_count: metaData.total_delegators,
-        monthly_votes: metaData.votes_month_current,
-        trail_count: metaData.curation_trail_count,
-        hbr_staked_total: metaData.total_hbr_staked,
-        active_members: metaData.active_community_members
+        ...metaData
     };
+    // Remove campos muito grandes do histórico mensal para economizar espaço
+    delete currentStats.vote_history_named; 
+    delete currentStats.versions;
 
     const index = history.findIndex(h => h.date === monthKey);
     if (index >= 0) history[index] = currentStats;
@@ -176,44 +181,29 @@ function updateMonthlyStats(metaData) {
 
 function updateGlobalHistory(data) {
     let globalData = {};
-    try {
-        if (fs.existsSync(GLOBAL_HISTORY_FILE)) globalData = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE));
-    } catch (e) { console.warn("Criando novo arquivo de histórico global."); }
-
+    try { if (fs.existsSync(GLOBAL_HISTORY_FILE)) globalData = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE)); } catch (e) {}
     const todayKey = new Date().toISOString().split('T')[0];
-
     globalData[todayKey] = {
         total_votes: data.votes_24h,
         trail_count: data.curation_trail_count,
         active_brazilians: data.active_brazilians,
-        total_hp: parseFloat((data.total_hp + data.project_account_hp).toFixed(2)),
-        total_delegated_hp: parseFloat(data.total_hp.toFixed(2)),
-        active_members: data.active_community_members,
-        script_version: SCRIPT_VERSION
+        total_hp: parseFloat(data.total_hp.toFixed(2)),
+        active_members: data.active_community_members
     };
-
-    const sorted = {};
-    Object.keys(globalData).sort().forEach(key => sorted[key] = globalData[key]);
-    fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(sorted, null, 2));
+    fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(globalData, null, 2));
 }
 
 function manageSnapshots(ranking, metaData) {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = now.getDate();
-    
-    const yearDir = path.join(HISTORY_DIR, String(year));
+    const yearDir = path.join(HISTORY_DIR, String(now.getFullYear()));
     if (!fs.existsSync(yearDir)) fs.mkdirSync(yearDir, { recursive: true });
 
-    const snapshotData = { meta: metaData, ranking: ranking, snapshot_date: now.toISOString() };
-
-    if (day === 1) {
-        const filename = `${year}-${month}-01_snapshot.json`;
+    if (now.getDate() === 1) {
+        const filename = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01_snapshot.json`;
         const filepath = path.join(yearDir, filename);
         if (!fs.existsSync(filepath)) {
-            fs.writeFileSync(filepath, JSON.stringify(snapshotData, null, 2));
-            console.log(`📸 Snapshot Mensal salvo: ${filename}`);
+            fs.writeFileSync(filepath, JSON.stringify({ meta: metaData, ranking: ranking, date: now.toISOString() }, null, 2));
+            console.log(`📸 Snapshot salvo: ${filename}`);
         }
     }
 }
@@ -221,83 +211,62 @@ function manageSnapshots(ranking, metaData) {
 // --- MAIN ---
 async function run() {
     try {
-        console.log(`🚀 Iniciando Hive BR Dashboard (v${SCRIPT_VERSION})...`);
+        console.log(`🚀 Hive BR Dashboard v${SCRIPT_VERSION}`);
         
-        // 1. Dados Globais
         const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
         const totalVests = parseFloat(globals.total_vesting_shares);
         const totalFund = parseFloat(globals.total_vesting_fund_hive);
-        const vestToHp = (val) => {
-            let vests = (typeof val === 'string') ? parseFloat(val.replace(' VESTS', '')) : parseFloat(val);
-            return (vests * totalFund / totalVests);
-        };
+        const vestToHp = (val) => (parseFloat(val) * totalFund / totalVests);
 
-        // 2. Delegações
         const res = await fetch(HAF_API);
         let delegations = await res.json();
         if (!Array.isArray(delegations)) delegations = [];
 
-        // 3. Trilha de Curadoria (Automática e Estrita)
         const curationTrailUsers = await fetchCurationTrail();
-
-        // 4. Lista Base de Contas
+        
         const currentDelegators = new Set(delegations.map(d => d.delegator));
         FIXED_USERS.forEach(u => {
             if (!currentDelegators.has(u)) delegations.push({ delegator: u, vesting_shares: 0, hp_equivalent: 0 });
         });
 
-        // 5. Histórico de Votos
         const voteData = await fetchSmartVoteHistory();
 
-        // 6. Dados Detalhados das Contas
+        // Busca dados de TODAS as contas relevantes
         const allAccountsToFetch = new Set([...currentDelegators, ...FIXED_USERS, ...curationTrailUsers, PROJECT_ACCOUNT, VOTER_ACCOUNT]);
-        
-        // Batch fetch
         const allAccountsArray = [...allAccountsToFetch];
         let accounts = [];
-        const BATCH_SIZE = 100;
         
-        console.log(`📡 Buscando detalhes de ${allAccountsArray.length} contas...`);
-        for (let i = 0; i < allAccountsArray.length; i += BATCH_SIZE) {
-            const batch = allAccountsArray.slice(i, i + BATCH_SIZE);
+        console.log(`📡 Detalhando ${allAccountsArray.length} contas...`);
+        for (let i = 0; i < allAccountsArray.length; i += 100) {
+            const batch = allAccountsArray.slice(i, i + 100);
             const batchRes = await hiveRpc("condenser_api.get_accounts", [batch]);
             if (batchRes) accounts = accounts.concat(batchRes);
         }
         
-        let projectHp = 0;
         let accountsMap = {};
-        
+        let projectHp = 0;
         accounts.forEach(acc => {
-            if (acc.name === PROJECT_ACCOUNT) projectHp = parseFloat(acc.vesting_shares) * totalFund / totalVests;
+            if (acc.name === PROJECT_ACCOUNT) projectHp = vestToHp(acc.vesting_shares);
             accountsMap[acc.name] = acc;
         });
 
-        // 7. Tokens Hive-Engine
         const heBalances = await fetchHiveEngineBalances([...allAccountsToFetch]);
         let tokenMap = {};
         heBalances.forEach(b => { tokenMap[b.account] = parseFloat(b.stake || 0); });
         const tokenSum = heBalances.reduce((acc, curr) => acc + parseFloat(curr.stake || 0), 0);
 
-        // 8. Processamento do Ranking
         let activeBraziliansCount = 0;
 
         const ranking = delegations.map(d => {
-            let finalHp = 0;
-            if (d.hp_equivalent) finalHp = parseFloat(d.hp_equivalent);
-            else if (d.vesting_shares) finalHp = vestToHp(d.vesting_shares);
-
+            let finalHp = d.hp_equivalent ? parseFloat(d.hp_equivalent) : vestToHp(d.vesting_shares);
             const acc = accountsMap[d.delegator] || {};
             const totalAccountHp = acc.vesting_shares ? vestToHp(acc.vesting_shares) + vestToHp(acc.received_vesting_shares) : 0;
             const isBr = listConfig.verificado_br.includes(d.delegator);
             
             if ((isBr || d.delegator === 'hive-br') && finalHp > 0) activeBraziliansCount++;
 
-            // Power Down Check
             let pdDate = null;
-            const withdrawRate = acc.vesting_withdraw_rate ? parseFloat(acc.vesting_withdraw_rate) : 0;
-            if (withdrawRate > 0 && acc.next_vesting_withdrawal) pdDate = acc.next_vesting_withdrawal;
-
-            const lastVote = voteData.lastVotesMap[d.delegator] || null;
+            if (parseFloat(acc.vesting_withdraw_rate) > 0 && acc.next_vesting_withdrawal) pdDate = acc.next_vesting_withdrawal;
 
             return {
                 delegator: d.delegator,
@@ -308,32 +277,29 @@ async function run() {
                 last_user_post: acc.last_post || null,
                 next_withdrawal: pdDate,
                 timestamp: d.timestamp,
-                in_curation_trail: curationTrailUsers.includes(d.delegator), // Verifica na lista da API
-                last_vote_date: lastVote, 
-                votes_month: 0 
+                in_curation_trail: curationTrailUsers.includes(d.delegator),
+                last_vote_date: voteData.lastVotesMap[d.delegator] || null
             };
         });
 
         ranking.sort((a, b) => b.delegated_hp - a.delegated_hp);
         fs.writeFileSync(path.join(DATA_DIR, "current.json"), JSON.stringify(ranking, null, 2));
 
-        // 9. Metadados
         const now = new Date();
         const curLabel = getMonthLabel(now);
         const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
         const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
 
         const uniqueMembers = new Set([...delegations.map(d => d.delegator), ...curationTrailUsers]);
-        const totalDelegatedHp = ranking.reduce((acc, curr) => acc + curr.delegated_hp, 0);
-
+        
         const metaData = {
             last_updated: new Date().toISOString(),
             versions: { backend: SCRIPT_VERSION, node_env: process.version },
             total_delegators: ranking.filter(d => d.delegated_hp > 0).length,
-            total_hp: totalDelegatedHp,
+            total_hp: ranking.reduce((acc, curr) => acc + curr.delegated_hp, 0),
             project_account_hp: projectHp,
             total_hbr_staked: tokenSum,
-            curation_trail_count: curationTrailUsers.length, // Se API falhar, isso será 0
+            curation_trail_count: curationTrailUsers.length,
             active_community_members: uniqueMembers.size,
             active_brazilians: activeBraziliansCount,
             votes_24h: voteData.votes24h,
@@ -345,14 +311,15 @@ async function run() {
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
         
+        updateRankingHistory(ranking); // <-- RESTAURADO AQUI
         updateMonthlyStats(metaData);
         updateGlobalHistory(metaData);
         manageSnapshots(ranking, metaData);
         
-        console.log(`✅ Sucesso! Dados globais, ranking e snapshots processados.`);
+        console.log(`✅ Ciclo concluído com sucesso.`);
 
     } catch (err) {
-        console.error("❌ Erro fatal:", err.message);
+        console.error("❌ Falha:", err.message);
         process.exit(1);
     }
 }
