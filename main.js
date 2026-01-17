@@ -1,13 +1,13 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.26.4 (UI: Rich History Support)
+ * Version: 2.26.5 (UI: Restore Portugal Flags)
  * Author: Hive BR
  * License: MIT
- * Description: Suporte a histórico de dados rico (HP + Trail) e compatibilidade retroativa.
+ * Description: Correção na exibição de bandeiras para suportar BR e PT.
  */
 
-const FRONTEND_VERSION = "2.26.4";
+const FRONTEND_VERSION = "2.26.5";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -83,11 +83,11 @@ function renderMeta(meta) {
     updateSafe('stat-votes-24h', meta.votes_24h || 0); 
 }
 
-// Helper para ler histórico (Número ou Objeto)
+// Helper para ler histórico
 function getHistoryValue(entry) {
     if (entry === null || entry === undefined) return 0;
-    if (typeof entry === 'object') return entry.hp || 0; // Novo formato
-    return entry; // Antigo formato (número direto)
+    if (typeof entry === 'object') return entry.hp || 0; 
+    return entry; 
 }
 
 function renderHighlight30d(ranking, historyData) {
@@ -213,8 +213,24 @@ function renderTable(data) {
         const days = calculateDays(user.timestamp);
         const daysLabel = days === null ? '<span style="opacity:0.5">-</span>' : `${days} dias`;
         
-        const isBr = user.country_code === 'BR_CERT';
-        const flag = isBr ? '<span title="Brasileiro Verificado" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>' : '<span class="flag-bw" title="Pendente" style="margin-left:5px; font-size:1.1em; cursor:help;">🇧🇷</span>';
+        // --- LÓGICA DE BANDEIRAS RESTAURADA ---
+        let flagEmoji = '🇧🇷';
+        let flagTitle = 'Pendente';
+        let isVerified = false;
+
+        if (user.country_code === 'BR_CERT') {
+            flagEmoji = '🇧🇷';
+            flagTitle = 'Brasileiro Verificado';
+            isVerified = true;
+        } else if (user.country_code === 'PT_CERT' || user.country_code === 'PT') {
+            flagEmoji = '🇵🇹';
+            flagTitle = user.country_code === 'PT_CERT' ? 'Português Verificado' : 'Pendente (PT)';
+            isVerified = (user.country_code === 'PT_CERT');
+        }
+
+        const flagClass = isVerified ? '' : 'class="flag-bw"';
+        const flag = `<span ${flagClass} title="${flagTitle}" style="margin-left:5px; font-size:1.1em; cursor:help;">${flagEmoji}</span>`;
+
         const veteranBadge = (days > 365) ? ' <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>' : '';
 
         const lastVote = user.last_vote_date ? timeAgo(user.last_vote_date) : '<span style="color:#666; font-size:0.8em; opacity:0.5; font-weight:bold;">SEM DADOS</span>';
