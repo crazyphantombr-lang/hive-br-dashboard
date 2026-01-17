@@ -1,10 +1,10 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.26.5 (Fix: Restore Console Progress Logs)
+ * Version: 2.26.6 (Fix: Portugal Country Code Logic)
  * Author: Hive BR
  * License: MIT
- * Description: Coleta dados, salva histórico enriquecido e EXIBE O PROGRESSO no console.
+ * Description: Coleta dados, identifica usuários PT/BR e salva histórico.
  */
 
 const fetch = require("node-fetch");
@@ -12,7 +12,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO DO SISTEMA ---
-const SCRIPT_VERSION = "2.26.5";
+const SCRIPT_VERSION = "2.26.6";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -29,8 +29,8 @@ const DATA_DIR = "data";
 const HISTORY_DIR = path.join(DATA_DIR, "history");
 const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
 
-// Carrega listas
-let listConfig = { verificado_br: [], curation_trail: [], watchlist: [] };
+// Carrega listas (Adicionado suporte para PT)
+let listConfig = { verificado_br: [], verificado_pt: [], pendente_pt: [], curation_trail: [], watchlist: [] };
 try { 
     if (fs.existsSync(CONFIG_PATH)) {
         listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH)); 
@@ -124,7 +124,6 @@ async function fetchSmartVoteHistory() {
         }
         totalScanned += history.length;
         
-        // --- LOG REATIVADO AQUI ---
         if (totalScanned % 5000 === 0) console.log(`... ${totalScanned} txs analisadas`);
         
         if (active) {
@@ -260,9 +259,18 @@ async function run() {
             let finalHp = d.hp_equivalent ? parseFloat(d.hp_equivalent) : vestToHp(d.vesting_shares);
             const acc = accountsMap[d.delegator] || {};
             const totalAccountHp = acc.vesting_shares ? vestToHp(acc.vesting_shares) + vestToHp(acc.received_vesting_shares) : 0;
-            const isBr = listConfig.verificado_br.includes(d.delegator);
             
-            if ((isBr || d.delegator === 'hive-br') && finalHp > 0) activeBraziliansCount++;
+            // --- LÓGICA DE PAÍS ATUALIZADA ---
+            const isBr = listConfig.verificado_br.includes(d.delegator);
+            const isPt = listConfig.verificado_pt && listConfig.verificado_pt.includes(d.delegator);
+            const isPtPending = listConfig.pendente_pt && listConfig.pendente_pt.includes(d.delegator);
+
+            let countryCode = "BR"; // Padrão (Pendente)
+            if (isBr) countryCode = "BR_CERT";
+            else if (isPt) countryCode = "PT_CERT";
+            else if (isPtPending) countryCode = "PT";
+            
+            if ((isBr || isPt || d.delegator === 'hive-br') && finalHp > 0) activeBraziliansCount++;
 
             let pdDate = null;
             if (parseFloat(acc.vesting_withdraw_rate) > 0 && acc.next_vesting_withdrawal) pdDate = acc.next_vesting_withdrawal;
@@ -272,7 +280,7 @@ async function run() {
                 delegated_hp: finalHp,
                 total_account_hp: totalAccountHp,
                 token_balance: tokenMap[d.delegator] || 0,
-                country_code: isBr ? "BR_CERT" : "BR",
+                country_code: countryCode, // Agora envia o código correto
                 last_user_post: acc.last_post || null,
                 next_withdrawal: pdDate,
                 timestamp: d.timestamp,
