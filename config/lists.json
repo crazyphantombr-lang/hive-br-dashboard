@@ -1,3 +1,8 @@
+Entendido. Adicionei **`ricestrela`** à lista de **`pendente_pt`** (Portugal Pendente).
+
+Aqui está o arquivo `config/lists.json` completo e atualizado com os dados que você forneceu anteriormente + esta alteração.
+
+```json
 {
   "verificado_br": [
     "acarolinas", "aiuna", "blessskateshop", "boeltermc", "bralph", "brazilians", "casagrande", "coyote.sports", "coyotelation", "crazyphantombr", 
@@ -13,7 +18,9 @@
   "verificado_pt": [
     "biologistbrito", "portugalzin"
   ],
-  "pendente_pt": [],
+  "pendente_pt": [
+    "ricestrela"
+  ],
   "watchlist": [
     "acarolinas", "aiuna", "biologistbrito", "blessskateshop", "boeltermc", "bralph", "brazilians", "casagrande", "coyote.sports", "coyotelation", "crazyphantombr", 
     "discernente", "edufecchio", "elderdark", "eujotave", "fernandosoder", "gasparetto", "geovanna-gg", "gwajnberg", "heutorybr", "hive-br", "hive-br.leo", 
@@ -63,3 +70,5 @@
     "scumflowerboy", "itznur", "luizvitao", "reibar", "geovanna-gg", "xeraixupa", "skaters"
   ]
 }
+
+```
