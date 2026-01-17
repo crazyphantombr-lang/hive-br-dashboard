@@ -1,8 +1,3 @@
-Entendido. Adicionei **`ricestrela`** à lista de **`pendente_pt`** (Portugal Pendente).
-
-Aqui está o arquivo `config/lists.json` completo e atualizado com os dados que você forneceu anteriormente + esta alteração.
-
-```json
 {
   "verificado_br": [
     "acarolinas", "aiuna", "blessskateshop", "boeltermc", "bralph", "brazilians", "casagrande", "coyote.sports", "coyotelation", "crazyphantombr", 
@@ -70,5 +65,3 @@ Aqui está o arquivo `config/lists.json` completo e atualizado com os dados que 
     "scumflowerboy", "itznur", "luizvitao", "reibar", "geovanna-gg", "xeraixupa", "skaters"
   ]
 }
-
-```
