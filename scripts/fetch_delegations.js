@@ -1,10 +1,10 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.26.6 (Fix: Portugal Country Code Logic)
+ * Version: 2.26.7 (Feature: Save Own HP & HBR History)
  * Author: Hive BR
  * License: MIT
- * Description: Coleta dados, identifica usuários PT/BR e salva histórico.
+ * Description: Coleta dados, identifica PT/BR e salva histórico enriquecido (HP, Own, HBR).
  */
 
 const fetch = require("node-fetch");
@@ -12,7 +12,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO DO SISTEMA ---
-const SCRIPT_VERSION = "2.26.6";
+const SCRIPT_VERSION = "2.26.7";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -29,7 +29,7 @@ const DATA_DIR = "data";
 const HISTORY_DIR = path.join(DATA_DIR, "history");
 const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
 
-// Carrega listas (Adicionado suporte para PT)
+// Carrega listas
 let listConfig = { verificado_br: [], verificado_pt: [], pendente_pt: [], curation_trail: [], watchlist: [] };
 try { 
     if (fs.existsSync(CONFIG_PATH)) {
@@ -145,14 +145,18 @@ function updateRankingHistory(ranking) {
 
     ranking.forEach(user => {
         if (!history[user.delegator]) history[user.delegator] = {};
+        
+        // Estrutura expandida v2.26.7
         history[user.delegator][today] = {
             hp: parseFloat(user.delegated_hp.toFixed(2)),
-            trail: user.in_curation_trail
+            trail: user.in_curation_trail,
+            own: parseFloat(user.total_account_hp.toFixed(2)), // Novo
+            hbr: parseFloat(user.token_balance.toFixed(2))     // Novo
         };
     });
 
     fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
-    console.log(`📜 Histórico diário atualizado (Rich Data).`);
+    console.log(`📜 Histórico diário atualizado (HP + Trail + Own + HBR).`);
 }
 
 function updateMonthlyStats(metaData) {
@@ -260,12 +264,11 @@ async function run() {
             const acc = accountsMap[d.delegator] || {};
             const totalAccountHp = acc.vesting_shares ? vestToHp(acc.vesting_shares) + vestToHp(acc.received_vesting_shares) : 0;
             
-            // --- LÓGICA DE PAÍS ATUALIZADA ---
             const isBr = listConfig.verificado_br.includes(d.delegator);
             const isPt = listConfig.verificado_pt && listConfig.verificado_pt.includes(d.delegator);
             const isPtPending = listConfig.pendente_pt && listConfig.pendente_pt.includes(d.delegator);
 
-            let countryCode = "BR"; // Padrão (Pendente)
+            let countryCode = "BR"; 
             if (isBr) countryCode = "BR_CERT";
             else if (isPt) countryCode = "PT_CERT";
             else if (isPtPending) countryCode = "PT";
@@ -280,7 +283,7 @@ async function run() {
                 delegated_hp: finalHp,
                 total_account_hp: totalAccountHp,
                 token_balance: tokenMap[d.delegator] || 0,
-                country_code: countryCode, // Agora envia o código correto
+                country_code: countryCode,
                 last_user_post: acc.last_post || null,
                 next_withdrawal: pdDate,
                 timestamp: d.timestamp,
