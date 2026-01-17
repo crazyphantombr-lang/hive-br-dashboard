@@ -1,13 +1,13 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.23.4 (UI: Text Labels Update)
+ * Version: 2.26.4 (UI: Rich History Support)
  * Author: Hive BR
  * License: MIT
- * Description: Ajuste nos rótulos de datas (Votos distribuídos em...) e manutenção da regra de bônus.
+ * Description: Suporte a histórico de dados rico (HP + Trail) e compatibilidade retroativa.
  */
 
-const FRONTEND_VERSION = "2.23.4";
+const FRONTEND_VERSION = "2.26.4";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -41,7 +41,6 @@ async function loadData() {
 }
 
 function renderMeta(meta) {
-    // Traceability
     const dateStr = new Date(meta.last_updated).toLocaleString('pt-BR');
     const backendVer = meta.versions ? meta.versions.backend : "vLegacy";
     
@@ -64,7 +63,6 @@ function renderMeta(meta) {
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const now = new Date();
     
-    // LABEL 1: Mês Atual
     const labelCurrent = `Votos distribuídos em ${(monthNames[now.getMonth()] + " " + now.getFullYear()).toUpperCase()}`;
     updateSafe('lbl-votes-current', labelCurrent);
     
@@ -74,7 +72,6 @@ function renderMeta(meta) {
     const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
     const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
     
-    // LABEL 2 & 3: Meses Anteriores
     const labelM1 = `Votos distribuídos em ${(monthNames[d1.getMonth()] + " " + d1.getFullYear()).toUpperCase()}`;
     const labelM2 = `Votos distribuídos em ${(monthNames[d2.getMonth()] + " " + d2.getFullYear()).toUpperCase()}`;
 
@@ -86,7 +83,13 @@ function renderMeta(meta) {
     updateSafe('stat-votes-24h', meta.votes_24h || 0); 
 }
 
-// --- FUNÇÃO: DELEGADOR DESTAQUE (30 DIAS) ---
+// Helper para ler histórico (Número ou Objeto)
+function getHistoryValue(entry) {
+    if (entry === null || entry === undefined) return 0;
+    if (typeof entry === 'object') return entry.hp || 0; // Novo formato
+    return entry; // Antigo formato (número direto)
+}
+
 function renderHighlight30d(ranking, historyData) {
     const el = document.getElementById('stat-growth');
     if (!el) return;
@@ -108,13 +111,10 @@ function renderHighlight30d(ranking, historyData) {
             const dates = Object.keys(hist).sort();
             let foundDate = null;
             for (const dateStr of dates) {
-                if (dateStr <= targetDateStr) {
-                    foundDate = dateStr;
-                } else {
-                    break;
-                }
+                if (dateStr <= targetDateStr) foundDate = dateStr;
+                else break;
             }
-            if (foundDate) pastHP = hist[foundDate];
+            if (foundDate) pastHP = getHistoryValue(hist[foundDate]);
         }
 
         const growth = currentHP - pastHP;
@@ -139,7 +139,6 @@ function renderHighlight30d(ranking, historyData) {
     }
 }
 
-// --- ATIVIDADE RECENTE (7 DIAS) ---
 function renderRecentActivity(delegations, historyData) {
     const container = document.getElementById("activity-panel");
     const tbody = document.getElementById("activity-body");
@@ -160,8 +159,8 @@ function renderRecentActivity(delegations, historyData) {
           
           if (compareIndex === latestIndex) return;
 
-          const todayHP = hist[dates[latestIndex]];
-          const pastHP = hist[dates[compareIndex]];
+          const todayHP = getHistoryValue(hist[dates[latestIndex]]);
+          const pastHP = getHistoryValue(hist[dates[compareIndex]]);
           const diff = todayHP - pastHP;
 
           if (Math.abs(diff) >= NOISE_THRESHOLD) {
@@ -231,7 +230,7 @@ function renderTable(data) {
         const hpVal = user.delegated_hp;
         let bonusBadge = '<span style="opacity:0.3; font-size:0.8em">—</span>';
 
-        // REGRA DE BÔNUS (IMUTÁVEL): Baseada em Posição no Ranking
+        // REGRA DE BÔNUS
         const rankPosition = index + 1;
         if (rankPosition <= 10) bonusBadge = '<span class="bonus-tag bonus-gold">+20%</span>';
         else if (rankPosition <= 20) bonusBadge = '<span class="bonus-tag bonus-silver">+15%</span>';
