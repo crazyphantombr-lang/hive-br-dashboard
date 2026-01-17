@@ -1,10 +1,10 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.26.4 (Feature: Rich History & Restored Logging)
+ * Version: 2.26.5 (Fix: Restore Console Progress Logs)
  * Author: Hive BR
  * License: MIT
- * Description: Coleta dados e salva histórico enriquecido (HP + Status da Trilha).
+ * Description: Coleta dados, salva histórico enriquecido e EXIBE O PROGRESSO no console.
  */
 
 const fetch = require("node-fetch");
@@ -12,7 +12,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO DO SISTEMA ---
-const SCRIPT_VERSION = "2.26.4";
+const SCRIPT_VERSION = "2.26.5";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -59,7 +59,7 @@ async function hiveRpc(method, params) {
   return null;
 }
 
-// Busca Trilha via API (Strict Mode)
+// Busca Trilha via API
 async function fetchCurationTrail() {
     console.log("👣 Buscando dados da Curation Trail...");
     try {
@@ -123,6 +123,10 @@ async function fetchSmartVoteHistory() {
             }
         }
         totalScanned += history.length;
+        
+        // --- LOG REATIVADO AQUI ---
+        if (totalScanned % 5000 === 0) console.log(`... ${totalScanned} txs analisadas`);
+        
         if (active) {
             const firstId = history[0][0];
             if (firstId <= 0) break;
@@ -133,7 +137,6 @@ async function fetchSmartVoteHistory() {
     return { lastVotesMap, historyNamed, votes24h };
 }
 
-// RESTAURADA E MELHORADA: Salva Histórico Rico (Objeto)
 function updateRankingHistory(ranking) {
     const historyFile = path.join(DATA_DIR, "ranking_history.json");
     let history = {};
@@ -143,11 +146,9 @@ function updateRankingHistory(ranking) {
 
     ranking.forEach(user => {
         if (!history[user.delegator]) history[user.delegator] = {};
-        
-        // Agora salvamos um objeto rico, não apenas um número
         history[user.delegator][today] = {
             hp: parseFloat(user.delegated_hp.toFixed(2)),
-            trail: user.in_curation_trail // Boolean
+            trail: user.in_curation_trail
         };
     });
 
@@ -167,7 +168,6 @@ function updateMonthlyStats(metaData) {
         date: monthKey,
         ...metaData
     };
-    // Remove campos muito grandes do histórico mensal para economizar espaço
     delete currentStats.vote_history_named; 
     delete currentStats.versions;
 
@@ -231,7 +231,6 @@ async function run() {
 
         const voteData = await fetchSmartVoteHistory();
 
-        // Busca dados de TODAS as contas relevantes
         const allAccountsToFetch = new Set([...currentDelegators, ...FIXED_USERS, ...curationTrailUsers, PROJECT_ACCOUNT, VOTER_ACCOUNT]);
         const allAccountsArray = [...allAccountsToFetch];
         let accounts = [];
@@ -311,7 +310,7 @@ async function run() {
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
         
-        updateRankingHistory(ranking); // <-- RESTAURADO AQUI
+        updateRankingHistory(ranking);
         updateMonthlyStats(metaData);
         updateGlobalHistory(metaData);
         manageSnapshots(ranking, metaData);
