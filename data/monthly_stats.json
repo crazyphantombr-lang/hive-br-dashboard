@@ -76,12 +76,17 @@
   },
   {
     "date": "2026-01-01",
-    "total_power": 55924.69568462971,
-    "own_hp": 14284.558684629712,
-    "delegators_count": 66,
-    "monthly_votes": 199,
-    "trail_count": 82,
-    "hbr_staked_total": 5348.514557999998,
-    "active_members": 314
+    "last_updated": "2026-01-17T19:31:29.803Z",
+    "total_delegators": 66,
+    "total_hp": 41640.269999999975,
+    "project_account_hp": 14284.604517903832,
+    "total_hbr_staked": 5348.514557999998,
+    "curation_trail_count": 82,
+    "active_community_members": 314,
+    "active_brazilians": 28,
+    "votes_24h": 9,
+    "votes_month_current": 199,
+    "votes_month_prev1": 351,
+    "votes_month_prev2": 405
   }
 ]
