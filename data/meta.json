@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-01-26T12:40:01.044Z",
+  "last_updated": "2026-01-26T12:43:59.405Z",
   "versions": {
     "backend": "2.26.7",
     "node_env": "v18.20.8"
   },
   "total_delegators": 66,
-  "total_hp": 41723.52800000003,
-  "project_account_hp": 14293.551201367603,
+  "total_hp": 41723.53600000004,
+  "project_account_hp": 14293.554082563882,
   "total_hbr_staked": 5348.897557999998,
   "curation_trail_count": 82,
   "active_community_members": 314,
