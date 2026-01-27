@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-01-26T21:18:07.822Z",
+  "last_updated": "2026-01-27T21:13:31.654Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -1887,9 +1887,9 @@
     "thayavlis": {
       "igormuba": false,
       "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
+      "mengao": true,
+      "fernandosoder": true,
+      "perfilbrasil": true
     },
     "preciousplastes": {
       "igormuba": false,
