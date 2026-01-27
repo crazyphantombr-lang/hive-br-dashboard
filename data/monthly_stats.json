@@ -76,16 +76,16 @@
   },
   {
     "date": "2026-01-01",
-    "last_updated": "2026-01-27T12:45:32.387Z",
+    "last_updated": "2026-01-27T18:32:52.810Z",
     "total_delegators": 65,
-    "total_hp": 41695.75199999999,
-    "project_account_hp": 14294.534415796445,
-    "total_hbr_staked": 5348.909557999998,
+    "total_hp": 41696.488,
+    "project_account_hp": 14294.784767378704,
+    "total_hbr_staked": 5348.975557999998,
     "curation_trail_count": 82,
     "active_community_members": 313,
     "active_brazilians": 29,
     "votes_24h": 10,
-    "votes_month_current": 307,
+    "votes_month_current": 308,
     "votes_month_prev1": 351,
     "votes_month_prev2": 405
   }
