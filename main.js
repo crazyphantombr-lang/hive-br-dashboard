@@ -1,21 +1,22 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.28.0 (Feature: Flag Dictionary & Tooltips)
+ * Version: 2.28.2 (Refactor: Standard ISO Codes)
  * Author: Hive BR
  * License: MIT
- * Description: Sistema de bandeiras via Dicionário para escalabilidade.
+ * Description: Dicionário padronizado (ISO 3166-1 alpha-2).
  */
 
-const FRONTEND_VERSION = "2.28.0";
+const FRONTEND_VERSION = "2.28.2";
 
-// --- CONFIGURAÇÃO DE BANDEIRAS ---
+// --- CONFIGURAÇÃO DE BANDEIRAS (ISO 3166-1 alpha-2) ---
 const COUNTRY_MAP = {
     'BR': { emoji: '🇧🇷', name: 'Brasileiro' },
     'PT': { emoji: '🇵🇹', name: 'Português' },
     'CU': { emoji: '🇨🇺', name: 'Cubano' },
     'VE': { emoji: '🇻🇪', name: 'Venezuelano' },
     'US': { emoji: '🇺🇸', name: 'Americano' },
+    'JP': { emoji: '🇯🇵', name: 'Japonês' },
     'GLOBAL': { emoji: '🏳️', name: 'Global' }
 };
 
@@ -207,24 +208,20 @@ function renderRecentActivity(delegations, historyData) {
     });
 }
 
-// --- FUNÇÃO DE BANDEIRA ATUALIZADA ---
 function getFlagHtml(fullCode) {
-    if (!fullCode) fullCode = "BR"; // Fallback seguro
+    if (!fullCode) fullCode = "BR"; 
     
     // Separa "CU_CERT" em ["CU", "CERT"]
     const parts = fullCode.split('_');
     const countryCode = parts[0] || 'BR';
     const isVerified = parts.length > 1 && parts[1] === 'CERT';
 
-    // Busca no dicionário, ou usa Global se não encontrar
     const countryData = COUNTRY_MAP[countryCode] || COUNTRY_MAP['GLOBAL'];
     
-    // Define o texto do título
     let titleText = isVerified 
         ? `${countryData.name} Verificado` 
-        : 'Pendente de apresentação nos chats da comunidade'; // Texto atualizado conforme solicitado
+        : 'Pendente de apresentação nos chats da comunidade';
 
-    // Classe CSS (se não verificado, fica cinza)
     const flagClass = isVerified ? '' : 'class="flag-bw"';
 
     return `<span ${flagClass} title="${titleText}" style="margin-left:5px; font-size:1.1em; cursor:help;">${countryData.emoji}</span>`;
@@ -245,7 +242,6 @@ function renderTable(data) {
         const days = calculateDays(user.timestamp);
         const daysLabel = days === null ? '<span style="opacity:0.5">-</span>' : `${days} dias`;
         
-        // Gera o HTML da bandeira com a nova lógica
         const flag = getFlagHtml(user.country_code);
 
         const veteranBadge = (days > 365) ? ' <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>' : '';
