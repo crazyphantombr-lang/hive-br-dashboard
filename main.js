@@ -1,13 +1,23 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.26.5 (UI: Restore Portugal Flags)
+ * Version: 2.28.0 (Feature: Flag Dictionary & Tooltips)
  * Author: Hive BR
  * License: MIT
- * Description: Correção na exibição de bandeiras para suportar BR e PT.
+ * Description: Sistema de bandeiras via Dicionário para escalabilidade.
  */
 
-const FRONTEND_VERSION = "2.26.5";
+const FRONTEND_VERSION = "2.28.0";
+
+// --- CONFIGURAÇÃO DE BANDEIRAS ---
+const COUNTRY_MAP = {
+    'BR': { emoji: '🇧🇷', name: 'Brasileiro' },
+    'PT': { emoji: '🇵🇹', name: 'Português' },
+    'CU': { emoji: '🇨🇺', name: 'Cubano' },
+    'VE': { emoji: '🇻🇪', name: 'Venezuelano' },
+    'US': { emoji: '🇺🇸', name: 'Americano' },
+    'GLOBAL': { emoji: '🏳️', name: 'Global' }
+};
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -83,7 +93,6 @@ function renderMeta(meta) {
     updateSafe('stat-votes-24h', meta.votes_24h || 0); 
 }
 
-// Helper para ler histórico
 function getHistoryValue(entry) {
     if (entry === null || entry === undefined) return 0;
     if (typeof entry === 'object') return entry.hp || 0; 
@@ -198,6 +207,29 @@ function renderRecentActivity(delegations, historyData) {
     });
 }
 
+// --- FUNÇÃO DE BANDEIRA ATUALIZADA ---
+function getFlagHtml(fullCode) {
+    if (!fullCode) fullCode = "BR"; // Fallback seguro
+    
+    // Separa "CU_CERT" em ["CU", "CERT"]
+    const parts = fullCode.split('_');
+    const countryCode = parts[0] || 'BR';
+    const isVerified = parts.length > 1 && parts[1] === 'CERT';
+
+    // Busca no dicionário, ou usa Global se não encontrar
+    const countryData = COUNTRY_MAP[countryCode] || COUNTRY_MAP['GLOBAL'];
+    
+    // Define o texto do título
+    let titleText = isVerified 
+        ? `${countryData.name} Verificado` 
+        : 'Pendente de apresentação nos chats da comunidade'; // Texto atualizado conforme solicitado
+
+    // Classe CSS (se não verificado, fica cinza)
+    const flagClass = isVerified ? '' : 'class="flag-bw"';
+
+    return `<span ${flagClass} title="${titleText}" style="margin-left:5px; font-size:1.1em; cursor:help;">${countryData.emoji}</span>`;
+}
+
 function renderTable(data) {
     const tbody = document.getElementById('ranking-body');
     if (!tbody) return;
@@ -213,23 +245,8 @@ function renderTable(data) {
         const days = calculateDays(user.timestamp);
         const daysLabel = days === null ? '<span style="opacity:0.5">-</span>' : `${days} dias`;
         
-        // --- LÓGICA DE BANDEIRAS RESTAURADA ---
-        let flagEmoji = '🇧🇷';
-        let flagTitle = 'Pendente';
-        let isVerified = false;
-
-        if (user.country_code === 'BR_CERT') {
-            flagEmoji = '🇧🇷';
-            flagTitle = 'Brasileiro Verificado';
-            isVerified = true;
-        } else if (user.country_code === 'PT_CERT' || user.country_code === 'PT') {
-            flagEmoji = '🇵🇹';
-            flagTitle = user.country_code === 'PT_CERT' ? 'Português Verificado' : 'Pendente (PT)';
-            isVerified = (user.country_code === 'PT_CERT');
-        }
-
-        const flagClass = isVerified ? '' : 'class="flag-bw"';
-        const flag = `<span ${flagClass} title="${flagTitle}" style="margin-left:5px; font-size:1.1em; cursor:help;">${flagEmoji}</span>`;
+        // Gera o HTML da bandeira com a nova lógica
+        const flag = getFlagHtml(user.country_code);
 
         const veteranBadge = (days > 365) ? ' <span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>' : '';
 
@@ -246,7 +263,6 @@ function renderTable(data) {
         const hpVal = user.delegated_hp;
         let bonusBadge = '<span style="opacity:0.3; font-size:0.8em">—</span>';
 
-        // REGRA DE BÔNUS
         const rankPosition = index + 1;
         if (rankPosition <= 10) bonusBadge = '<span class="bonus-tag bonus-gold">+20%</span>';
         else if (rankPosition <= 20) bonusBadge = '<span class="bonus-tag bonus-silver">+15%</span>';
