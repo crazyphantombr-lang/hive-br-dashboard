@@ -1,10 +1,10 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.26.7 (Feature: Save Own HP & HBR History)
+ * Version: 2.28.0 (Refactor: Dynamic Country Detection)
  * Author: Hive BR
  * License: MIT
- * Description: Coleta dados, identifica PT/BR e salva histórico enriquecido (HP, Own, HBR).
+ * Description: Detecta países dinamicamente baseado nas chaves do lists.json (ex: verificado_cuba).
  */
 
 const fetch = require("node-fetch");
@@ -12,7 +12,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO DO SISTEMA ---
-const SCRIPT_VERSION = "2.26.7";
+const SCRIPT_VERSION = "2.28.0";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -30,7 +30,7 @@ const HISTORY_DIR = path.join(DATA_DIR, "history");
 const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
 
 // Carrega listas
-let listConfig = { verificado_br: [], verificado_pt: [], pendente_pt: [], curation_trail: [], watchlist: [] };
+let listConfig = { watchlist: [] };
 try { 
     if (fs.existsSync(CONFIG_PATH)) {
         listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH)); 
@@ -59,7 +59,6 @@ async function hiveRpc(method, params) {
   return null;
 }
 
-// Busca Trilha via API
 async function fetchCurationTrail() {
     console.log("👣 Buscando dados da Curation Trail...");
     try {
@@ -88,6 +87,33 @@ async function fetchHiveEngineBalances(accounts) {
 function getMonthLabel(dateObj) {
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     return `${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+}
+
+// --- LÓGICA DE DETECÇÃO DE PAÍS DINÂMICA ---
+function detectCountryAndStatus(username, config) {
+    let country = "BR"; // Default fallback
+    let isCert = false;
+    let found = false;
+
+    // Itera sobre todas as chaves do JSON de configuração
+    for (const [key, list] of Object.entries(config)) {
+        if (Array.isArray(list) && list.includes(username)) {
+            if (key.startsWith("verificado_")) {
+                country = key.replace("verificado_", "").toUpperCase();
+                isCert = true;
+                found = true;
+                break; // Prioridade máxima para verificado
+            } else if (key.startsWith("pendente_")) {
+                country = key.replace("pendente_", "").toUpperCase();
+                isCert = false;
+                found = true;
+                // Não damos break aqui, pois ele pode estar pendente em uma e verificado em outra (raro, mas possível)
+            }
+        }
+    }
+
+    if (isCert) return `${country}_CERT`;
+    return country; // Retorna apenas o código do país (ex: PT, CU, BR) significando pendente
 }
 
 async function fetchSmartVoteHistory() {
@@ -123,9 +149,6 @@ async function fetchSmartVoteHistory() {
             }
         }
         totalScanned += history.length;
-        
-        if (totalScanned % 5000 === 0) console.log(`... ${totalScanned} txs analisadas`);
-        
         if (active) {
             const firstId = history[0][0];
             if (firstId <= 0) break;
@@ -145,18 +168,16 @@ function updateRankingHistory(ranking) {
 
     ranking.forEach(user => {
         if (!history[user.delegator]) history[user.delegator] = {};
-        
-        // Estrutura expandida v2.26.7
         history[user.delegator][today] = {
             hp: parseFloat(user.delegated_hp.toFixed(2)),
             trail: user.in_curation_trail,
-            own: parseFloat(user.total_account_hp.toFixed(2)), // Novo
-            hbr: parseFloat(user.token_balance.toFixed(2))     // Novo
+            own: parseFloat(user.total_account_hp.toFixed(2)),
+            hbr: parseFloat(user.token_balance.toFixed(2))
         };
     });
 
     fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
-    console.log(`📜 Histórico diário atualizado (HP + Trail + Own + HBR).`);
+    console.log(`📜 Histórico diário atualizado.`);
 }
 
 function updateMonthlyStats(metaData) {
@@ -167,10 +188,7 @@ function updateMonthlyStats(metaData) {
     const today = new Date();
     const monthKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-01`;
 
-    const currentStats = {
-        date: monthKey,
-        ...metaData
-    };
+    const currentStats = { date: monthKey, ...metaData };
     delete currentStats.vote_history_named; 
     delete currentStats.versions;
 
@@ -206,7 +224,6 @@ function manageSnapshots(ranking, metaData) {
         const filepath = path.join(yearDir, filename);
         if (!fs.existsSync(filepath)) {
             fs.writeFileSync(filepath, JSON.stringify({ meta: metaData, ranking: ranking, date: now.toISOString() }, null, 2));
-            console.log(`📸 Snapshot salvo: ${filename}`);
         }
     }
 }
@@ -257,23 +274,20 @@ async function run() {
         heBalances.forEach(b => { tokenMap[b.account] = parseFloat(b.stake || 0); });
         const tokenSum = heBalances.reduce((acc, curr) => acc + parseFloat(curr.stake || 0), 0);
 
-        let activeBraziliansCount = 0;
+        let activeMembersCount = 0;
 
         const ranking = delegations.map(d => {
             let finalHp = d.hp_equivalent ? parseFloat(d.hp_equivalent) : vestToHp(d.vesting_shares);
             const acc = accountsMap[d.delegator] || {};
             const totalAccountHp = acc.vesting_shares ? vestToHp(acc.vesting_shares) + vestToHp(acc.received_vesting_shares) : 0;
             
-            const isBr = listConfig.verificado_br.includes(d.delegator);
-            const isPt = listConfig.verificado_pt && listConfig.verificado_pt.includes(d.delegator);
-            const isPtPending = listConfig.pendente_pt && listConfig.pendente_pt.includes(d.delegator);
-
-            let countryCode = "BR"; 
-            if (isBr) countryCode = "BR_CERT";
-            else if (isPt) countryCode = "PT_CERT";
-            else if (isPtPending) countryCode = "PT";
+            // Nova Detecção Dinâmica
+            const countryCode = detectCountryAndStatus(d.delegator, listConfig);
             
-            if ((isBr || isPt || d.delegator === 'hive-br') && finalHp > 0) activeBraziliansCount++;
+            // Contagem de Membros Ativos (Qualquer um listado ou delegando para hive-br)
+            // Se o país for != BR padrão OU se ele estiver em alguma lista, contamos.
+            // Para simplificar: Se delegou HP > 0, contamos como ativo no ecossistema
+            if (finalHp > 0) activeMembersCount++;
 
             let pdDate = null;
             if (parseFloat(acc.vesting_withdraw_rate) > 0 && acc.next_vesting_withdrawal) pdDate = acc.next_vesting_withdrawal;
@@ -283,7 +297,7 @@ async function run() {
                 delegated_hp: finalHp,
                 total_account_hp: totalAccountHp,
                 token_balance: tokenMap[d.delegator] || 0,
-                country_code: countryCode,
+                country_code: countryCode, 
                 last_user_post: acc.last_post || null,
                 next_withdrawal: pdDate,
                 timestamp: d.timestamp,
@@ -311,7 +325,7 @@ async function run() {
             total_hbr_staked: tokenSum,
             curation_trail_count: curationTrailUsers.length,
             active_community_members: uniqueMembers.size,
-            active_brazilians: activeBraziliansCount,
+            active_brazilians: activeMembersCount, 
             votes_24h: voteData.votes24h,
             vote_history_named: voteData.historyNamed,
             votes_month_current: voteData.historyNamed[curLabel] || 0,
