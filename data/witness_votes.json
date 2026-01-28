@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-01-27T21:13:31.654Z",
+  "last_updated": "2026-01-28T21:24:15.586Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -84,6 +84,13 @@
       "mengao": false,
       "fernandosoder": false,
       "perfilbrasil": false
+    },
+    "dstampede": {
+      "igormuba": false,
+      "nexo.witness": false,
+      "mengao": true,
+      "fernandosoder": false,
+      "perfilbrasil": true
     },
     "edufecchio": {
       "igormuba": false,
@@ -456,6 +463,13 @@
       "fernandosoder": true,
       "perfilbrasil": true
     },
+    "forykw": {
+      "igormuba": false,
+      "nexo.witness": false,
+      "mengao": false,
+      "fernandosoder": false,
+      "perfilbrasil": false
+    },
     "elisangelapa": {
       "igormuba": false,
       "nexo.witness": false,
@@ -775,13 +789,6 @@
       "igormuba": false,
       "nexo.witness": false,
       "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": true
-    },
-    "dstampede": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": true,
       "fernandosoder": false,
       "perfilbrasil": true
     },
@@ -1807,266 +1814,7 @@
       "fernandosoder": false,
       "perfilbrasil": true
     },
-    "syel25": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "arthursiq5": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": true,
-      "fernandosoder": true,
-      "perfilbrasil": true
-    },
-    "lucasqz": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "us3incanada": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": true,
-      "fernandosoder": true,
-      "perfilbrasil": true
-    },
-    "lilico": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": true,
-      "fernandosoder": false,
-      "perfilbrasil": true
-    },
-    "kedleona": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": true,
-      "fernandosoder": true,
-      "perfilbrasil": true
-    },
-    "hive-182654": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "rafasete": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "d35tr0": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "mariale07": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": true
-    },
-    "vempromundo.pob": {
-      "igormuba": true,
-      "nexo.witness": true,
-      "mengao": true,
-      "fernandosoder": true,
-      "perfilbrasil": true
-    },
-    "thayavlis": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": true,
-      "fernandosoder": true,
-      "perfilbrasil": true
-    },
-    "preciousplastes": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "ativosgarantem": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "cassia.nails": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "dwarven": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "ifhy": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": true,
-      "fernandosoder": true,
-      "perfilbrasil": true
-    },
-    "abreusplinter": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "spidersilk": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "lucianaabrao": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": true
-    },
-    "blackleg": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "lemurians": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "captainman": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "devferri": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": true,
-      "fernandosoder": true,
-      "perfilbrasil": true
-    },
-    "vortac": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "xeraifuma": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": true,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "bradleyarrow": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "ricestrela": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": true
-    },
-    "treasure.hoard": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "preciouz-01": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "cheryl291021": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "jhonpa5808": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "chuchochucho": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "sofia.perola": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "scumflowerboy": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "itznur": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "luizvitao": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "xeraixupa": {
+    "newnow497": {
       "igormuba": false,
       "nexo.witness": false,
       "mengao": false,
