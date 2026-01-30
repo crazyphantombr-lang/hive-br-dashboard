@@ -1,16 +1,16 @@
 {
-  "last_updated": "2026-01-30T16:18:43.764Z",
+  "last_updated": "2026-01-30T17:23:46.088Z",
   "versions": {
     "backend": "2.29.2",
     "node_env": "v18.20.8"
   },
   "total_delegators": 65,
-  "total_hp": 41733.899999999994,
-  "project_account_hp": 14543.764837006273,
-  "total_hbr_staked": 5349.060557999998,
+  "total_hp": 41734.03400000002,
+  "project_account_hp": 14543.812699193222,
+  "total_hbr_staked": 5264.579995229999,
   "curation_trail_count": 82,
-  "active_community_members": 316,
-  "active_brazilians": 53,
+  "active_community_members": 113,
+  "active_brazilians": 29,
   "votes_24h": 9,
   "vote_history_named": {
     "Janeiro 2026": 341,

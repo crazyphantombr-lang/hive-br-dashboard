@@ -1,1 +1,332 @@
-
+{
+  "2026-01": {
+    "unknown_delegators": [
+      {
+        "user": "underlock",
+        "hp": "109.01",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "matheusggr.leo",
+        "hp": "54.47",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "imagemvirtual",
+        "hp": "108.92",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "giovanalrico",
+        "hp": "108.92",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "dreloop07",
+        "hp": "109.32",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "thomashnblum",
+        "hp": "217.39",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "viniciotricolor",
+        "hp": "216.13",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "lincemarrom",
+        "hp": "162.00",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "xvlad",
+        "hp": "539.77",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "mauriciolimax",
+        "hp": "107.93",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "hive-br.leo",
+        "hp": "44.27",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "legalizabrazil",
+        "hp": "538.74",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "arthursiq5",
+        "hp": "72.18",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "speedtuning",
+        "hp": "32.20",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "keepkeybr",
+        "hp": "13.93",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "d35tr0",
+        "hp": "74.95",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "syel25",
+        "hp": "213.76",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "reibar",
+        "hp": "155.65",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "boeltermc",
+        "hp": "21.34",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "felipefabar",
+        "hp": "211.56",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "zombialien",
+        "hp": "52.55",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "name0",
+        "hp": "10.49",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "sieghard1990",
+        "hp": "10.35",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "pablito.saldo",
+        "hp": "620.81",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "lobaobh",
+        "hp": "412.60",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "adncabrera",
+        "hp": "51.51",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "matheusggr",
+        "hp": "10270.70",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "sinvistaalsol",
+        "hp": "155.41",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "coyotelation",
+        "hp": "410.17",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "emviagem",
+        "hp": "9.53",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "kaibagt",
+        "hp": "1025.97",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "michupa",
+        "hp": "1074.20",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "jaopalas",
+        "hp": "117.59",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "elderdark",
+        "hp": "1021.93",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "hellene8",
+        "hp": "102.11",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "nane-qts",
+        "hp": "224.54",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "josiva",
+        "hp": "1024.21",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "manopunkttt",
+        "hp": "10.13",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "mengao",
+        "hp": "2025.29",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "grafvisionsp",
+        "hp": "50.57",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "zulfrontado",
+        "hp": "1.01",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "tfranzini",
+        "hp": "3129.99",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "markitoelias",
+        "hp": "227.24",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "ogepaul1986",
+        "hp": "34.35",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "eii",
+        "hp": "100.77",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "casagrande",
+        "hp": "60.45",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "wagnertamanaha",
+        "hp": "201.51",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "gwajnberg",
+        "hp": "1036.71",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "ladyaryastark",
+        "hp": "50.28",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "claytonlins",
+        "hp": "6.12",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "shiftrox",
+        "hp": "1204.34",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "wiseagent",
+        "hp": "7022.61",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "ricestrela",
+        "hp": "501.38",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "lucianaabrao",
+        "hp": "10.40",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "us3incanada",
+        "hp": "40.84",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "ogechukwu-martha",
+        "hp": "112.26",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "ayummi",
+        "hp": "14.02",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "portugalzin",
+        "hp": "20.02",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "kedleona",
+        "hp": "10.01",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "jkatrina",
+        "hp": "20.02",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "thayavlis",
+        "hp": "15.02",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "crazyphantombr",
+        "hp": "300.37",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "blessskateshop",
+        "hp": "1001.14",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "v-36",
+        "hp": "20.02",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      },
+      {
+        "user": "rimurutempest",
+        "hp": "4800.03",
+        "first_seen": "2026-01-30T17:23:23.646Z"
+      }
+    ],
+    "last_scan": "2026-01-30T17:23:23.646Z"
+  }
+}
