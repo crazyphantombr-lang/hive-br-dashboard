@@ -1,53 +1,43 @@
 // File: public/main.js
 /**
  * Hive BR Dashboard - Main Script
- * Version: 2.30.0 (Feature: Universal Flag Detection)
+ * Version: 2.30.1 (Fix: Restored Missing Functions)
  * Author: Hive BR
  * License: MIT
  */
 
 // Configurações Globais
 const CONFIG = {
-    // URL dos dados gerados pelo backend
     API_URL: './data/current.json',
     META_URL: './data/meta.json',
-    
-    // Versão da Interface
-    UI_VERSION: "2.30.0" 
+    UI_VERSION: "2.30.1" 
 };
 
-// Cache para nomes de países (evita instanciar Intl repetidamente)
+// Cache para nomes de países
 const regionNames = new Intl.DisplayNames(['pt-BR'], { type: 'region' });
 
 // --- LÓGICA UNIVERSAL DE BANDEIRAS ---
-// Converte códigos ISO (ex: "BR", "US") em Emojis (🇧🇷, 🇺🇸) matematicamente
 function getFlagEmoji(countryCode) {
     if (!countryCode || countryCode.length !== 2) return '🏳️';
-    
     const codePoints = countryCode
         .toUpperCase()
         .split('')
         .map(char => 127397 + char.charCodeAt());
-        
     return String.fromCodePoint(...codePoints);
 }
 
 function getCountryInfo(rawCode) {
-    // 1. Limpeza do código (remove sufixos como _CERT)
     let cleanCode = rawCode ? rawCode.replace("_CERT", "").toUpperCase() : "GLOBAL";
     
-    // 2. Tratamento de Casos Especiais
     if (cleanCode === "GLOBAL" || cleanCode === "NULL") {
         return { flag: "🏳️", name: "Global / Não Identificado" };
     }
 
-    // 3. Geração Automática (Universal)
     try {
         const flag = getFlagEmoji(cleanCode);
-        const name = regionNames.of(cleanCode); // Pega o nome oficial em Português
+        const name = regionNames.of(cleanCode);
         return { flag, name };
     } catch (e) {
-        // Fallback se o código ISO for inválido
         return { flag: "🏳️", name: cleanCode };
     }
 }
@@ -74,7 +64,9 @@ const els = {
     labelCurrent: document.getElementById('lbl-votes-current'),
     labelM1: document.getElementById('lbl-votes-m1'),
     labelM2: document.getElementById('lbl-votes-m2'),
-    trailCount: document.getElementById('stat-trail-count')
+    trailCount: document.getElementById('stat-trail-count'),
+    activityPanel: document.getElementById('activity-panel'),
+    activityBody: document.getElementById('activity-body')
 };
 
 let globalData = [];
@@ -87,7 +79,7 @@ async function init() {
         setupSearch();
     } catch (e) {
         console.error("Erro na inicialização:", e);
-        els.lastUpdated.innerHTML = `<span style="color:#ff4d4d">Erro ao carregar dados.</span>`;
+        if(els.lastUpdated) els.lastUpdated.innerHTML = `<span style="color:#ff4d4d">Erro ao carregar dados. Verifique o console.</span>`;
     }
 }
 
@@ -110,10 +102,9 @@ async function loadMeta() {
     els.activeBr.innerText = meta.active_brazilians || 0;
     els.trailCount.innerText = meta.curation_trail_count || 0;
 
-    // Estatísticas de Voto
     els.votes24h.innerText = meta.votes_24h || 0;
     
-    // Labels Dinâmicos de Meses
+    // Labels Meses
     const monthNames = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const now = new Date();
     
@@ -121,23 +112,27 @@ async function loadMeta() {
     const m1Date = new Date(); m1Date.setMonth(now.getMonth() - 1);
     const m2Date = new Date(); m2Date.setMonth(now.getMonth() - 2);
     
-    els.labelCurrent.innerText = `Votos distribuídos em ${currentMonth} ${now.getFullYear()}`;
-    els.labelM1.innerText = `Votos distribuídos em ${monthNames[m1Date.getMonth()]} ${m1Date.getFullYear()}`;
-    els.labelM2.innerText = `Votos distribuídos em ${monthNames[m2Date.getMonth()]} ${m2Date.getFullYear()}`;
+    els.labelCurrent.innerText = `Votos em ${currentMonth} ${now.getFullYear()}`;
+    els.labelM1.innerText = `Votos em ${monthNames[m1Date.getMonth()]} ${m1Date.getFullYear()}`;
+    els.labelM2.innerText = `Votos em ${monthNames[m2Date.getMonth()]} ${m2Date.getFullYear()}`;
 
     els.votesCurrent.innerText = meta.votes_month_current || 0;
     els.votesM1.innerText = meta.votes_month_prev1 || 0;
     els.votesM2.innerText = meta.votes_month_prev2 || 0;
 
-    renderActivityTable(meta.activity_log || []); // Se existir no futuro
+    // AQUI ESTAVA O ERRO: Chamada sem definição
+    // Agora a função existe abaixo
+    if (meta.activity_log) {
+        renderActivityTable(meta.activity_log);
+    } else {
+        els.activityPanel.style.display = 'none';
+    }
 }
 
 async function loadData() {
     const res = await fetch(CONFIG.API_URL);
     globalData = await res.json();
     
-    // Calcula destaque (maior crescimento ou maior delegação se não houver histórico)
-    // Lógica simplificada: Maior Delegador do Mês
     if (globalData.length > 0) {
         const topUser = globalData[0];
         els.growth.innerHTML = `
@@ -153,6 +148,37 @@ async function loadData() {
     renderTable(globalData);
 }
 
+// --- FUNÇÃO RESTAURADA (ACTIVITY TABLE) ---
+function renderActivityTable(logs) {
+    if (!logs || logs.length === 0) {
+        els.activityPanel.style.display = 'none';
+        return;
+    }
+    
+    els.activityPanel.style.display = 'block';
+    els.activityBody.innerHTML = '';
+    
+    logs.forEach(log => {
+        const tr = document.createElement('tr');
+        const diff = log.diff || (log.new_val - log.old_val);
+        const isPos = diff > 0;
+        
+        tr.innerHTML = `
+            <td>
+                <a href="https://peakd.com/@${log.user}" target="_blank" style="color:inherit; text-decoration:none;">
+                    @${log.user}
+                </a>
+            </td>
+            <td style="color:#888;">${formatVal(log.old_val)}</td>
+            <td style="font-weight:bold">${formatVal(log.new_val)}</td>
+            <td style="color:${isPos ? '#4dff91' : '#ff4d4d'}; font-weight:bold;">
+                ${isPos ? '+' : ''}${formatVal(diff)} HP
+            </td>
+        `;
+        els.activityBody.appendChild(tr);
+    });
+}
+
 function renderTable(data) {
     els.rankingBody.innerHTML = '';
     
@@ -161,29 +187,25 @@ function renderTable(data) {
         tr.className = 'delegator-row';
         tr.dataset.name = item.delegator.toLowerCase();
         
-        // Processamento de Status/Flags (Universal)
         const countryInfo = getCountryInfo(item.country_code);
         const isCert = item.country_code && item.country_code.includes("_CERT");
         
-        // Definição visual da bandeira
         let flagHtml = '';
         if (isCert) {
             flagHtml = `<span title="${countryInfo.name} Verificado" style="margin-left:5px; font-size:1.1em; cursor:help;">${countryInfo.flag}</span>`;
         } else {
-            // Bandeira P&B para pendentes
-            flagHtml = `<span class="flag-bw" title="Pendente de apresentação nos chats da comunidade" style="margin-left:5px; font-size:1.1em; cursor:help;">${countryInfo.flag}</span>`;
+            flagHtml = `<span class="flag-bw" title="Pendente de apresentação" style="margin-left:5px; font-size:1.1em; cursor:help;">${countryInfo.flag}</span>`;
         }
 
-        // Lógica de Tempo (Dias)
+        // Tempo
         const days = Math.floor((new Date() - new Date(item.timestamp)) / (1000 * 60 * 60 * 24));
         let timeLabel = `${days} dias`;
         if (days > 365) timeLabel = `${Math.floor(days/365)} anos atrás`;
         if (days < 1) timeLabel = "Hoje";
 
-        // Badge de Veterano (> 1 ano)
         const veteranBadge = days > 365 ? '<span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>' : '';
 
-        // Atividade Recente (Cor)
+        // Atividade
         const daysSincePost = item.last_user_post 
             ? Math.floor((new Date() - new Date(item.last_user_post + "Z")) / (1000 * 60 * 60 * 24))
             : 999;
@@ -192,14 +214,12 @@ function renderTable(data) {
         if (item.last_user_post) {
             if (daysSincePost === 0) activityHtml = `<span style="color:var(--accent-green); font-weight:bold;">Hoje</span>`;
             else if (daysSincePost === 1) activityHtml = `<span style="color:var(--accent-green);">Ontem</span>`;
-            else if (daysSincePost < 7) activityHtml = `<span style="color:#ccc; font-size:0.9em;">${daysSincePost} dias atrás</span>`;
             else if (daysSincePost < 30) activityHtml = `<span style="color:#ccc; font-size:0.9em;">${daysSincePost} dias atrás</span>`;
-            else if (daysSincePost < 60) activityHtml = `1 meses atrás`;
             else if (daysSincePost < 365) activityHtml = `${Math.floor(daysSincePost/30)} meses atrás`;
             else activityHtml = `${Math.floor(daysSincePost/365)} anos atrás`;
         }
 
-        // Curadoria Recente
+        // Votos
         let voteHtml = `<span style="color:#666; font-size:0.8em; opacity:0.5; font-weight:bold;">SEM DADOS</span>`;
         if (item.last_vote_date) {
              const daysSinceVote = Math.floor((new Date() - new Date(item.last_vote_date)) / (1000 * 60 * 60 * 24));
@@ -208,7 +228,7 @@ function renderTable(data) {
              else voteHtml = `<span style="color:#ccc; font-size:0.9em;">${daysSinceVote} dias atrás</span>`;
         }
 
-        // Lógica de Bônus (Tags)
+        // Tags
         let bonusTag = `<span style="opacity:0.3; font-size:0.8em">—</span>`;
         const hp = item.delegated_hp;
         if (hp >= 5000) bonusTag = `<span class="bonus-tag bonus-gold">+20%</span>`;
@@ -222,7 +242,6 @@ function renderTable(data) {
         let trailBonus = `<span style="opacity:0.3; font-size:0.8em">—</span>`;
         if (item.in_curation_trail) trailBonus = `<span class="bonus-tag bonus-trail">+5%</span>`;
 
-        // Power Down Alert
         let pdHtml = `<span style="opacity:0.2">—</span>`;
         if (item.next_withdrawal) {
             const pdDate = new Date(item.next_withdrawal);
@@ -276,18 +295,15 @@ function setupSearch() {
     });
 }
 
-// Ordenação (Básica - Pode ser expandida)
 window.handleSort = (key) => {
-    console.log("Ordenação por", key, "ainda não implementada dinamicamente nesta versão.");
-    // Implementação futura: reordenar globalData e chamar renderTable
+    console.log("Ordenação dinâmica em desenvolvimento.");
 };
 
-// Modal Logic
 window.openModal = () => { document.getElementById('news-modal').style.display = 'flex'; }
 window.closeModal = () => { document.getElementById('news-modal').style.display = 'none'; }
 window.closeModalOnOverlay = (event) => {
     if (event.target === document.getElementById('news-modal')) closeModal();
 }
 
-// Start
+// Inicia
 init();
