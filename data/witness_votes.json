@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-01-29T21:21:33.988Z",
+  "last_updated": "2026-01-30T21:22:33.156Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -176,6 +176,13 @@
       "fernandosoder": false,
       "perfilbrasil": false
     },
+    "hranhuk": {
+      "igormuba": false,
+      "nexo.witness": false,
+      "mengao": false,
+      "fernandosoder": false,
+      "perfilbrasil": false
+    },
     "jaopalas": {
       "igormuba": false,
       "nexo.witness": false,
@@ -266,6 +273,13 @@
       "mengao": false,
       "fernandosoder": false,
       "perfilbrasil": true
+    },
+    "marcosalomao95": {
+      "igormuba": false,
+      "nexo.witness": false,
+      "mengao": false,
+      "fernandosoder": false,
+      "perfilbrasil": false
     },
     "matheusggr": {
       "igormuba": false,
@@ -469,6 +483,13 @@
       "mengao": false,
       "fernandosoder": false,
       "perfilbrasil": false
+    },
+    "tekabybrazil": {
+      "igormuba": false,
+      "nexo.witness": false,
+      "mengao": false,
+      "fernandosoder": false,
+      "perfilbrasil": true
     },
     "elisangelapa": {
       "igormuba": false,
@@ -996,13 +1017,6 @@
       "perfilbrasil": false
     },
     "hevelyn.jeeh": {
-      "igormuba": false,
-      "nexo.witness": false,
-      "mengao": false,
-      "fernandosoder": false,
-      "perfilbrasil": false
-    },
-    "hranhuk": {
       "igormuba": false,
       "nexo.witness": false,
       "mengao": false,
@@ -1820,6 +1834,27 @@
       "mengao": false,
       "fernandosoder": false,
       "perfilbrasil": false
+    },
+    "eii": {
+      "igormuba": false,
+      "nexo.witness": false,
+      "mengao": false,
+      "fernandosoder": false,
+      "perfilbrasil": false
+    },
+    "ladyaryastark": {
+      "igormuba": false,
+      "nexo.witness": false,
+      "mengao": false,
+      "fernandosoder": false,
+      "perfilbrasil": true
+    },
+    "kedleona": {
+      "igormuba": false,
+      "nexo.witness": false,
+      "mengao": true,
+      "fernandosoder": true,
+      "perfilbrasil": true
     }
   }
 }
