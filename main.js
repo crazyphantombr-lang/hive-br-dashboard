@@ -1,13 +1,12 @@
 // File: main.js
 /**
  * Script: Hive BR Dashboard Frontend
- * Version: 2.28.2 (Refactor: Standard ISO Codes)
+ * Version: 2.29.0 (Feature: Modal & Graph Cleanup)
  * Author: Hive BR
  * License: MIT
- * Description: Dicionário padronizado (ISO 3166-1 alpha-2).
  */
 
-const FRONTEND_VERSION = "2.28.2";
+const FRONTEND_VERSION = "2.29.0";
 
 // --- CONFIGURAÇÃO DE BANDEIRAS (ISO 3166-1 alpha-2) ---
 const COUNTRY_MAP = {
@@ -25,6 +24,19 @@ document.addEventListener("DOMContentLoaded", () => {
     setupSearch();
 });
 
+// --- FUNÇÕES DO MODAL ---
+function openModal() {
+    document.getElementById('news-modal').style.display = 'flex';
+}
+function closeModal() {
+    document.getElementById('news-modal').style.display = 'none';
+}
+function closeModalOnOverlay(event) {
+    if (event.target.id === 'news-modal') {
+        closeModal();
+    }
+}
+
 async function loadData() {
     try {
         const [metaRes, currentRes, historyRes] = await Promise.all([
@@ -41,7 +53,7 @@ async function loadData() {
 
         renderMeta(meta);
         renderTable(ranking);
-        renderGraphs(ranking);
+        // renderGraphs(ranking); REMOVIDO EM v2.29.0
         renderRecentActivity(ranking, historyData); 
         renderHighlight30d(ranking, historyData); 
 
@@ -292,40 +304,8 @@ function renderTable(data) {
             <td>${bonusBadge}</td>
             <td>${hbrBadge}</td>
             <td>${user.in_curation_trail ? '<span class="bonus-tag bonus-trail">+5%</span>' : '<span style="opacity:0.3; font-size:0.8em">—</span>'}</td>
-            <td style="width:140px;">
-                <canvas id="chart-${user.delegator}" width="120" height="40"></canvas>
-            </td>
         `;
         tbody.appendChild(row);
-    });
-}
-
-function renderGraphs(data) {
-    data.forEach(user => {
-        const ctx = document.getElementById(`chart-${user.delegator}`);
-        if (ctx) {
-            const points = user.delegated_hp > 0 ? Array.from({length: 7}, () => user.delegated_hp * (0.95 + Math.random() * 0.1)) : [0,0,0,0,0,0,0];
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: [1,2,3,4,5,6,7],
-                    datasets: [{
-                        data: points,
-                        borderColor: user.delegated_hp > 0 ? '#4da6ff' : '#333',
-                        borderWidth: 1.5,
-                        pointRadius: 0,
-                        tension: 0.4,
-                        fill: false
-                    }]
-                },
-                options: {
-                    responsive: false,
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                    scales: { x: { display: false }, y: { display: false } },
-                    layout: { padding: 0 }
-                }
-            });
-        }
     });
 }
 
