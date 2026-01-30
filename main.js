@@ -1,7 +1,7 @@
 // File: public/main.js
 /**
  * Hive BR Dashboard - Main Script
- * Version: 2.30.1 (Fix: Restored Missing Functions)
+ * Version: 2.30.2 (Fix: Activity Table Restored + Universal Flags)
  * Author: Hive BR
  * License: MIT
  */
@@ -10,7 +10,7 @@
 const CONFIG = {
     API_URL: './data/current.json',
     META_URL: './data/meta.json',
-    UI_VERSION: "2.30.1" 
+    UI_VERSION: "2.30.2" 
 };
 
 // Cache para nomes de países
@@ -79,7 +79,7 @@ async function init() {
         setupSearch();
     } catch (e) {
         console.error("Erro na inicialização:", e);
-        if(els.lastUpdated) els.lastUpdated.innerHTML = `<span style="color:#ff4d4d">Erro ao carregar dados. Verifique o console.</span>`;
+        if(els.lastUpdated) els.lastUpdated.innerHTML = `<span style="color:#ff4d4d">Erro ao carregar dados.</span>`;
     }
 }
 
@@ -104,7 +104,6 @@ async function loadMeta() {
 
     els.votes24h.innerText = meta.votes_24h || 0;
     
-    // Labels Meses
     const monthNames = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const now = new Date();
     
@@ -120,11 +119,9 @@ async function loadMeta() {
     els.votesM1.innerText = meta.votes_month_prev1 || 0;
     els.votesM2.innerText = meta.votes_month_prev2 || 0;
 
-    // AQUI ESTAVA O ERRO: Chamada sem definição
-    // Agora a função existe abaixo
     if (meta.activity_log) {
         renderActivityTable(meta.activity_log);
-    } else {
+    } else if (els.activityPanel) {
         els.activityPanel.style.display = 'none';
     }
 }
@@ -148,10 +145,9 @@ async function loadData() {
     renderTable(globalData);
 }
 
-// --- FUNÇÃO RESTAURADA (ACTIVITY TABLE) ---
 function renderActivityTable(logs) {
-    if (!logs || logs.length === 0) {
-        els.activityPanel.style.display = 'none';
+    if (!logs || logs.length === 0 || !els.activityPanel) {
+        if(els.activityPanel) els.activityPanel.style.display = 'none';
         return;
     }
     
@@ -197,7 +193,6 @@ function renderTable(data) {
             flagHtml = `<span class="flag-bw" title="Pendente de apresentação" style="margin-left:5px; font-size:1.1em; cursor:help;">${countryInfo.flag}</span>`;
         }
 
-        // Tempo
         const days = Math.floor((new Date() - new Date(item.timestamp)) / (1000 * 60 * 60 * 24));
         let timeLabel = `${days} dias`;
         if (days > 365) timeLabel = `${Math.floor(days/365)} anos atrás`;
@@ -205,7 +200,6 @@ function renderTable(data) {
 
         const veteranBadge = days > 365 ? '<span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>' : '';
 
-        // Atividade
         const daysSincePost = item.last_user_post 
             ? Math.floor((new Date() - new Date(item.last_user_post + "Z")) / (1000 * 60 * 60 * 24))
             : 999;
@@ -219,7 +213,6 @@ function renderTable(data) {
             else activityHtml = `${Math.floor(daysSincePost/365)} anos atrás`;
         }
 
-        // Votos
         let voteHtml = `<span style="color:#666; font-size:0.8em; opacity:0.5; font-weight:bold;">SEM DADOS</span>`;
         if (item.last_vote_date) {
              const daysSinceVote = Math.floor((new Date() - new Date(item.last_vote_date)) / (1000 * 60 * 60 * 24));
@@ -228,7 +221,6 @@ function renderTable(data) {
              else voteHtml = `<span style="color:#ccc; font-size:0.9em;">${daysSinceVote} dias atrás</span>`;
         }
 
-        // Tags
         let bonusTag = `<span style="opacity:0.3; font-size:0.8em">—</span>`;
         const hp = item.delegated_hp;
         if (hp >= 5000) bonusTag = `<span class="bonus-tag bonus-gold">+20%</span>`;
@@ -295,15 +287,11 @@ function setupSearch() {
     });
 }
 
-window.handleSort = (key) => {
-    console.log("Ordenação dinâmica em desenvolvimento.");
-};
-
+window.handleSort = (key) => {};
 window.openModal = () => { document.getElementById('news-modal').style.display = 'flex'; }
 window.closeModal = () => { document.getElementById('news-modal').style.display = 'none'; }
 window.closeModalOnOverlay = (event) => {
     if (event.target === document.getElementById('news-modal')) closeModal();
 }
 
-// Inicia
 init();
