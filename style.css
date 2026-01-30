@@ -1,6 +1,6 @@
 /*
   File: style.css
-  Version: 2.29.0 (Feature: Modal & Cleanup)
+  Version: 2.29.2 (Fix: Flag Visibility)
 */
 
 :root {
@@ -51,7 +51,7 @@ h1 {
   color: #666;
 }
 
-/* MODAL STYLES (NEW v2.29.0) */
+/* MODAL STYLES */
 .modal-btn {
     background: transparent;
     border: 1px solid var(--accent-green);
@@ -276,7 +276,7 @@ td {
   font-size: 0.95rem;
 }
 
-/* STICKY COLUMN (USER) */
+/* STICKY COLUMN (USER) - CORRIGIDO v2.29.2 */
 .sticky-col {
   position: sticky;
   left: 0;
@@ -285,10 +285,9 @@ td {
   border-right: 1px solid #2a2a35;
   
   white-space: nowrap;
-  min-width: 230px;
-  max-width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* Removido max-width e overflow para não cortar a bandeira */
+  width: auto; 
+  min-width: 250px; 
 }
 
 /* LINKS */
