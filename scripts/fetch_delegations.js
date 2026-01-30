@@ -1,10 +1,10 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.28.0 (Refactor: Dynamic Country Detection)
+ * Version: 2.29.1 (Fix: Active BR Rule)
  * Author: Hive BR
  * License: MIT
- * Description: Detecta países dinamicamente baseado nas chaves do lists.json (ex: verificado_cuba).
+ * Description: Regra estrita: Brasileiro (BR/BR_CERT) + Post < 30 dias.
  */
 
 const fetch = require("node-fetch");
@@ -12,7 +12,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO DO SISTEMA ---
-const SCRIPT_VERSION = "2.28.0";
+const SCRIPT_VERSION = "2.29.1";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -93,21 +93,18 @@ function getMonthLabel(dateObj) {
 function detectCountryAndStatus(username, config) {
     let country = "BR"; // Default fallback
     let isCert = false;
-    let found = false;
 
     // Itera sobre todas as chaves do JSON de configuração
     for (const [key, list] of Object.entries(config)) {
         if (Array.isArray(list) && list.includes(username)) {
             if (key.startsWith("verificado_")) {
+                // Pega o código após o underscore (ex: verificado_cu -> cu -> CU)
                 country = key.replace("verificado_", "").toUpperCase();
                 isCert = true;
-                found = true;
                 break; // Prioridade máxima para verificado
             } else if (key.startsWith("pendente_")) {
                 country = key.replace("pendente_", "").toUpperCase();
                 isCert = false;
-                found = true;
-                // Não damos break aqui, pois ele pode estar pendente em uma e verificado em outra (raro, mas possível)
             }
         }
     }
@@ -274,20 +271,26 @@ async function run() {
         heBalances.forEach(b => { tokenMap[b.account] = parseFloat(b.stake || 0); });
         const tokenSum = heBalances.reduce((acc, curr) => acc + parseFloat(curr.stake || 0), 0);
 
-        let activeMembersCount = 0;
+        let activeMembersCount = 0; // Brasileiros Ativos
 
         const ranking = delegations.map(d => {
             let finalHp = d.hp_equivalent ? parseFloat(d.hp_equivalent) : vestToHp(d.vesting_shares);
             const acc = accountsMap[d.delegator] || {};
             const totalAccountHp = acc.vesting_shares ? vestToHp(acc.vesting_shares) + vestToHp(acc.received_vesting_shares) : 0;
             
-            // Nova Detecção Dinâmica
+            // Nova Detecção Dinâmica de País
             const countryCode = detectCountryAndStatus(d.delegator, listConfig);
             
-            // Contagem de Membros Ativos (Qualquer um listado ou delegando para hive-br)
-            // Se o país for != BR padrão OU se ele estiver em alguma lista, contamos.
-            // Para simplificar: Se delegou HP > 0, contamos como ativo no ecossistema
-            if (finalHp > 0) activeMembersCount++;
+            // --- REGRA DE NEGÓCIO CORRIGIDA (v2.29.1) ---
+            // 1. Deve ser Brasileiro (BR ou BR_CERT)
+            // 2. Deve ter postado nos últimos 30 dias
+            const lastPostDate = acc.last_post ? new Date(acc.last_post + "Z") : null;
+            const daysSincePost = lastPostDate ? (new Date() - lastPostDate) / (1000 * 60 * 60 * 24) : 999;
+            
+            if (countryCode.startsWith("BR") && daysSincePost <= 30) {
+                activeMembersCount++;
+            }
+            // --------------------------------------------
 
             let pdDate = null;
             if (parseFloat(acc.vesting_withdraw_rate) > 0 && acc.next_vesting_withdrawal) pdDate = acc.next_vesting_withdrawal;
@@ -325,7 +328,7 @@ async function run() {
             total_hbr_staked: tokenSum,
             curation_trail_count: curationTrailUsers.length,
             active_community_members: uniqueMembers.size,
-            active_brazilians: activeMembersCount, 
+            active_brazilians: activeMembersCount, // Agora usando a lógica estrita
             votes_24h: voteData.votes24h,
             vote_history_named: voteData.historyNamed,
             votes_month_current: voteData.historyNamed[curLabel] || 0,
