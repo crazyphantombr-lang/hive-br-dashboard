@@ -8,8 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <script src="moz-extension://9fbcfce3-75f1-4b06-83b3-733da2056863/./hive_keychain.js"></script>
-  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-0B2JEW0JXF"></script>
+  <script src="https://www.googletagmanager.com/gtag/js?id=G-0B2JEW0JXF" async></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -17,13 +16,16 @@
     gtag('config', 'G-0B2JEW0JXF');
   </script>
 
-  <script defer="" src="main.js"></script>
+  <script defer src="main.js"></script>
 </head>
 <body>
   
   <div class="container">
     <header>
-      <div class="last-updated" id="last-updated">Carregando dados...</div>
+      <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 5px;">
+          <div class="last-updated" id="last-updated">Carregando dados...</div>
+          <button class="modal-btn" onclick="openModal()">🔔 Novidades</button>
+      </div>
       <h1>HIVE BR <span class="highlight">DASHBOARD</span></h1>
       <p class="subtitle">Ranking de Curadoria e Estatísticas</p>
     </header>
@@ -146,8 +148,6 @@
             <th class="sortable" onclick="handleSort('delegated_hp')">Bônus de<br>Delegação <span class="sort-icon"></span></th>
             <th class="sortable" onclick="handleSort('token_balance')">Bônus<br>HBR <span class="sort-icon"></span></th>
             <th class="sortable" onclick="handleSort('in_curation_trail')">Trilha<br><small>+5% Fix</small> <span class="sort-icon"></span></th>
-            
-            <th>Histórico de<br>Delegação</th>
           </tr>
         </thead>
         <tbody id="ranking-body">
@@ -155,6 +155,27 @@
       </table>
     </div>
 
+  </div>
+
+  <div id="news-modal" class="modal-overlay" onclick="closeModalOnOverlay(event)">
+      <div class="modal-content">
+          <span class="modal-close" onclick="closeModal()">&times;</span>
+          <h2 style="margin-top:0; color:var(--accent-green);">🔔 O que há de novo?</h2>
+          <p style="color:#888; font-size:0.9em; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;">
+              Atualização v2.29.0 • 28/01/2026
+          </p>
+          <ul style="line-height:1.6; padding-left:20px; color: var(--text-primary);">
+              <li style="margin-bottom:10px;">
+                  <strong>🌍 Padronização Internacional:</strong> Adotamos o padrão ISO para bandeiras. Isso permite que a comunidade cresça e receba membros de novos países (como 🇨🇺 Cuba e 🇻🇪 Venezuela) com identificação visual imediata.
+              </li>
+              <li style="margin-bottom:10px;">
+                  <strong>🚀 Performance:</strong> Removemos o gráfico de "Histórico de Delegação" para tornar a leitura da tabela mais limpa e o carregamento do painel mais rápido.
+              </li>
+              <li>
+                  <strong>✨ Melhorias Visuais:</strong> Refinamentos no design, inclusão deste painel de novidades e correção na renderização de status.
+              </li>
+          </ul>
+      </div>
   </div>
 
 </body>
