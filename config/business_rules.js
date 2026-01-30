@@ -21,7 +21,7 @@ const BUSINESS_RULES = {
         rules: [
             "Nunca reutilizar números de versão.",
             "MAJOR: Mudanças estruturais grandes ou quebras de compatibilidade.",
-            "FEATURE: Novas funcionalidades estáveis (ex: Modal, ISO Flags).",
+            "FEATURE: Novas funcionalidades estáveis (ex: Modal, ISO Flags, Discovery).",
             "PATCH: Correções de bugs, ajustes de lógica ou compilações de desenvolvimento."
         ],
         license_header: "O texto da licença MIT deve constar apenas no cabeçalho dos scripts, nunca no rodapé."
@@ -30,7 +30,6 @@ const BUSINESS_RULES = {
     // 2. DEFINIÇÃO DE ENTIDADES E LISTAS (lists.json)
     lists: {
         file_path: "config/lists.json",
-        // Lógica de Parsing para chaves do JSON
         parsing_logic: {
             "verificado_{ISO}": { 
                 status: "CERT", 
@@ -51,15 +50,15 @@ const BUSINESS_RULES = {
     metrics: {
         
         // REGRA CRÍTICA: BRASILEIROS ATIVOS
-        // Contexto: Corrigido na v2.29.1 após erro de inflação de números.
+        // Contexto: Validada em 30/01/2026 pelo usuário (Aceite da contagem ~53).
         active_brazilians: {
             definition: "Usuários brasileiros que participaram da rede recentemente.",
             logic: (user) => {
                 const is_brazilian = user.country_code.startsWith("BR"); // Aceita 'BR' e 'BR_CERT'
                 const days_since_post = (new Date() - new Date(user.last_post)) / (1000 * 60 * 60 * 24);
                 
-                // O valor da delegação (delegated_hp) É IRRELEVANTE para esta métrica específica.
-                // Apenas nacionalidade e atividade contam.
+                // O valor da delegação (delegated_hp) É IRRELEVANTE para esta métrica.
+                // A Watchlist é considerada parte da comunidade ativa.
                 return is_brazilian && days_since_post <= 30;
             }
         },
@@ -84,13 +83,8 @@ const BUSINESS_RULES = {
             pending: "Exibe emoji com filtro grayscale(100%). Tooltip: 'Pendente de apresentação...'",
             new_countries: "Deve suportar dinamicamente novos códigos ISO vindos do backend sem alteração no HTML."
         },
-        graphs: {
-            status: "DISABLED",
-            reason: "Removidos na v2.29.0 por imprecisão histórica e poluição visual."
-        },
-        modal: {
-            trigger: "Botão '🔔 Novidades' no header.",
-            content: "Deve conter a data e os bullet points da versão atual."
+        columns: {
+            sticky_col: "Deve ter largura automática (width: auto) para não cortar a bandeira."
         }
     },
 
@@ -100,6 +94,19 @@ const BUSINESS_RULES = {
         autonomy: "Nível Baixo. Não assumir simplificações de regras de negócio. Em caso de dúvida, perguntar.",
         data_integrity: "Nunca inventar dados. Se o 'global_history.json' estiver errado, corrigir via script ou instrução manual, nunca alucinar valores.",
         correction_log: "Manter registro mental de que a simplificação de 'Ativos = HP > 0' foi um erro grave na v2.28.0."
+    },
+
+    // 6. PROTOCOLOS DE DESCOBERTA (Inbox)
+    discovery: {
+        file_path: "data/discovery.json",
+        definition: "Registro histórico de delegadores que não constam em nenhuma lista oficial (Lists.json).",
+        
+        // REGRA DE SEGURANÇA (Solicitada em 30/01)
+        integrity_rule: "LOG IMUTÁVEL (Append-Only). O sistema deve apenas ADICIONAR novos nomes desconhecidos ao registro mensal.",
+        
+        prohibition: "É estritamente PROIBIDO remover nomes do 'discovery.json' automaticamente, mesmo que o usuário seja verificado posteriormente. O objetivo é manter o histórico para relatórios mensais.",
+        
+        decision_making: "Exclusiva do Humano. O script aponta o fato (existência), o Humano decide o mérito (nacionalidade/verificação)."
     }
 };
 
