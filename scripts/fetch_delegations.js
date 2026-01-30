@@ -1,10 +1,9 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.29.2 (Feature: Discovery Log)
+ * Version: 2.30.2 (Feature: Universal List Scanning + Sanitization)
  * Author: Hive BR
  * License: MIT
- * Description: Adiciona log de descoberta de novos delegadores sem alterar lists.json.
  */
 
 const fetch = require("node-fetch");
@@ -12,7 +11,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO DO SISTEMA ---
-const SCRIPT_VERSION = "2.29.2";
+const SCRIPT_VERSION = "2.30.2";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -40,7 +39,20 @@ try {
     console.warn("⚠️ lists.json não encontrado. Usando padrões vazios.");
 }
 
-const FIXED_USERS = listConfig.watchlist || [];
+// --- LÓGICA OPÇÃO 2: SCANNER UNIVERSAL ---
+// Coleta usuários de TODAS as listas (watchlist + países) para garantir monitoramento
+// mesmo sem delegação financeira.
+const monitoredSet = new Set(listConfig.watchlist || []);
+Object.keys(listConfig).forEach(key => {
+    // Pega verificado_XX e pendente_XX
+    if ((key.startsWith("verificado_") || key.startsWith("pendente_")) && Array.isArray(listConfig[key])) {
+        listConfig[key].forEach(u => {
+            if(u) monitoredSet.add(u);
+        });
+    }
+});
+const FIXED_USERS = [...monitoredSet]; 
+// ----------------------------------------
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(HISTORY_DIR)) fs.mkdirSync(HISTORY_DIR, { recursive: true });
@@ -92,18 +104,26 @@ function getMonthLabel(dateObj) {
 
 // --- LÓGICA DE DETECÇÃO DE PAÍS DINÂMICA ---
 function detectCountryAndStatus(username, config) {
-    let country = "BR"; // Default fallback
+    let country = "BR"; 
     let isCert = false;
+    
+    // Normalização para busca (lowercase)
+    const target = String(username).toLowerCase().trim();
 
     for (const [key, list] of Object.entries(config)) {
-        if (Array.isArray(list) && list.includes(username)) {
-            if (key.startsWith("verificado_")) {
-                country = key.replace("verificado_", "").toUpperCase();
-                isCert = true;
-                break; 
-            } else if (key.startsWith("pendente_")) {
-                country = key.replace("pendente_", "").toUpperCase();
-                isCert = false;
+        if (Array.isArray(list)) {
+            // Verifica se existe na lista ignorando case
+            const exists = list.some(u => String(u).toLowerCase().trim() === target);
+            
+            if (exists) {
+                if (key.startsWith("verificado_")) {
+                    country = key.replace("verificado_", "").toUpperCase();
+                    isCert = true;
+                    break; 
+                } else if (key.startsWith("pendente_")) {
+                    country = key.replace("pendente_", "").toUpperCase();
+                    isCert = false;
+                }
             }
         }
     }
@@ -155,7 +175,7 @@ async function fetchSmartVoteHistory() {
     return { lastVotesMap, historyNamed, votes24h };
 }
 
-// --- NOVO: PROTOCOLO DE DESCOBERTA (Inbox) ---
+// --- PROTOCOLO DE DESCOBERTA (Inbox) BLINDADO ---
 function updateDiscoveryLog(delegations, config) {
     let discoveryData = {};
     try { 
@@ -167,29 +187,38 @@ function updateDiscoveryLog(delegations, config) {
     }
 
     const now = new Date();
-    const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // Ex: 2026-01
+    const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
     if (!discoveryData[monthKey]) {
         discoveryData[monthKey] = { unknown_delegators: [], last_scan: now.toISOString() };
     }
 
-    // Coletar todos os usuários conhecidos
+    // 1. NORMALIZAÇÃO: Cria conjunto de usuários conhecidos (lowercase + trim)
     const allKnownUsers = new Set();
     Object.values(config).forEach(list => {
-        if (Array.isArray(list)) list.forEach(u => allKnownUsers.add(u));
+        if (Array.isArray(list)) {
+            list.forEach(u => {
+                if (u) allKnownUsers.add(String(u).toLowerCase().trim());
+            });
+        }
     });
 
     let newFinds = 0;
 
     delegations.forEach(d => {
-        // Se tem HP delegado > 0 e NÃO está em nenhuma lista
-        if (d.hp_equivalent > 0 && !allKnownUsers.has(d.delegator)) {
-            // Verifica se já não registramos este mês
-            const alreadyLogged = discoveryData[monthKey].unknown_delegators.some(entry => entry.user === d.delegator);
+        // 2. NORMALIZAÇÃO DO CANDIDATO
+        const normalizedDelegator = String(d.delegator).toLowerCase().trim();
+
+        if (d.hp_equivalent > 0 && !allKnownUsers.has(normalizedDelegator)) {
+            
+            // Verifica duplicidade no log mensal
+            const alreadyLogged = discoveryData[monthKey].unknown_delegators.some(
+                entry => String(entry.user).toLowerCase().trim() === normalizedDelegator
+            );
             
             if (!alreadyLogged) {
                 discoveryData[monthKey].unknown_delegators.push({
-                    user: d.delegator,
+                    user: d.delegator, // Mantém nome original para display
                     hp: parseFloat(d.hp_equivalent).toFixed(2),
                     first_seen: now.toISOString()
                 });
@@ -223,7 +252,6 @@ function updateRankingHistory(ranking) {
     });
 
     fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
-    console.log(`📜 Histórico diário atualizado.`);
 }
 
 function updateMonthlyStats(metaData) {
@@ -288,25 +316,30 @@ async function run() {
         let delegations = await res.json();
         if (!Array.isArray(delegations)) delegations = [];
 
-        // Pré-cálculo de HP para uso no Discovery
+        // Pré-cálculo HP
         delegations.forEach(d => {
             d.hp_equivalent = d.hp_equivalent ? parseFloat(d.hp_equivalent) : vestToHp(d.vesting_shares);
         });
 
-        // --- EXECUTA PROTOCOLO DE DESCOBERTA ---
+        // 1. Atualiza Log de Descoberta (Sanitizado)
         updateDiscoveryLog(delegations, listConfig);
-        // ---------------------------------------
 
         const curationTrailUsers = await fetchCurationTrail();
         
+        // 2. Monta Lista Final de Monitoramento (Delegadores + Watchlist + Listas de Países)
         const currentDelegators = new Set(delegations.map(d => d.delegator));
+        
+        // Adiciona quem falta (quem está nas listas mas não delega)
         FIXED_USERS.forEach(u => {
-            if (!currentDelegators.has(u)) delegations.push({ delegator: u, vesting_shares: 0, hp_equivalent: 0 });
+            if (!currentDelegators.has(u)) {
+                delegations.push({ delegator: u, vesting_shares: 0, hp_equivalent: 0 });
+            }
         });
 
         const voteData = await fetchSmartVoteHistory();
 
-        const allAccountsToFetch = new Set([...currentDelegators, ...FIXED_USERS, ...curationTrailUsers, PROJECT_ACCOUNT, VOTER_ACCOUNT]);
+        // Busca dados de todas as contas únicas
+        const allAccountsToFetch = new Set([...delegations.map(d => d.delegator), ...curationTrailUsers, PROJECT_ACCOUNT, VOTER_ACCOUNT]);
         const allAccountsArray = [...allAccountsToFetch];
         let accounts = [];
         
@@ -336,12 +369,12 @@ async function run() {
             const acc = accountsMap[d.delegator] || {};
             const totalAccountHp = acc.vesting_shares ? vestToHp(acc.vesting_shares) + vestToHp(acc.received_vesting_shares) : 0;
             
+            // Detecção de país (Sanitizada dentro da função)
             const countryCode = detectCountryAndStatus(d.delegator, listConfig);
             
-            // --- REGRA DE NEGÓCIO: BRASILEIROS ATIVOS (Mantida v2.29.1) ---
-            // 1. Deve ser Brasileiro (BR ou BR_CERT)
-            // 2. Deve ter postado nos últimos 30 dias
-            // Nota: O HP delegado é irrelevante para essa métrica, contanto que esteja na Watchlist
+            // --- REGRA DE NEGÓCIO: BRASILEIROS ATIVOS (v2.30.2) ---
+            // Graças à Opção 2, agora a lista 'delegations' contém também os não-delegadores
+            // que estão nas listas de países. Logo, a contagem funcionará corretamente.
             const lastPostDate = acc.last_post ? new Date(acc.last_post + "Z") : null;
             const daysSincePost = lastPostDate ? (new Date() - lastPostDate) / (1000 * 60 * 60 * 24) : 999;
             
@@ -375,7 +408,7 @@ async function run() {
         const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
         const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
 
-        const uniqueMembers = new Set([...delegations.map(d => d.delegator), ...curationTrailUsers]);
+        const uniqueMembers = new Set([...ranking.map(r => r.delegator), ...curationTrailUsers]);
         
         const metaData = {
             last_updated: new Date().toISOString(),
