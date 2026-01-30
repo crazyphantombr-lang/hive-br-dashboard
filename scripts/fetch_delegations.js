@@ -94,14 +94,12 @@ function detectCountryAndStatus(username, config) {
     let country = "BR"; // Default fallback
     let isCert = false;
 
-    // Itera sobre todas as chaves do JSON de configuração
     for (const [key, list] of Object.entries(config)) {
         if (Array.isArray(list) && list.includes(username)) {
             if (key.startsWith("verificado_")) {
-                // Pega o código após o underscore (ex: verificado_cu -> cu -> CU)
                 country = key.replace("verificado_", "").toUpperCase();
                 isCert = true;
-                break; // Prioridade máxima para verificado
+                break; 
             } else if (key.startsWith("pendente_")) {
                 country = key.replace("pendente_", "").toUpperCase();
                 isCert = false;
@@ -110,7 +108,7 @@ function detectCountryAndStatus(username, config) {
     }
 
     if (isCert) return `${country}_CERT`;
-    return country; // Retorna apenas o código do país (ex: PT, CU, BR) significando pendente
+    return country; 
 }
 
 async function fetchSmartVoteHistory() {
@@ -271,17 +269,16 @@ async function run() {
         heBalances.forEach(b => { tokenMap[b.account] = parseFloat(b.stake || 0); });
         const tokenSum = heBalances.reduce((acc, curr) => acc + parseFloat(curr.stake || 0), 0);
 
-        let activeMembersCount = 0; // Brasileiros Ativos
+        let activeMembersCount = 0;
 
         const ranking = delegations.map(d => {
             let finalHp = d.hp_equivalent ? parseFloat(d.hp_equivalent) : vestToHp(d.vesting_shares);
             const acc = accountsMap[d.delegator] || {};
             const totalAccountHp = acc.vesting_shares ? vestToHp(acc.vesting_shares) + vestToHp(acc.received_vesting_shares) : 0;
             
-            // Nova Detecção Dinâmica de País
             const countryCode = detectCountryAndStatus(d.delegator, listConfig);
             
-            // --- REGRA DE NEGÓCIO CORRIGIDA (v2.29.1) ---
+            // --- REGRA DE NEGÓCIO: BRASILEIROS ATIVOS (v2.29.1) ---
             // 1. Deve ser Brasileiro (BR ou BR_CERT)
             // 2. Deve ter postado nos últimos 30 dias
             const lastPostDate = acc.last_post ? new Date(acc.last_post + "Z") : null;
@@ -328,7 +325,7 @@ async function run() {
             total_hbr_staked: tokenSum,
             curation_trail_count: curationTrailUsers.length,
             active_community_members: uniqueMembers.size,
-            active_brazilians: activeMembersCount, // Agora usando a lógica estrita
+            active_brazilians: activeMembersCount,
             votes_24h: voteData.votes24h,
             vote_history_named: voteData.historyNamed,
             votes_month_current: voteData.historyNamed[curLabel] || 0,
