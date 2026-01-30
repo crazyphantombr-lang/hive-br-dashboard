@@ -1,10 +1,10 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.29.1 (Fix: Active BR Rule)
+ * Version: 2.29.2 (Feature: Discovery Log)
  * Author: Hive BR
  * License: MIT
- * Description: Regra estrita: Brasileiro (BR/BR_CERT) + Post < 30 dias.
+ * Description: Adiciona log de descoberta de novos delegadores sem alterar lists.json.
  */
 
 const fetch = require("node-fetch");
@@ -12,7 +12,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO DO SISTEMA ---
-const SCRIPT_VERSION = "2.29.1";
+const SCRIPT_VERSION = "2.29.2";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -28,6 +28,7 @@ const CONFIG_PATH = path.join("config", "lists.json");
 const DATA_DIR = "data";
 const HISTORY_DIR = path.join(DATA_DIR, "history");
 const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
+const DISCOVERY_FILE = path.join(DATA_DIR, "discovery.json");
 
 // Carrega listas
 let listConfig = { watchlist: [] };
@@ -154,6 +155,56 @@ async function fetchSmartVoteHistory() {
     return { lastVotesMap, historyNamed, votes24h };
 }
 
+// --- NOVO: PROTOCOLO DE DESCOBERTA (Inbox) ---
+function updateDiscoveryLog(delegations, config) {
+    let discoveryData = {};
+    try { 
+        if (fs.existsSync(DISCOVERY_FILE)) {
+            discoveryData = JSON.parse(fs.readFileSync(DISCOVERY_FILE));
+        }
+    } catch (e) {
+        console.warn("⚠️ discovery.json vazio ou inválido. Criando novo.");
+    }
+
+    const now = new Date();
+    const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // Ex: 2026-01
+
+    if (!discoveryData[monthKey]) {
+        discoveryData[monthKey] = { unknown_delegators: [], last_scan: now.toISOString() };
+    }
+
+    // Coletar todos os usuários conhecidos
+    const allKnownUsers = new Set();
+    Object.values(config).forEach(list => {
+        if (Array.isArray(list)) list.forEach(u => allKnownUsers.add(u));
+    });
+
+    let newFinds = 0;
+
+    delegations.forEach(d => {
+        // Se tem HP delegado > 0 e NÃO está em nenhuma lista
+        if (d.hp_equivalent > 0 && !allKnownUsers.has(d.delegator)) {
+            // Verifica se já não registramos este mês
+            const alreadyLogged = discoveryData[monthKey].unknown_delegators.some(entry => entry.user === d.delegator);
+            
+            if (!alreadyLogged) {
+                discoveryData[monthKey].unknown_delegators.push({
+                    user: d.delegator,
+                    hp: parseFloat(d.hp_equivalent).toFixed(2),
+                    first_seen: now.toISOString()
+                });
+                console.log(`⚠️ [NOVO DELEGADOR DESCONHECIDO]: @${d.delegator}`);
+                newFinds++;
+            }
+        }
+    });
+
+    if (newFinds > 0) {
+        fs.writeFileSync(DISCOVERY_FILE, JSON.stringify(discoveryData, null, 2));
+        console.log(`💾 Salvos ${newFinds} novos delegadores desconhecidos em discovery.json`);
+    }
+}
+
 function updateRankingHistory(ranking) {
     const historyFile = path.join(DATA_DIR, "ranking_history.json");
     let history = {};
@@ -237,6 +288,15 @@ async function run() {
         let delegations = await res.json();
         if (!Array.isArray(delegations)) delegations = [];
 
+        // Pré-cálculo de HP para uso no Discovery
+        delegations.forEach(d => {
+            d.hp_equivalent = d.hp_equivalent ? parseFloat(d.hp_equivalent) : vestToHp(d.vesting_shares);
+        });
+
+        // --- EXECUTA PROTOCOLO DE DESCOBERTA ---
+        updateDiscoveryLog(delegations, listConfig);
+        // ---------------------------------------
+
         const curationTrailUsers = await fetchCurationTrail();
         
         const currentDelegators = new Set(delegations.map(d => d.delegator));
@@ -272,15 +332,16 @@ async function run() {
         let activeMembersCount = 0;
 
         const ranking = delegations.map(d => {
-            let finalHp = d.hp_equivalent ? parseFloat(d.hp_equivalent) : vestToHp(d.vesting_shares);
+            let finalHp = d.hp_equivalent; 
             const acc = accountsMap[d.delegator] || {};
             const totalAccountHp = acc.vesting_shares ? vestToHp(acc.vesting_shares) + vestToHp(acc.received_vesting_shares) : 0;
             
             const countryCode = detectCountryAndStatus(d.delegator, listConfig);
             
-            // --- REGRA DE NEGÓCIO: BRASILEIROS ATIVOS (v2.29.1) ---
+            // --- REGRA DE NEGÓCIO: BRASILEIROS ATIVOS (Mantida v2.29.1) ---
             // 1. Deve ser Brasileiro (BR ou BR_CERT)
             // 2. Deve ter postado nos últimos 30 dias
+            // Nota: O HP delegado é irrelevante para essa métrica, contanto que esteja na Watchlist
             const lastPostDate = acc.last_post ? new Date(acc.last_post + "Z") : null;
             const daysSincePost = lastPostDate ? (new Date() - lastPostDate) / (1000 * 60 * 60 * 24) : 999;
             
