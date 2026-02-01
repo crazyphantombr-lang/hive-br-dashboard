@@ -88,5 +88,20 @@
     "votes_month_current": 362,
     "votes_month_prev1": 351,
     "votes_month_prev2": 351
+  },
+  {
+    "date": "2026-02-01",
+    "last_updated": "2026-02-01T01:59:12.845Z",
+    "total_delegators": 66,
+    "total_hp": 41900.69599999999,
+    "project_account_hp": 14545.259857417861,
+    "total_hbr_staked": 5375.687557999999,
+    "curation_trail_count": 82,
+    "active_community_members": 318,
+    "active_brazilians": 51,
+    "votes_24h": 20,
+    "votes_month_current": 1,
+    "votes_month_prev1": 364,
+    "votes_month_prev2": 351
   }
 ]
