@@ -1,7 +1,7 @@
 // File: public/main.js
 /**
  * Hive BR Dashboard - Main Script
- * Version: 2.30.2 (Fix: Activity Table Restored + Universal Flags)
+ * Version: 2.30.3 (Features: Top Grower Card + NaN Fix + Activity Restore)
  * Author: Hive BR
  * License: MIT
  */
@@ -10,7 +10,7 @@
 const CONFIG = {
     API_URL: './data/current.json',
     META_URL: './data/meta.json',
-    UI_VERSION: "2.30.2" 
+    UI_VERSION: "2.30.3" 
 };
 
 // Cache para nomes de países
@@ -104,6 +104,7 @@ async function loadMeta() {
 
     els.votes24h.innerText = meta.votes_24h || 0;
     
+    // Labels Meses
     const monthNames = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     const now = new Date();
     
@@ -119,7 +120,28 @@ async function loadMeta() {
     els.votesM1.innerText = meta.votes_month_prev1 || 0;
     els.votesM2.innerText = meta.votes_month_prev2 || 0;
 
-    if (meta.activity_log) {
+    // --- CARD DE DESTAQUE (LÓGICA V2.30.3) ---
+    // Se o backend enviou "top_grower", usa ele. Se não, fallback para o antigo.
+    if (meta.top_grower) {
+        const grower = meta.top_grower;
+        els.growth.innerHTML = `
+            <a href="https://peakd.com/@${grower.delegator}" target="_blank" style="color:inherit; text-decoration:none;">
+                @${grower.delegator}
+            </a>
+            <div style="font-size:0.6em; color:var(--accent-green); margin-top:2px;">
+                +${formatHP(grower.growth)} HP (30d) 🚀
+            </div>
+        `;
+        // Atualiza o título do card via JS para ficar coerente
+        const cardTitle = els.growth.parentElement.querySelector('h3');
+        if (cardTitle) cardTitle.innerText = "Maior Crescimento (30 dias)";
+    } else {
+        // Fallback: Se não tiver dados históricos suficientes ainda
+        els.growth.innerHTML = `<span style="font-size:0.8em; color:#666;">Dados insuficientes</span>`;
+    }
+
+    // --- TABELA DE ATIVIDADE ---
+    if (meta.activity_log && meta.activity_log.length > 0) {
         renderActivityTable(meta.activity_log);
     } else if (els.activityPanel) {
         els.activityPanel.style.display = 'none';
@@ -130,16 +152,19 @@ async function loadData() {
     const res = await fetch(CONFIG.API_URL);
     globalData = await res.json();
     
-    if (globalData.length > 0) {
+    // Se não tiver Top Grower no Meta, usa o Top 1 do Ranking como fallback visual
+    if (els.growth.innerText.includes("Dados insuficientes") && globalData.length > 0) {
         const topUser = globalData[0];
         els.growth.innerHTML = `
             <a href="https://peakd.com/@${topUser.delegator}" target="_blank" style="color:inherit; text-decoration:none;">
                 @${topUser.delegator}
             </a>
             <div style="font-size:0.6em; color:var(--accent-green); margin-top:2px;">
-                Top Delegador
+                Maior Delegador
             </div>
         `;
+        const cardTitle = els.growth.parentElement.querySelector('h3');
+        if (cardTitle) cardTitle.innerText = "Maior Delegador (Top 1)";
     }
 
     renderTable(globalData);
@@ -193,12 +218,21 @@ function renderTable(data) {
             flagHtml = `<span class="flag-bw" title="Pendente de apresentação" style="margin-left:5px; font-size:1.1em; cursor:help;">${countryInfo.flag}</span>`;
         }
 
-        const days = Math.floor((new Date() - new Date(item.timestamp)) / (1000 * 60 * 60 * 24));
-        let timeLabel = `${days} dias`;
-        if (days > 365) timeLabel = `${Math.floor(days/365)} anos atrás`;
-        if (days < 1) timeLabel = "Hoje";
+        // Lógica de Tempo CORRIGIDA (v2.30.3) - Remove NaN
+        let timeLabel = ""; 
+        let veteranBadge = "";
 
-        const veteranBadge = days > 365 ? '<span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>' : '';
+        if (item.delegated_hp > 0 && item.timestamp) {
+            const days = Math.floor((new Date() - new Date(item.timestamp)) / (1000 * 60 * 60 * 24));
+            
+            if (!isNaN(days)) {
+                timeLabel = `${days} dias`;
+                if (days > 365) timeLabel = `${Math.floor(days/365)} anos atrás`;
+                if (days < 1) timeLabel = "Hoje";
+                
+                veteranBadge = days > 365 ? '<span class="veteran-badge" title="Estabilidade > 1 ano">🎖️</span>' : '';
+            }
+        }
 
         const daysSincePost = item.last_user_post 
             ? Math.floor((new Date() - new Date(item.last_user_post + "Z")) / (1000 * 60 * 60 * 24))
