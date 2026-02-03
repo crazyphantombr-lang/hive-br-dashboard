@@ -1,7 +1,7 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.30.3 (Features: Growth Logic + Activity Log Restoration)
+ * Version: 2.30.4 (Fix: Polymorphic History & Real Growth)
  * Author: Hive BR
  * License: MIT
  */
@@ -11,7 +11,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO ---
-const SCRIPT_VERSION = "2.30.3";
+const SCRIPT_VERSION = "2.30.4";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -26,22 +26,15 @@ const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 const CONFIG_PATH = path.join("config", "lists.json");
 const DATA_DIR = "data";
 const HISTORY_DIR = path.join(DATA_DIR, "history");
-const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
 const DISCOVERY_FILE = path.join(DATA_DIR, "discovery.json");
 const RANKING_HISTORY_FILE = path.join(DATA_DIR, "ranking_history.json");
 const CURRENT_FILE = path.join(DATA_DIR, "current.json");
 
 // Carrega listas
 let listConfig = { watchlist: [] };
-try { 
-    if (fs.existsSync(CONFIG_PATH)) {
-        listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH)); 
-    }
-} catch (e) {
-    console.warn("⚠️ lists.json com erro ou inexistente.");
-}
+try { if (fs.existsSync(CONFIG_PATH)) listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH)); } catch (e) {}
 
-// Scanner Universal (Opção 2)
+// Scanner Universal
 const monitoredSet = new Set(listConfig.watchlist || []);
 Object.keys(listConfig).forEach(key => {
     if ((key.startsWith("verificado_") || key.startsWith("pendente_")) && Array.isArray(listConfig[key])) {
@@ -107,18 +100,14 @@ function detectCountryAndStatus(username, config) {
     return isCert ? `${country}_CERT` : country; 
 }
 
-// --- LOGIC: DISCOVERY ---
 function updateDiscoveryLog(delegations, config) {
     let discoveryData = {};
     try { if (fs.existsSync(DISCOVERY_FILE)) discoveryData = JSON.parse(fs.readFileSync(DISCOVERY_FILE)); } catch (e) {}
-
     const now = new Date();
     const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
     if (!discoveryData[monthKey]) discoveryData[monthKey] = { unknown_delegators: [], last_scan: now.toISOString() };
-
     const allKnownUsers = new Set();
     Object.values(config).forEach(list => { if (Array.isArray(list)) list.forEach(u => allKnownUsers.add(String(u).toLowerCase().trim())); });
-
     let newFinds = 0;
     delegations.forEach(d => {
         const normalized = String(d.delegator).toLowerCase().trim();
@@ -134,100 +123,89 @@ function updateDiscoveryLog(delegations, config) {
     if (newFinds > 0) fs.writeFileSync(DISCOVERY_FILE, JSON.stringify(discoveryData, null, 2));
 }
 
-// --- LOGIC: ACTIVITY LOG (COMPARISON) ---
 function generateActivityLog(currentRanking) {
     let oldRanking = [];
-    try {
-        if (fs.existsSync(CURRENT_FILE)) {
-            oldRanking = JSON.parse(fs.readFileSync(CURRENT_FILE));
-        }
-    } catch (e) { return []; }
-
+    try { if (fs.existsSync(CURRENT_FILE)) oldRanking = JSON.parse(fs.readFileSync(CURRENT_FILE)); } catch (e) { return []; }
     const changes = [];
     currentRanking.forEach(curr => {
         const prev = oldRanking.find(p => p.delegator === curr.delegator);
         const oldVal = prev ? prev.delegated_hp : 0;
         const newVal = curr.delegated_hp;
         const diff = newVal - oldVal;
-
-        // Registra apenas mudanças relevantes (> 1 HP)
         if (Math.abs(diff) > 1) {
-            changes.push({
-                user: curr.delegator,
-                old_val: parseFloat(oldVal.toFixed(2)),
-                new_val: parseFloat(newVal.toFixed(2)),
-                diff: parseFloat(diff.toFixed(2))
-            });
+            changes.push({ user: curr.delegator, old_val: parseFloat(oldVal.toFixed(2)), new_val: parseFloat(newVal.toFixed(2)), diff: parseFloat(diff.toFixed(2)) });
         }
     });
-    
-    // Ordena por maior mudança (absoluta)
     return changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff)).slice(0, 10);
 }
 
-// --- LOGIC: TOP GROWER (30 DAYS) ---
+// --- LEITURA POLIMÓRFICA ---
+// Lê o valor de HP independente se é número (antigo) ou objeto (novo)
+function getHpFromHistory(entry) {
+    if (entry === undefined || entry === null) return null;
+    if (typeof entry === 'number') return entry;
+    if (typeof entry === 'object' && entry.hp !== undefined) return entry.hp;
+    return 0;
+}
+
+// --- LÓGICA DE CRESCIMENTO ---
 function calculateTopGrower(currentRanking) {
     let history = {};
-    try { 
-        if (fs.existsSync(RANKING_HISTORY_FILE)) history = JSON.parse(fs.readFileSync(RANKING_HISTORY_FILE)); 
-    } catch (e) { return null; }
+    try { if (fs.existsSync(RANKING_HISTORY_FILE)) history = JSON.parse(fs.readFileSync(RANKING_HISTORY_FILE)); } catch (e) { return null; }
 
-    // Calcula data 30 dias atrás
-    const date30 = new Date();
-    date30.setDate(date30.getDate() - 30);
+    const now = new Date();
+    const date30 = new Date(); date30.setDate(date30.getDate() - 30);
     const dateStr = date30.toISOString().split('T')[0];
 
-    // Busca a data mais próxima disponível no histórico (se a exata não existir)
-    let validDate = null;
-    // Pega um usuário de exemplo para checar as datas
     const sampleUser = Object.keys(history)[0];
-    if (!sampleUser) return null;
-    
-    const availableDates = Object.keys(history[sampleUser]).sort();
-    // Encontra a data mais próxima de 30 dias atrás
-    validDate = availableDates.find(d => d >= dateStr); 
-
-    if (!validDate) return null;
+    let validDate = null;
+    if (sampleUser) {
+        const availableDates = Object.keys(history[sampleUser]).sort();
+        // Busca data mais próxima (igual ou maior que 30 dias atrás)
+        validDate = availableDates.find(d => d >= dateStr);
+    }
 
     let bestGrower = null;
-    let maxGrowth = -1;
+    let maxGrowth = -999999; // Permite crescimento negativo se ninguém cresceu, mas o foco é positivo
 
     currentRanking.forEach(user => {
-        const userData = history[user.delegator];
-        if (userData && userData[validDate]) {
-            const oldHp = userData[validDate].hp || 0;
-            const currentHp = user.delegated_hp;
-            const growth = currentHp - oldHp;
+        let oldHp = null;
+        
+        // Tenta pegar do arquivo histórico
+        if (validDate && history[user.delegator] && history[user.delegator][validDate]) {
+            oldHp = getHpFromHistory(history[user.delegator][validDate]);
+        }
 
-            if (growth > maxGrowth && growth > 10) { // Mínimo 10 HP para considerar
-                maxGrowth = growth;
-                bestGrower = {
-                    delegator: user.delegator,
-                    growth: growth,
-                    old_hp: oldHp,
-                    current_hp: currentHp,
-                    days_analyzed: Math.floor((new Date() - new Date(validDate)) / (1000 * 60 * 60 * 24))
-                };
+        // Se não achou no arquivo, verifica se é usuário novo de verdade
+        if (oldHp === null) {
+            const daysDelegating = user.timestamp ? (now - new Date(user.timestamp)) / (1000 * 60 * 60 * 24) : 999;
+            if (daysDelegating < 30) {
+                // É novo mesmo (menos de 30 dias)
+                oldHp = 0;
+            } else {
+                // É veterano sem histórico: IGNORAR para não dar falso positivo
+                return; 
             }
-        } else if (!userData && user.delegated_hp > 10) {
-            // Usuário novo (não existia 30 dias atrás) = Crescimento Total
-             if (user.delegated_hp > maxGrowth) {
-                maxGrowth = user.delegated_hp;
-                bestGrower = {
-                    delegator: user.delegator,
-                    growth: user.delegated_hp,
-                    old_hp: 0,
-                    current_hp: user.delegated_hp,
-                    is_new: true
-                };
-             }
+        }
+
+        const currentHp = user.delegated_hp;
+        const growth = currentHp - oldHp;
+
+        // Filtro de relevância: Crescimento > 10 HP
+        if (growth > maxGrowth && growth > 10) { 
+            maxGrowth = growth;
+            bestGrower = {
+                delegator: user.delegator,
+                growth: growth,
+                old_hp: oldHp,
+                current_hp: currentHp
+            };
         }
     });
 
     return bestGrower;
 }
 
-// --- HISTÓRICOS ---
 function updateRankingHistory(ranking) {
     const historyFile = RANKING_HISTORY_FILE;
     let history = {};
@@ -237,7 +215,8 @@ function updateRankingHistory(ranking) {
         if (!history[user.delegator]) history[user.delegator] = {};
         history[user.delegator][today] = {
             hp: parseFloat(user.delegated_hp.toFixed(2)),
-            trail: user.in_curation_trail
+            trail: user.in_curation_trail,
+            own: parseFloat(user.total_account_hp.toFixed(2)) // Agora salvando HP proprio também para futuro
         };
     });
     fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
@@ -253,7 +232,6 @@ async function run() {
         const totalFund = parseFloat(globals.total_vesting_fund_hive);
         const vestToHp = (val) => (parseFloat(val) * totalFund / totalVests);
 
-        // Fetch
         const res = await fetch(HAF_API);
         let delegations = await res.json();
         if (!Array.isArray(delegations)) delegations = [];
@@ -263,13 +241,11 @@ async function run() {
 
         const curationTrailUsers = await fetchCurationTrail();
         
-        // Merge monitored users
         const currentDelegators = new Set(delegations.map(d => d.delegator));
         FIXED_USERS.forEach(u => {
             if (!currentDelegators.has(u)) delegations.push({ delegator: u, vesting_shares: 0, hp_equivalent: 0 });
         });
 
-        // Fetch Accounts & Votes (Simplified for brevity)
         const allAccounts = [...new Set([...delegations.map(d => d.delegator), ...curationTrailUsers, PROJECT_ACCOUNT, VOTER_ACCOUNT])];
         let accounts = [];
         for (let i = 0; i < allAccounts.length; i += 100) {
@@ -287,7 +263,6 @@ async function run() {
             accountsMap[acc.name] = acc;
         });
 
-        // Vote History (Fast Scan)
         const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 1000]);
         let historyNamed = {};
         if (history) {
@@ -336,9 +311,9 @@ async function run() {
 
         ranking.sort((a, b) => b.delegated_hp - a.delegated_hp);
 
-        // --- RECURSOS RESTAURADOS E NOVOS ---
+        // --- CALCS ---
         const activityLog = generateActivityLog(ranking);
-        const topGrower = calculateTopGrower(ranking);
+        const topGrower = calculateTopGrower(ranking); // Agora usa a lógica corrigida
         
         fs.writeFileSync(CURRENT_FILE, JSON.stringify(ranking, null, 2));
 
@@ -361,17 +336,14 @@ async function run() {
             votes_month_current: historyNamed[curLabel] || 0,
             votes_month_prev1: historyNamed[getMonthLabel(d1)] || 0,
             votes_month_prev2: historyNamed[getMonthLabel(d2)] || 0,
-            
-            // Dados Injetados
             activity_log: activityLog,
             top_grower: topGrower
         };
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
-        
         updateRankingHistory(ranking);
         
-        console.log(`✅ Ciclo concluído. Logs: ${activityLog.length}, Grower: ${topGrower ? topGrower.delegator : 'N/A'}`);
+        console.log(`✅ Ciclo concluído. Grower: ${topGrower ? topGrower.delegator : 'N/A'}`);
 
     } catch (err) {
         console.error("❌ Falha:", err.message);
