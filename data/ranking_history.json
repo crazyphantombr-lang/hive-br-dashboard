@@ -150,10 +150,8 @@
       "hbr": 2428.45
     },
     "2026-02-03": {
-      "hp": 10273.77,
-      "trail": false,
-      "own": 29192.6,
-      "hbr": 2428.45
+      "hp": 10273.84,
+      "trail": true
     }
   },
   "wiseagent": {
@@ -307,10 +305,8 @@
       "hbr": 200
     },
     "2026-02-03": {
-      "hp": 7024.71,
-      "trail": false,
-      "own": 81241.43,
-      "hbr": 200
+      "hp": 7024.76,
+      "trail": false
     }
   },
   "rimurutempest": {
@@ -464,10 +460,8 @@
       "hbr": 200.21
     },
     "2026-02-03": {
-      "hp": 4860.99,
-      "trail": false,
-      "own": 9780.34,
-      "hbr": 200.21
+      "hp": 4861.02,
+      "trail": true
     }
   },
   "tfranzini": {
@@ -621,10 +615,8 @@
       "hbr": 514.89
     },
     "2026-02-03": {
-      "hp": 3130.93,
-      "trail": false,
-      "own": 3973.41,
-      "hbr": 514.89
+      "hp": 3130.95,
+      "trail": true
     }
   },
   "mengao": {
@@ -778,10 +770,8 @@
       "hbr": 200.81
     },
     "2026-02-03": {
-      "hp": 2025.9,
-      "trail": false,
-      "own": 34661.73,
-      "hbr": 200.81
+      "hp": 2025.91,
+      "trail": false
     }
   },
   "michupa": {
@@ -935,10 +925,8 @@
       "hbr": 152.38
     },
     "2026-02-03": {
-      "hp": 1074.52,
-      "trail": false,
-      "own": 33197.01,
-      "hbr": 152.38
+      "hp": 1074.53,
+      "trail": true
     }
   },
   "gwajnberg": {
@@ -1093,9 +1081,7 @@
     },
     "2026-02-03": {
       "hp": 1037.03,
-      "trail": false,
-      "own": 20510.95,
-      "hbr": 91.41
+      "trail": false
     }
   },
   "crazyphantombr": {
@@ -1250,9 +1236,7 @@
     },
     "2026-02-03": {
       "hp": 300.46,
-      "trail": false,
-      "own": 15514.45,
-      "hbr": 297.7
+      "trail": true
     }
   },
   "kaibagt": {
@@ -1406,10 +1390,8 @@
       "hbr": 100.62
     },
     "2026-02-03": {
-      "hp": 1026.28,
-      "trail": false,
-      "own": 6778.17,
-      "hbr": 100.62
+      "hp": 1026.29,
+      "trail": true
     }
   },
   "josiva": {
@@ -1564,9 +1546,7 @@
     },
     "2026-02-03": {
       "hp": 1024.52,
-      "trail": false,
-      "own": 4298.93,
-      "hbr": 70.67
+      "trail": true
     }
   },
   "elderdark": {
@@ -1720,10 +1700,8 @@
       "hbr": 130.47
     },
     "2026-02-03": {
-      "hp": 1022.24,
-      "trail": false,
-      "own": 10890.14,
-      "hbr": 130.47
+      "hp": 1022.25,
+      "trail": true
     }
   },
   "blessskateshop": {
@@ -1877,10 +1855,8 @@
       "hbr": 0
     },
     "2026-02-03": {
-      "hp": 1001.44,
-      "trail": false,
-      "own": 23577.58,
-      "hbr": 0
+      "hp": 1001.45,
+      "trail": true
     }
   },
   "shiftrox": {
@@ -2034,10 +2010,8 @@
       "hbr": 172.49
     },
     "2026-02-03": {
-      "hp": 1204.7,
-      "trail": false,
-      "own": 35961.32,
-      "hbr": 172.49
+      "hp": 1204.71,
+      "trail": true
     }
   },
   "pablito.saldo": {
@@ -2191,10 +2165,8 @@
       "hbr": 51.91
     },
     "2026-02-03": {
-      "hp": 620.99,
-      "trail": false,
-      "own": 3076.7,
-      "hbr": 51.91
+      "hp": 621,
+      "trail": true
     }
   },
   "ricestrela": {
@@ -2349,9 +2321,7 @@
     },
     "2026-02-03": {
       "hp": 501.53,
-      "trail": false,
-      "own": 2249.9,
-      "hbr": 60.33
+      "trail": true
     }
   },
   "xvlad": {
@@ -2505,10 +2475,8 @@
       "hbr": 0
     },
     "2026-02-03": {
-      "hp": 539.93,
-      "trail": false,
-      "own": 6045.79,
-      "hbr": 0
+      "hp": 539.94,
+      "trail": false
     }
   },
   "legalizabrazil": {
@@ -2663,9 +2631,7 @@
     },
     "2026-02-03": {
       "hp": 538.9,
-      "trail": false,
-      "own": 698.43,
-      "hbr": 0
+      "trail": false
     }
   },
   "lobaobh": {
@@ -2820,9 +2786,7 @@
     },
     "2026-02-03": {
       "hp": 412.73,
-      "trail": false,
-      "own": 690.7,
-      "hbr": 57.86
+      "trail": true
     }
   },
   "coyotelation": {
@@ -2977,9 +2941,7 @@
     },
     "2026-02-03": {
       "hp": 410.29,
-      "trail": false,
-      "own": 23931.83,
-      "hbr": 31.04
+      "trail": true
     }
   },
   "markitoelias": {
@@ -3134,9 +3096,7 @@
     },
     "2026-02-03": {
       "hp": 227.31,
-      "trail": false,
-      "own": 265.52,
-      "hbr": 0
+      "trail": false
     }
   },
   "nane-qts": {
@@ -3291,9 +3251,7 @@
     },
     "2026-02-03": {
       "hp": 224.61,
-      "trail": false,
-      "own": 645.53,
-      "hbr": 15.89
+      "trail": true
     }
   },
   "thomashnblum": {
@@ -3448,9 +3406,7 @@
     },
     "2026-02-03": {
       "hp": 217.46,
-      "trail": false,
-      "own": 663.43,
-      "hbr": 26.46
+      "trail": true
     }
   },
   "viniciotricolor": {
@@ -3605,9 +3561,7 @@
     },
     "2026-02-03": {
       "hp": 216.2,
-      "trail": false,
-      "own": 1050.32,
-      "hbr": 27.12
+      "trail": false
     }
   },
   "syel25": {
@@ -3762,9 +3716,7 @@
     },
     "2026-02-03": {
       "hp": 213.82,
-      "trail": false,
-      "own": 2130.96,
-      "hbr": 0
+      "trail": true
     }
   },
   "felipefabar": {
@@ -3919,9 +3871,7 @@
     },
     "2026-02-03": {
       "hp": 211.63,
-      "trail": false,
-      "own": 973.69,
-      "hbr": 0
+      "trail": false
     }
   },
   "wagnertamanaha": {
@@ -4076,9 +4026,7 @@
     },
     "2026-02-03": {
       "hp": 201.57,
-      "trail": false,
-      "own": 4319.8,
-      "hbr": 12
+      "trail": false
     }
   },
   "lincemarrom": {
@@ -4233,9 +4181,7 @@
     },
     "2026-02-03": {
       "hp": 162.05,
-      "trail": false,
-      "own": 743.37,
-      "hbr": 26.77
+      "trail": true
     }
   },
   "reibar": {
@@ -4390,9 +4336,7 @@
     },
     "2026-02-03": {
       "hp": 155.69,
-      "trail": false,
-      "own": 339.26,
-      "hbr": 25.58
+      "trail": true
     }
   },
   "sinvistaalsol": {
@@ -4547,9 +4491,7 @@
     },
     "2026-02-03": {
       "hp": 155.45,
-      "trail": false,
-      "own": 155.62,
-      "hbr": 0
+      "trail": false
     }
   },
   "jaopalas": {
@@ -4704,9 +4646,7 @@
     },
     "2026-02-03": {
       "hp": 117.63,
-      "trail": false,
-      "own": 436,
-      "hbr": 3.26
+      "trail": true
     }
   },
   "dreloop07": {
@@ -4861,9 +4801,7 @@
     },
     "2026-02-03": {
       "hp": 109.36,
-      "trail": false,
-      "own": 3012.33,
-      "hbr": 0
+      "trail": false
     }
   },
   "underlock": {
@@ -5018,9 +4956,7 @@
     },
     "2026-02-03": {
       "hp": 109.04,
-      "trail": false,
-      "own": 10377.12,
-      "hbr": 25.32
+      "trail": true
     }
   },
   "imagemvirtual": {
@@ -5175,9 +5111,7 @@
     },
     "2026-02-03": {
       "hp": 108.95,
-      "trail": false,
-      "own": 126.23,
-      "hbr": 0
+      "trail": false
     }
   },
   "giovanalrico": {
@@ -5332,9 +5266,7 @@
     },
     "2026-02-03": {
       "hp": 108.95,
-      "trail": false,
-      "own": 123.39,
-      "hbr": 0
+      "trail": false
     }
   },
   "mauriciolimax": {
@@ -5489,9 +5421,7 @@
     },
     "2026-02-03": {
       "hp": 107.97,
-      "trail": false,
-      "own": 1884.41,
-      "hbr": 13.61
+      "trail": false
     }
   },
   "hellene8": {
@@ -5646,9 +5576,7 @@
     },
     "2026-02-03": {
       "hp": 102.14,
-      "trail": false,
-      "own": 1078.95,
-      "hbr": 6.97
+      "trail": false
     }
   },
   "ogechukwu-martha": {
@@ -5796,9 +5724,7 @@
     },
     "2026-02-03": {
       "hp": 112.29,
-      "trail": false,
-      "own": 218.57,
-      "hbr": 0
+      "trail": false
     }
   },
   "eii": {
@@ -5953,9 +5879,7 @@
     },
     "2026-02-03": {
       "hp": 100.8,
-      "trail": false,
-      "own": 5203.37,
-      "hbr": 0
+      "trail": false
     }
   },
   "d35tr0": {
@@ -6110,9 +6034,7 @@
     },
     "2026-02-03": {
       "hp": 74.97,
-      "trail": false,
-      "own": 167.9,
-      "hbr": 0
+      "trail": true
     }
   },
   "arthursiq5": {
@@ -6267,9 +6189,7 @@
     },
     "2026-02-03": {
       "hp": 72.2,
-      "trail": false,
-      "own": 258.8,
-      "hbr": 15
+      "trail": true
     }
   },
   "casagrande": {
@@ -6424,9 +6344,7 @@
     },
     "2026-02-03": {
       "hp": 60.47,
-      "trail": false,
-      "own": 69.99,
-      "hbr": 5.04
+      "trail": true
     }
   },
   "matheusggr.leo": {
@@ -6581,9 +6499,7 @@
     },
     "2026-02-03": {
       "hp": 54.48,
-      "trail": false,
-      "own": 134.74,
-      "hbr": 0
+      "trail": true
     }
   },
   "zombialien": {
@@ -6738,9 +6654,7 @@
     },
     "2026-02-03": {
       "hp": 52.57,
-      "trail": false,
-      "own": 317.69,
-      "hbr": 0
+      "trail": false
     }
   },
   "captainman": {
@@ -6919,9 +6833,7 @@
     },
     "2026-02-03": {
       "hp": 100.02,
-      "trail": false,
-      "own": 1391.05,
-      "hbr": 2.49
+      "trail": false
     }
   },
   "grafvisionsp": {
@@ -7076,9 +6988,7 @@
     },
     "2026-02-03": {
       "hp": 50.59,
-      "trail": false,
-      "own": 1440.53,
-      "hbr": 0
+      "trail": false
     }
   },
   "ladyaryastark": {
@@ -7233,9 +7143,7 @@
     },
     "2026-02-03": {
       "hp": 50.29,
-      "trail": false,
-      "own": 3458.46,
-      "hbr": 0
+      "trail": false
     }
   },
   "hive-br.leo": {
@@ -7390,9 +7298,7 @@
     },
     "2026-02-03": {
       "hp": 44.29,
-      "trail": false,
-      "own": 45.37,
-      "hbr": 0
+      "trail": false
     }
   },
   "ogepaul1986": {
@@ -7547,9 +7453,7 @@
     },
     "2026-02-03": {
       "hp": 34.36,
-      "trail": false,
-      "own": 39.4,
-      "hbr": 0
+      "trail": false
     }
   },
   "speedtuning": {
@@ -7703,10 +7607,8 @@
       "hbr": 0
     },
     "2026-02-03": {
-      "hp": 32.21,
-      "trail": false,
-      "own": 502.76,
-      "hbr": 0
+      "hp": 32.22,
+      "trail": false
     }
   },
   "boeltermc": {
@@ -7861,9 +7763,7 @@
     },
     "2026-02-03": {
       "hp": 21.35,
-      "trail": false,
-      "own": 3345.02,
-      "hbr": 0
+      "trail": false
     }
   },
   "keepkeybr": {
@@ -8018,9 +7918,7 @@
     },
     "2026-02-03": {
       "hp": 13.94,
-      "trail": false,
-      "own": 15.18,
-      "hbr": 0
+      "trail": false
     }
   },
   "name0": {
@@ -8175,9 +8073,7 @@
     },
     "2026-02-03": {
       "hp": 15,
-      "trail": false,
-      "own": 22228.7,
-      "hbr": 0
+      "trail": false
     }
   },
   "sieghard1990": {
@@ -8332,9 +8228,7 @@
     },
     "2026-02-03": {
       "hp": 10.35,
-      "trail": false,
-      "own": 197.71,
-      "hbr": 0
+      "trail": false
     }
   },
   "v-36": {
@@ -8489,9 +8383,7 @@
     },
     "2026-02-03": {
       "hp": 20.02,
-      "trail": false,
-      "own": 148.63,
-      "hbr": 0.84
+      "trail": false
     }
   },
   "manopunkttt": {
@@ -8646,9 +8538,7 @@
     },
     "2026-02-03": {
       "hp": 10.13,
-      "trail": false,
-      "own": 106.68,
-      "hbr": 0
+      "trail": false
     }
   },
   "emviagem": {
@@ -8803,9 +8693,7 @@
     },
     "2026-02-03": {
       "hp": 9.54,
-      "trail": false,
-      "own": 10.07,
-      "hbr": 0
+      "trail": true
     }
   },
   "claytonlins": {
@@ -8960,9 +8848,7 @@
     },
     "2026-02-03": {
       "hp": 6.13,
-      "trail": false,
-      "own": 7.33,
-      "hbr": 0
+      "trail": true
     }
   },
   "zulfrontado": {
@@ -9117,9 +9003,7 @@
     },
     "2026-02-03": {
       "hp": 1.01,
-      "trail": false,
-      "own": 2231.04,
-      "hbr": 0
+      "trail": false
     }
   },
   "us3incanada": {
@@ -9273,9 +9157,7 @@
     },
     "2026-02-03": {
       "hp": 40.85,
-      "trail": false,
-      "own": 50.08,
-      "hbr": 0
+      "trail": true
     }
   },
   "jkatrina": {
@@ -9429,9 +9311,7 @@
     },
     "2026-02-03": {
       "hp": 20.03,
-      "trail": false,
-      "own": 20.21,
-      "hbr": 0
+      "trail": true
     }
   },
   "abandeira": {
@@ -9577,9 +9457,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "aiuna": {
@@ -9725,9 +9603,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 11.57,
-      "hbr": 0
+      "trail": false
     }
   },
   "aiyumi": {
@@ -9873,9 +9749,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1947.14,
-      "hbr": 0
+      "trail": false
     }
   },
   "ale-rio": {
@@ -10021,9 +9895,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 7.29,
-      "hbr": 0
+      "trail": false
     }
   },
   "alexandrefeliz": {
@@ -10169,9 +10041,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 222.58,
-      "hbr": 0
+      "trail": false
     }
   },
   "alina97": {
@@ -10317,9 +10187,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 390.27,
-      "hbr": 0
+      "trail": false
     }
   },
   "alinequeiroz": {
@@ -10465,9 +10333,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 22.8,
-      "hbr": 0
+      "trail": true
     }
   },
   "alucardy": {
@@ -10613,9 +10479,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5.09,
-      "hbr": 0
+      "trail": false
     }
   },
   "alyxmijaresda": {
@@ -10761,9 +10625,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "anacvv05": {
@@ -10909,9 +10771,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 519.95,
-      "hbr": 0
+      "trail": false
     }
   },
   "anafenalli": {
@@ -11057,9 +10917,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.23,
-      "hbr": 0
+      "trail": false
     }
   },
   "anazn": {
@@ -11205,9 +11063,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 7.42,
-      "hbr": 0
+      "trail": false
     }
   },
   "aphiel": {
@@ -11353,9 +11209,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1.63,
-      "hbr": 0
+      "trail": false
     }
   },
   "avedorada": {
@@ -11501,9 +11355,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.87,
-      "hbr": 0
+      "trail": false
     }
   },
   "avel692": {
@@ -11649,9 +11501,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 175.64,
-      "hbr": 0
+      "trail": false
     }
   },
   "ayummi": {
@@ -11797,9 +11647,7 @@
     },
     "2026-02-03": {
       "hp": 14.02,
-      "trail": false,
-      "own": 15.84,
-      "hbr": 0
+      "trail": true
     }
   },
   "badge-182654": {
@@ -11945,9 +11793,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 2.19,
-      "hbr": 0
+      "trail": true
     }
   },
   "barizon": {
@@ -12093,9 +11939,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 63.21,
-      "hbr": 0
+      "trail": false
     }
   },
   "bastter": {
@@ -12241,9 +12085,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 122.76,
-      "hbr": 0
+      "trail": false
     }
   },
   "bergmannadv": {
@@ -12389,9 +12231,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 6.55,
-      "hbr": 0
+      "trail": false
     }
   },
   "bernardonassar": {
@@ -12537,9 +12377,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 109.89,
-      "hbr": 0
+      "trail": false
     }
   },
   "boba1961": {
@@ -12685,9 +12523,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1.09,
-      "hbr": 0
+      "trail": false
     }
   },
   "bodhi.rio": {
@@ -12833,9 +12669,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 52.64,
-      "hbr": 0
+      "trail": false
     }
   },
   "borajogar": {
@@ -12981,9 +12815,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "borbolet": {
@@ -13132,9 +12964,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 17.22,
-      "hbr": 0
+      "trail": false
     }
   },
   "brazilians": {
@@ -13280,9 +13110,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5138.54,
-      "hbr": 0
+      "trail": false
     }
   },
   "caaio": {
@@ -13428,9 +13256,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 29.16,
-      "hbr": 0
+      "trail": false
     }
   },
   "canellov": {
@@ -13576,9 +13402,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 20.53,
-      "hbr": 0
+      "trail": false
     }
   },
   "capuah-iruet": {
@@ -13724,9 +13548,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.14,
-      "hbr": 0
+      "trail": false
     }
   },
   "carlosro": {
@@ -13872,9 +13694,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 84.77,
-      "hbr": 0
+      "trail": false
     }
   },
   "carolramos": {
@@ -14020,9 +13840,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 33.36,
-      "hbr": 0
+      "trail": false
     }
   },
   "christiantatsch": {
@@ -14168,9 +13986,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 148.44,
-      "hbr": 0
+      "trail": false
     }
   },
   "cleateles1": {
@@ -14316,9 +14132,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 7.37,
-      "hbr": 0
+      "trail": false
     }
   },
   "coiotes": {
@@ -14464,9 +14278,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 7047.54,
-      "hbr": 0
+      "trail": false
     }
   },
   "coyote.sports": {
@@ -14612,9 +14424,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 9.01,
-      "hbr": 0
+      "trail": false
     }
   },
   "cril692003": {
@@ -14760,9 +14570,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 19.68,
-      "hbr": 0
+      "trail": false
     }
   },
   "crisciacm": {
@@ -14908,9 +14716,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1024.45,
-      "hbr": 0
+      "trail": false
     }
   },
   "cryptoshaman007": {
@@ -15056,9 +14862,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5.23,
-      "hbr": 0
+      "trail": false
     }
   },
   "david0808": {
@@ -15204,9 +15008,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 10.54,
-      "hbr": 0
+      "trail": false
     }
   },
   "deividluchi": {
@@ -15352,9 +15154,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 157.52,
-      "hbr": 0
+      "trail": false
     }
   },
   "diegoguerra": {
@@ -15500,9 +15300,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 180.72,
-      "hbr": 0
+      "trail": false
     }
   },
   "diogenesrm": {
@@ -15648,9 +15446,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "disruptivas": {
@@ -15796,9 +15592,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 180,
-      "hbr": 0
+      "trail": false
     }
   },
   "dolandoteiro": {
@@ -15944,9 +15738,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 6.24,
-      "hbr": 0
+      "trail": false
     }
   },
   "donamona": {
@@ -16092,9 +15884,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 14.9,
-      "hbr": 0
+      "trail": false
     }
   },
   "dstampede": {
@@ -16240,9 +16030,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 78.28,
-      "hbr": 0
+      "trail": false
     }
   },
   "dudutaulois": {
@@ -16388,9 +16176,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 2310.18,
-      "hbr": 0
+      "trail": false
     }
   },
   "dunatos": {
@@ -16536,9 +16322,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 25.14,
-      "hbr": 0
+      "trail": false
     }
   },
   "edvamfilho": {
@@ -16684,9 +16468,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 2.1,
-      "hbr": 0
+      "trail": false
     }
   },
   "ehvinho": {
@@ -16832,9 +16614,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 29.53,
-      "hbr": 0
+      "trail": false
     }
   },
   "eijibr": {
@@ -16980,9 +16760,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "elcoachjesus": {
@@ -17128,9 +16906,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 25.45,
-      "hbr": 0
+      "trail": false
     }
   },
   "emanueledornelas": {
@@ -17276,9 +17052,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 299.82,
-      "hbr": 0
+      "trail": false
     }
   },
   "endrius": {
@@ -17424,9 +17198,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 6.72,
-      "hbr": 0
+      "trail": false
     }
   },
   "ericpso": {
@@ -17572,9 +17344,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 195.35,
-      "hbr": 0
+      "trail": false
     }
   },
   "escadas": {
@@ -17720,9 +17490,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 35.91,
-      "hbr": 0
+      "trail": false
     }
   },
   "estourefugiado": {
@@ -17868,9 +17636,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 29.11,
-      "hbr": 0
+      "trail": false
     }
   },
   "eujotave": {
@@ -18016,9 +17782,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "f0rtunate": {
@@ -18164,9 +17928,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 3.18,
-      "hbr": 0
+      "trail": false
     }
   },
   "fabiocola": {
@@ -18312,9 +18074,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 36.08,
-      "hbr": 0
+      "trail": false
     }
   },
   "fabiosoares": {
@@ -18460,9 +18220,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "felipefortes": {
@@ -18608,9 +18366,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 19.3,
-      "hbr": 0
+      "trail": false
     }
   },
   "feliperochatv": {
@@ -18756,9 +18512,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 125.02,
-      "hbr": 0
+      "trail": false
     }
   },
   "fernandosoder": {
@@ -18904,9 +18658,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1875.88,
-      "hbr": 0
+      "trail": false
     }
   },
   "fireguardian": {
@@ -19052,9 +18804,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 109.43,
-      "hbr": 0
+      "trail": true
     }
   },
   "fireguardian.spt": {
@@ -19200,9 +18950,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.41,
-      "hbr": 0
+      "trail": false
     }
   },
   "floressenciarte": {
@@ -19348,9 +19096,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 6.24,
-      "hbr": 0
+      "trail": false
     }
   },
   "fmajuniorphoto": {
@@ -19496,9 +19242,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 800.75,
-      "hbr": 0
+      "trail": false
     }
   },
   "frankrey11": {
@@ -19644,9 +19388,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 157.97,
-      "hbr": 0
+      "trail": false
     }
   },
   "fredsilva007": {
@@ -19792,9 +19534,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1.81,
-      "hbr": 0
+      "trail": false
     }
   },
   "g4tzbr": {
@@ -19940,9 +19680,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 41.72,
-      "hbr": 0
+      "trail": false
     }
   },
   "gabrielmilego": {
@@ -20088,9 +19826,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "game3x3": {
@@ -20236,9 +19972,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 19.55,
-      "hbr": 0
+      "trail": true
     }
   },
   "greengineer": {
@@ -20384,9 +20118,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 62.37,
-      "hbr": 0
+      "trail": false
     }
   },
   "gtpacheko17": {
@@ -20532,9 +20264,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 253.08,
-      "hbr": 0
+      "trail": false
     }
   },
   "handrehermann": {
@@ -20680,9 +20410,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 105.34,
-      "hbr": 0
+      "trail": false
     }
   },
   "hevelyn.jeeh": {
@@ -20828,9 +20556,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5.18,
-      "hbr": 0
+      "trail": false
     }
   },
   "hive-br": {
@@ -20976,9 +20702,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 15093.21,
-      "hbr": 0
+      "trail": true
     }
   },
   "hivebr.spt": {
@@ -21124,9 +20848,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 28.2,
-      "hbr": 0
+      "trail": false
     }
   },
   "hive-br.voter": {
@@ -21272,9 +20994,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 42788.1,
-      "hbr": 0
+      "trail": false
     }
   },
   "hranhuk": {
@@ -21420,9 +21140,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 205.78,
-      "hbr": 0
+      "trail": false
     }
   },
   "ismaelrd04": {
@@ -21568,9 +21286,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 358.08,
-      "hbr": 0
+      "trail": false
     }
   },
   "iuriomagico": {
@@ -21716,9 +21432,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 142.3,
-      "hbr": 0
+      "trail": false
     }
   },
   "j377e": {
@@ -21864,9 +21578,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 18.89,
-      "hbr": 0
+      "trail": false
     }
   },
   "jacalf": {
@@ -22012,9 +21724,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 31.51,
-      "hbr": 0
+      "trail": false
     }
   },
   "jaquevital": {
@@ -22160,9 +21870,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "jarmeson": {
@@ -22308,9 +22016,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 35.07,
-      "hbr": 0
+      "trail": true
     }
   },
   "jeffparajiujitsu": {
@@ -22456,9 +22162,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 8.13,
-      "hbr": 0
+      "trail": false
     }
   },
   "jklio123": {
@@ -22604,9 +22308,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 215.39,
-      "hbr": 0
+      "trail": false
     }
   },
   "joaophelip": {
@@ -22752,9 +22454,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 56.42,
-      "hbr": 0
+      "trail": true
     }
   },
   "joaoprobst": {
@@ -22900,9 +22600,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 49.05,
-      "hbr": 0
+      "trail": false
     }
   },
   "jontv": {
@@ -23048,9 +22746,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 129.23,
-      "hbr": 0
+      "trail": false
     }
   },
   "jose.music": {
@@ -23196,9 +22892,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 15.7,
-      "hbr": 0
+      "trail": false
     }
   },
   "jsaez": {
@@ -23344,9 +23038,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 81.8,
-      "hbr": 0
+      "trail": false
     }
   },
   "jsantana": {
@@ -23492,9 +23184,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 15.1,
-      "hbr": 0
+      "trail": true
     }
   },
   "jucabala": {
@@ -23640,9 +23330,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 219,
-      "hbr": 0
+      "trail": false
     }
   },
   "juliasantos": {
@@ -23788,9 +23476,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 8.17,
-      "hbr": 0
+      "trail": false
     }
   },
   "jullyette": {
@@ -23936,9 +23622,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5.13,
-      "hbr": 0
+      "trail": false
     }
   },
   "kat.eli": {
@@ -24084,9 +23768,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 138.39,
-      "hbr": 0
+      "trail": false
     }
   },
   "kaveira": {
@@ -24232,9 +23914,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 55.98,
-      "hbr": 0
+      "trail": true
     }
   },
   "kelday666": {
@@ -24380,9 +24060,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 324.27,
-      "hbr": 0
+      "trail": false
     }
   },
   "kevbest": {
@@ -24528,9 +24206,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 4.46,
-      "hbr": 0
+      "trail": true
     }
   },
   "kingforceblack": {
@@ -24676,9 +24352,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1.1,
-      "hbr": 0
+      "trail": false
     }
   },
   "kojiri": {
@@ -24824,9 +24498,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 610.17,
-      "hbr": 0
+      "trail": false
     }
   },
   "laribf": {
@@ -24972,9 +24644,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 2.09,
-      "hbr": 0
+      "trail": false
     }
   },
   "laurasoares": {
@@ -25120,9 +24790,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 29.35,
-      "hbr": 0
+      "trail": false
     }
   },
   "leo.marques": {
@@ -25268,9 +24936,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "lesulzbacher": {
@@ -25416,9 +25082,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 378.11,
-      "hbr": 0
+      "trail": false
     }
   },
   "lipe100dedos": {
@@ -25564,9 +25228,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5.1,
-      "hbr": 0
+      "trail": false
     }
   },
   "liquideity": {
@@ -25712,9 +25374,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 6.01,
-      "hbr": 0
+      "trail": false
     }
   },
   "litekoiner": {
@@ -25860,9 +25520,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 19.66,
-      "hbr": 0
+      "trail": false
     }
   },
   "luanaecard": {
@@ -26008,9 +25666,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.12,
-      "hbr": 0
+      "trail": false
     }
   },
   "ludgero": {
@@ -26156,9 +25812,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.32,
-      "hbr": 0
+      "trail": false
     }
   },
   "luidimarg": {
@@ -26304,9 +25958,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 338.66,
-      "hbr": 0
+      "trail": false
     }
   },
   "luizeba": {
@@ -26452,9 +26104,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 12.16,
-      "hbr": 0
+      "trail": true
     }
   },
   "luizhadad": {
@@ -26600,9 +26250,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 365.18,
-      "hbr": 0
+      "trail": false
     }
   },
   "maismau": {
@@ -26748,9 +26396,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 129.66,
-      "hbr": 0
+      "trail": false
     }
   },
   "marianaemilia": {
@@ -26896,9 +26542,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 400.21,
-      "hbr": 0
+      "trail": false
     }
   },
   "marzukiali": {
@@ -27044,9 +26688,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "matheusluciano": {
@@ -27192,9 +26834,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "mathfb": {
@@ -27340,9 +26980,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 6.39,
-      "hbr": 0
+      "trail": false
     }
   },
   "megamariano": {
@@ -27488,9 +27126,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 60.06,
-      "hbr": 0
+      "trail": false
     }
   },
   "meinickenutri": {
@@ -27636,9 +27272,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.51,
-      "hbr": 0
+      "trail": false
     }
   },
   "micloop": {
@@ -27784,9 +27418,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 137.1,
-      "hbr": 0
+      "trail": false
     }
   },
   "milery": {
@@ -27932,9 +27564,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "mrprofessor": {
@@ -28080,9 +27710,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1.75,
-      "hbr": 0
+      "trail": false
     }
   },
   "mrprofessordaily": {
@@ -28228,9 +27856,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "naoebemumcanal": {
@@ -28376,9 +28002,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 17.57,
-      "hbr": 0
+      "trail": false
     }
   },
   "nascimentoab": {
@@ -28524,9 +28148,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 865.64,
-      "hbr": 0
+      "trail": false
     }
   },
   "nascimentocb": {
@@ -28672,9 +28294,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 49.6,
-      "hbr": 0
+      "trail": false
     }
   },
   "nathylieth": {
@@ -28820,9 +28440,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 135.14,
-      "hbr": 0
+      "trail": false
     }
   },
   "nayha23": {
@@ -28968,9 +28586,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 46.78,
-      "hbr": 0
+      "trail": false
     }
   },
   "nichollasrdo": {
@@ -29116,9 +28732,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 16.15,
-      "hbr": 0
+      "trail": false
     }
   },
   "norseland": {
@@ -29264,9 +28878,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 163.92,
-      "hbr": 0
+      "trail": false
     }
   },
   "officialjag": {
@@ -29412,9 +29024,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "oficialversatil": {
@@ -29560,9 +29170,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 7.48,
-      "hbr": 0
+      "trail": false
     }
   },
   "orozcorobetson": {
@@ -29708,9 +29316,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 2.62,
-      "hbr": 0
+      "trail": false
     }
   },
   "papoprodutivo": {
@@ -29856,9 +29462,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "paradaleticia": {
@@ -30004,9 +29608,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 620.1,
-      "hbr": 0
+      "trail": false
     }
   },
   "pataty69": {
@@ -30152,9 +29754,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 3028.89,
-      "hbr": 18.66
+      "trail": false
     }
   },
   "pedagogia": {
@@ -30300,9 +29900,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.02,
-      "hbr": 0
+      "trail": false
     }
   },
   "pedrocanella": {
@@ -30448,9 +30046,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 28.94,
-      "hbr": 0
+      "trail": false
     }
   },
   "perfilbrasil": {
@@ -30596,9 +30192,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 4026.45,
-      "hbr": 0
+      "trail": false
     }
   },
   "phgnomo": {
@@ -30744,9 +30338,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1586.29,
-      "hbr": 0
+      "trail": false
     }
   },
   "phsaeta": {
@@ -30892,9 +30484,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "pirulito.zoado": {
@@ -31040,9 +30630,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5.78,
-      "hbr": 0
+      "trail": false
     }
   },
   "pythomaster": {
@@ -31188,9 +30776,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 57.52,
-      "hbr": 0
+      "trail": false
     }
   },
   "qyses": {
@@ -31336,9 +30922,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 120.74,
-      "hbr": 0
+      "trail": false
     }
   },
   "raistling": {
@@ -31508,9 +31092,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1.43,
-      "hbr": 0
+      "trail": false
     }
   },
   "reas63": {
@@ -31656,9 +31238,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.44,
-      "hbr": 0
+      "trail": false
     }
   },
   "renatacristiane": {
@@ -31804,9 +31384,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1.39,
-      "hbr": 0
+      "trail": false
     }
   },
   "rhommar": {
@@ -31952,9 +31530,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 41.33,
-      "hbr": 0
+      "trail": false
     }
   },
   "rimasx": {
@@ -32100,9 +31676,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5.25,
-      "hbr": 0
+      "trail": false
     }
   },
   "robspiercer": {
@@ -32248,9 +31822,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "rodrigojmelo": {
@@ -32396,9 +31968,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.06,
-      "hbr": 0
+      "trail": false
     }
   },
   "rounan.soares": {
@@ -32544,9 +32114,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "rphspinheiro": {
@@ -32692,9 +32260,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 10.96,
-      "hbr": 0
+      "trail": false
     }
   },
   "sandranunes": {
@@ -32840,9 +32406,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 3.54,
-      "hbr": 0
+      "trail": false
     }
   },
   "santana37": {
@@ -32988,9 +32552,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 35.27,
-      "hbr": 0
+      "trail": false
     }
   },
   "santinhos": {
@@ -33136,9 +32698,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 55.18,
-      "hbr": 0
+      "trail": false
     }
   },
   "seabet": {
@@ -33284,9 +32844,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "selhomarlopes": {
@@ -33432,9 +32990,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 23.14,
-      "hbr": 0
+      "trail": false
     }
   },
   "silviamaria": {
@@ -33580,9 +33136,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 481.76,
-      "hbr": 0
+      "trail": false
     }
   },
   "sintropia": {
@@ -33728,9 +33282,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 15.95,
-      "hbr": 0
+      "trail": false
     }
   },
   "sistemabusiness": {
@@ -33876,9 +33428,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 81.2,
-      "hbr": 0
+      "trail": false
     }
   },
   "skaters": {
@@ -34024,9 +33574,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 381.15,
-      "hbr": 0
+      "trail": true
     }
   },
   "sktbr": {
@@ -34172,9 +33720,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 398.76,
-      "hbr": 0
+      "trail": false
     }
   },
   "sousafrc": {
@@ -34320,9 +33866,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 94.44,
-      "hbr": 0
+      "trail": false
     }
   },
   "splinter100dedos": {
@@ -34468,9 +34012,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5.04,
-      "hbr": 0
+      "trail": false
     }
   },
   "surfgurupro": {
@@ -34616,9 +34158,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 70.56,
-      "hbr": 0
+      "trail": false
     }
   },
   "surflimpo": {
@@ -34764,9 +34304,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 160.07,
-      "hbr": 0
+      "trail": false
     }
   },
   "tankulo": {
@@ -34912,9 +34450,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "tatianest": {
@@ -35060,9 +34596,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.22,
-      "hbr": 0
+      "trail": false
     }
   },
   "tatylayla": {
@@ -35208,9 +34742,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 92.76,
-      "hbr": 0
+      "trail": false
     }
   },
   "teteuzinho": {
@@ -35356,9 +34888,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1.25,
-      "hbr": 0
+      "trail": false
     }
   },
   "teu": {
@@ -35504,9 +35034,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 9.75,
-      "hbr": 0
+      "trail": false
     }
   },
   "thaliaperez": {
@@ -35652,9 +35180,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 45.84,
-      "hbr": 0
+      "trail": false
     }
   },
   "totomusic": {
@@ -35800,9 +35326,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "triptamine555": {
@@ -35948,9 +35472,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "tucacheias": {
@@ -36096,9 +35618,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 9.84,
-      "hbr": 0
+      "trail": false
     }
   },
   "ukyron3": {
@@ -36244,9 +35764,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "unhurried": {
@@ -36392,9 +35910,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 148,
-      "hbr": 0
+      "trail": false
     }
   },
   "unten1995": {
@@ -36540,9 +36056,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "usergabs": {
@@ -36688,9 +36202,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5.51,
-      "hbr": 0
+      "trail": false
     }
   },
   "vanessabarrostec": {
@@ -36836,9 +36348,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 6.71,
-      "hbr": 0
+      "trail": false
     }
   },
   "vcorioh": {
@@ -36984,9 +36494,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 22.2,
-      "hbr": 0
+      "trail": false
     }
   },
   "vempromundo": {
@@ -37132,9 +36640,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 8958.06,
-      "hbr": 200
+      "trail": true
     }
   },
   "ventrinidad": {
@@ -37280,9 +36786,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 16.64,
-      "hbr": 0
+      "trail": false
     }
   },
   "vicvondoom": {
@@ -37428,9 +36932,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "vini0": {
@@ -37576,9 +37078,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "vitoragnelli": {
@@ -37724,9 +37224,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 23.54,
-      "hbr": 0
+      "trail": false
     }
   },
   "vonlecram": {
@@ -37872,9 +37370,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 56.4,
-      "hbr": 0
+      "trail": false
     }
   },
   "wallabra": {
@@ -38020,9 +37516,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "wallabra-wallet": {
@@ -38168,9 +37662,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "wasye": {
@@ -38316,9 +37808,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 138.85,
-      "hbr": 0
+      "trail": false
     }
   },
   "wellingt556": {
@@ -38464,9 +37954,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 2.18,
-      "hbr": 0
+      "trail": false
     }
   },
   "wilkersk8zn": {
@@ -38612,9 +38100,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "wlfreitas": {
@@ -38760,9 +38246,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 12.68,
-      "hbr": 0
+      "trail": true
     }
   },
   "xgoivo": {
@@ -38908,9 +38392,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 33.65,
-      "hbr": 0
+      "trail": false
     }
   },
   "xlety": {
@@ -39056,9 +38538,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 2851.65,
-      "hbr": 51.44
+      "trail": true
     }
   },
   "xtryhard": {
@@ -39204,9 +38684,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "yungbresciani": {
@@ -39352,9 +38830,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 364.45,
-      "hbr": 0
+      "trail": false
     }
   },
   "zallin": {
@@ -39500,9 +38976,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 1984.54,
-      "hbr": 60.55
+      "trail": true
     }
   },
   "vaipraonde": {
@@ -39648,9 +39122,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 3843.35,
-      "hbr": 65.82
+      "trail": false
     }
   },
   "discernente": {
@@ -39796,9 +39268,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 410.3,
-      "hbr": 0
+      "trail": false
     }
   },
   "doblershiva": {
@@ -39944,9 +39414,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 193.19,
-      "hbr": 0
+      "trail": false
     }
   },
   "edufecchio": {
@@ -40092,9 +39560,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 3.18,
-      "hbr": 0
+      "trail": false
     }
   },
   "biologistbrito": {
@@ -40232,9 +39698,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 11371.49,
-      "hbr": 0
+      "trail": false
     }
   },
   "marabuzal": {
@@ -40366,9 +39830,7 @@
     },
     "2026-02-03": {
       "hp": 15.02,
-      "trail": false,
-      "own": 17.93,
-      "hbr": 0
+      "trail": true
     }
   },
   "lucianaabrao": {
@@ -40495,9 +39957,7 @@
     },
     "2026-02-03": {
       "hp": 10.41,
-      "trail": false,
-      "own": 15.47,
-      "hbr": 0
+      "trail": true
     }
   },
   "kedleona": {
@@ -40624,9 +40084,7 @@
     },
     "2026-02-03": {
       "hp": 10.02,
-      "trail": false,
-      "own": 12.88,
-      "hbr": 0
+      "trail": true
     }
   },
   "portugalzin": {
@@ -40751,9 +40209,7 @@
     },
     "2026-02-03": {
       "hp": 20.03,
-      "trail": false,
-      "own": 23.77,
-      "hbr": 0
+      "trail": true
     }
   },
   "acarolinas": {
@@ -40878,9 +40334,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "bralph": {
@@ -41005,9 +40459,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 5.26,
-      "hbr": 0
+      "trail": false
     }
   },
   "gasparetto": {
@@ -41132,9 +40584,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0,
-      "hbr": 0
+      "trail": false
     }
   },
   "geovanna-gg": {
@@ -41259,9 +40709,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 149.55,
-      "hbr": 10
+      "trail": true
     }
   },
   "heutorybr": {
@@ -41386,9 +40834,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 99.12,
-      "hbr": 0
+      "trail": false
     }
   },
   "legalizabrasil": {
@@ -41516,9 +40962,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.09,
-      "hbr": 0
+      "trail": false
     }
   },
   "pixbee": {
@@ -41643,9 +41087,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 41.36,
-      "hbr": 0
+      "trail": false
     }
   },
   "raigremon": {
@@ -41770,9 +41212,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 17.42,
-      "hbr": 0
+      "trail": false
     }
   },
   "tokenizedsociety": {
@@ -41897,9 +41337,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 20463.5,
-      "hbr": 0
+      "trail": false
     }
   },
   "wlffreitas": {
@@ -42024,9 +41462,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 3.59,
-      "hbr": 0
+      "trail": true
     }
   },
   "elisangelapa": {
@@ -42151,9 +41587,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 0.35,
-      "hbr": 0
+      "trail": false
     }
   },
   "zusi78": {
@@ -42264,9 +41698,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 163.22,
-      "hbr": 0
+      "trail": false
     }
   },
   "marcosalomao95": {
@@ -42296,9 +41728,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 10,
-      "hbr": 0
+      "trail": false
     }
   },
   "tekabybrazil": {
@@ -42328,9 +41758,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 16.08,
-      "hbr": 0
+      "trail": false
     }
   },
   "forykw": {
@@ -42360,9 +41788,7 @@
     },
     "2026-02-03": {
       "hp": 0,
-      "trail": false,
-      "own": 112285.76,
-      "hbr": 0
+      "trail": false
     }
   },
   "samye2": {
@@ -42386,9 +41812,7 @@
     },
     "2026-02-03": {
       "hp": 50.01,
-      "trail": false,
-      "own": 98.46,
-      "hbr": 0
+      "trail": false
     }
   }
 }

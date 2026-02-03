@@ -1,24 +1,26 @@
 {
-  "last_updated": "2026-02-03T18:54:55.704Z",
+  "last_updated": "2026-02-03T20:56:14.590Z",
   "versions": {
-    "backend": "2.30.2",
+    "backend": "2.30.3",
     "node_env": "v18.20.8"
   },
   "total_delegators": 66,
-  "total_hp": 41909.082999999984,
-  "project_account_hp": 14548.17080325375,
-  "total_hbr_staked": 5374.051557999998,
-  "curation_trail_count": 0,
+  "total_hp": 41909.342999999986,
+  "project_account_hp": 14548.262144786324,
+  "total_hbr_staked": 5375.871557999998,
+  "curation_trail_count": 82,
   "active_community_members": 288,
   "active_brazilians": 51,
-  "votes_24h": 10,
-  "vote_history_named": {
-    "Fevereiro 2026": 31,
-    "Janeiro 2026": 364,
-    "Dezembro 2025": 351,
-    "Novembro 2025": 338
-  },
+  "votes_24h": 9,
   "votes_month_current": 31,
-  "votes_month_prev1": 364,
-  "votes_month_prev2": 351
+  "votes_month_prev1": 32,
+  "votes_month_prev2": 0,
+  "activity_log": [],
+  "top_grower": {
+    "delegator": "matheusggr",
+    "growth": 10273.838,
+    "old_hp": 0,
+    "current_hp": 10273.838,
+    "days_analyzed": 30
+  }
 }
