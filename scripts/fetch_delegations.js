@@ -1,7 +1,7 @@
 // File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.30.4 (Fix: Polymorphic History & Real Growth)
+ * Version: 2.30.5 (Fix: Pagination, Resilience, Sort & Clean Table)
  * Author: Hive BR
  * License: MIT
  */
@@ -11,7 +11,7 @@ const fs = require("fs");
 const path = require("path");
 
 // --- VERSÃO ---
-const SCRIPT_VERSION = "2.30.4";
+const SCRIPT_VERSION = "2.30.5";
 
 // --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
@@ -26,6 +26,7 @@ const HE_RPC = "https://api.hive-engine.com/rpc/contracts";
 const CONFIG_PATH = path.join("config", "lists.json");
 const DATA_DIR = "data";
 const HISTORY_DIR = path.join(DATA_DIR, "history");
+const GLOBAL_HISTORY_FILE = path.join(DATA_DIR, "global_history.json");
 const DISCOVERY_FILE = path.join(DATA_DIR, "discovery.json");
 const RANKING_HISTORY_FILE = path.join(DATA_DIR, "ranking_history.json");
 const CURRENT_FILE = path.join(DATA_DIR, "current.json");
@@ -61,13 +62,32 @@ async function hiveRpc(method, params) {
   return null;
 }
 
+// --- TRILHA COM RESILIÊNCIA ---
 async function fetchCurationTrail() {
+    let users = [];
+    // 1. Tenta API
     try {
         const response = await fetch(TRAIL_API_URL, { timeout: 8000 });
         const data = await response.json();
-        if (Array.isArray(data)) return data.map(item => item.follower);
-    } catch (e) { return []; }
-    return [];
+        if (Array.isArray(data)) users = data.map(item => item.follower);
+    } catch (e) { console.warn("⚠️ Falha na API da trilha. Tentando fallback..."); }
+
+    // 2. Fallback se vier vazio
+    if (users.length === 0) {
+        try {
+            if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
+                const hist = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE));
+                const dates = Object.keys(hist).sort();
+                if (dates.length > 0) {
+                    const lastData = hist[dates[dates.length - 1]];
+                    console.log(`⚠️ Usando contagem de trilha antiga: ${lastData.trail_count}`);
+                    // Nota: Não temos os nomes, mas evitamos zerar a contagem no meta.
+                    // Para manter a consistência, retornamos vazio aqui mas trataremos no meta.
+                }
+            }
+        } catch (e) {}
+    }
+    return users;
 }
 
 async function fetchHiveEngineBalances(accounts) {
@@ -100,6 +120,86 @@ function detectCountryAndStatus(username, config) {
     return isCert ? `${country}_CERT` : country; 
 }
 
+// --- PAGINAÇÃO INTELIGENTE DE VOTOS (Resgatado v2.25.0) ---
+async function fetchSmartVoteHistory() {
+    console.log("🗳️ Iniciando varredura profunda de votos...");
+    let lastVotesMap = {}; 
+    let historyNamed = {}; 
+    let votes24h = 0;
+    
+    const now = new Date();
+    const time24h = new Date(now.getTime() - (86400000));
+    const limitDate = new Date(); limitDate.setDate(limitDate.getDate() - 90); // 3 meses
+
+    let start = -1;
+    let limit = 1000;
+    let active = true;
+    let totalScanned = 0;
+    const MAX_SCAN = 50000; 
+
+    while (active && totalScanned < MAX_SCAN) {
+        const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, start, limit]);
+        
+        if (!history || history.length === 0) break;
+
+        // Processa do mais recente para o mais antigo
+        for (let i = history.length - 1; i >= 0; i--) {
+            const tx = history[i];
+            const op = tx[1].op;
+            const ts = new Date(tx[1].timestamp + "Z");
+
+            if (ts < limitDate) { active = false; break; }
+
+            if (op[0] === 'vote' && op[1].voter === VOTER_ACCOUNT) {
+                const votedUser = op[1].author;
+                if (!lastVotesMap[votedUser]) lastVotesMap[votedUser] = tx[1].timestamp + "Z";
+                
+                if (ts >= time24h) votes24h++;
+                
+                const label = getMonthLabel(ts);
+                historyNamed[label] = (historyNamed[label] || 0) + 1;
+            }
+        }
+
+        totalScanned += history.length;
+        if (active) {
+            const firstId = history[0][0];
+            if (firstId <= 0) break; // Chegou no início da conta
+            start = firstId - 1;
+            limit = Math.min(1000, start); // Ajusta limite se estiver perto do fim
+        }
+    }
+    
+    console.log(`✅ Scan concluído: ${totalScanned} txs analisadas.`);
+    return { lastVotesMap, historyNamed, votes24h };
+}
+
+// --- ATUALIZA HISTÓRICO GLOBAL (Restaurado) ---
+function updateGlobalHistory(data) {
+    let globalData = {};
+    try {
+        if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
+            globalData = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE));
+        }
+    } catch (e) {}
+
+    const todayKey = new Date().toISOString().split('T')[0];
+
+    globalData[todayKey] = {
+        total_votes: data.votes_24h,
+        trail_count: data.curation_trail_count,
+        active_brazilians: data.active_brazilians,
+        total_hp: parseFloat((data.total_hp + data.project_account_hp).toFixed(2)),
+        total_delegated_hp: parseFloat(data.total_hp.toFixed(2)),
+        active_members: data.active_community_members,
+        script_version: SCRIPT_VERSION
+    };
+
+    const sorted = {};
+    Object.keys(globalData).sort().forEach(key => sorted[key] = globalData[key]);
+    fs.writeFileSync(GLOBAL_HISTORY_FILE, JSON.stringify(sorted, null, 2));
+}
+
 function updateDiscoveryLog(delegations, config) {
     let discoveryData = {};
     try { if (fs.existsSync(DISCOVERY_FILE)) discoveryData = JSON.parse(fs.readFileSync(DISCOVERY_FILE)); } catch (e) {}
@@ -115,7 +215,6 @@ function updateDiscoveryLog(delegations, config) {
             const alreadyLogged = discoveryData[monthKey].unknown_delegators.some(entry => String(entry.user).toLowerCase().trim() === normalized);
             if (!alreadyLogged) {
                 discoveryData[monthKey].unknown_delegators.push({ user: d.delegator, hp: parseFloat(d.hp_equivalent).toFixed(2), first_seen: now.toISOString() });
-                console.log(`⚠️ [NOVO]: @${d.delegator}`);
                 newFinds++;
             }
         }
@@ -139,8 +238,7 @@ function generateActivityLog(currentRanking) {
     return changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff)).slice(0, 10);
 }
 
-// --- LEITURA POLIMÓRFICA ---
-// Lê o valor de HP independente se é número (antigo) ou objeto (novo)
+// --- CRESCIMENTO INTELIGENTE (Polimórfico + Antiguidade) ---
 function getHpFromHistory(entry) {
     if (entry === undefined || entry === null) return null;
     if (typeof entry === 'number') return entry;
@@ -148,7 +246,6 @@ function getHpFromHistory(entry) {
     return 0;
 }
 
-// --- LÓGICA DE CRESCIMENTO ---
 function calculateTopGrower(currentRanking) {
     let history = {};
     try { if (fs.existsSync(RANKING_HISTORY_FILE)) history = JSON.parse(fs.readFileSync(RANKING_HISTORY_FILE)); } catch (e) { return null; }
@@ -161,37 +258,30 @@ function calculateTopGrower(currentRanking) {
     let validDate = null;
     if (sampleUser) {
         const availableDates = Object.keys(history[sampleUser]).sort();
-        // Busca data mais próxima (igual ou maior que 30 dias atrás)
         validDate = availableDates.find(d => d >= dateStr);
     }
 
     let bestGrower = null;
-    let maxGrowth = -999999; // Permite crescimento negativo se ninguém cresceu, mas o foco é positivo
+    let maxGrowth = -999999;
 
     currentRanking.forEach(user => {
         let oldHp = null;
-        
-        // Tenta pegar do arquivo histórico
         if (validDate && history[user.delegator] && history[user.delegator][validDate]) {
             oldHp = getHpFromHistory(history[user.delegator][validDate]);
         }
 
-        // Se não achou no arquivo, verifica se é usuário novo de verdade
         if (oldHp === null) {
             const daysDelegating = user.timestamp ? (now - new Date(user.timestamp)) / (1000 * 60 * 60 * 24) : 999;
             if (daysDelegating < 30) {
-                // É novo mesmo (menos de 30 dias)
-                oldHp = 0;
+                oldHp = 0; // Novo de verdade
             } else {
-                // É veterano sem histórico: IGNORAR para não dar falso positivo
-                return; 
+                return; // Veterano sem log = Ignora
             }
         }
 
         const currentHp = user.delegated_hp;
         const growth = currentHp - oldHp;
 
-        // Filtro de relevância: Crescimento > 10 HP
         if (growth > maxGrowth && growth > 10) { 
             maxGrowth = growth;
             bestGrower = {
@@ -202,7 +292,6 @@ function calculateTopGrower(currentRanking) {
             };
         }
     });
-
     return bestGrower;
 }
 
@@ -216,7 +305,7 @@ function updateRankingHistory(ranking) {
         history[user.delegator][today] = {
             hp: parseFloat(user.delegated_hp.toFixed(2)),
             trail: user.in_curation_trail,
-            own: parseFloat(user.total_account_hp.toFixed(2)) // Agora salvando HP proprio também para futuro
+            own: parseFloat(user.total_account_hp.toFixed(2))
         };
     });
     fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
@@ -230,7 +319,11 @@ async function run() {
         const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
         const totalVests = parseFloat(globals.total_vesting_shares);
         const totalFund = parseFloat(globals.total_vesting_fund_hive);
-        const vestToHp = (val) => (parseFloat(val) * totalFund / totalVests);
+        const vestToHp = (val) => {
+            // Safe parse (v2.25 logic)
+             let vests = (typeof val === 'string') ? parseFloat(val.replace(' VESTS', '')) : parseFloat(val);
+             return (vests * totalFund / totalVests);
+        };
 
         const res = await fetch(HAF_API);
         let delegations = await res.json();
@@ -255,28 +348,14 @@ async function run() {
         }
         let accountsMap = {};
         let projectHp = 0;
-        let lastVotesMap = {}; 
-        let votes24h = 0;
         
         accounts.forEach(acc => {
             if (acc.name === PROJECT_ACCOUNT) projectHp = vestToHp(acc.vesting_shares);
             accountsMap[acc.name] = acc;
         });
 
-        const history = await hiveRpc("condenser_api.get_account_history", [VOTER_ACCOUNT, -1, 1000]);
-        let historyNamed = {};
-        if (history) {
-            const now = new Date();
-            history.reverse().forEach(tx => {
-                const op = tx[1].op;
-                const ts = new Date(tx[1].timestamp + "Z");
-                if (op[0] === 'vote' && op[1].voter === VOTER_ACCOUNT) {
-                    if (!lastVotesMap[op[1].author]) lastVotesMap[op[1].author] = tx[1].timestamp + "Z";
-                    if ((now - ts) < 86400000) votes24h++;
-                    historyNamed[getMonthLabel(ts)] = (historyNamed[getMonthLabel(ts)] || 0) + 1;
-                }
-            });
-        }
+        // VOTOS COM PAGINAÇÃO
+        const voteData = await fetchSmartVoteHistory();
 
         const heBalances = await fetchHiveEngineBalances(allAccounts);
         let tokenMap = {};
@@ -305,15 +384,14 @@ async function run() {
                 next_withdrawal: acc.next_vesting_withdrawal || null,
                 timestamp: d.timestamp,
                 in_curation_trail: curationTrailUsers.includes(d.delegator),
-                last_vote_date: lastVotesMap[d.delegator] || null
+                last_vote_date: voteData.lastVotesMap[d.delegator] || null
             };
         });
 
         ranking.sort((a, b) => b.delegated_hp - a.delegated_hp);
 
-        // --- CALCS ---
         const activityLog = generateActivityLog(ranking);
-        const topGrower = calculateTopGrower(ranking); // Agora usa a lógica corrigida
+        const topGrower = calculateTopGrower(ranking); 
         
         fs.writeFileSync(CURRENT_FILE, JSON.stringify(ranking, null, 2));
 
@@ -322,6 +400,19 @@ async function run() {
         const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
         const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
 
+        // Fallback de Trilha para o Meta
+        let trailCount = curationTrailUsers.length;
+        if (trailCount === 0) {
+            // Tenta ler do histórico global
+             try {
+                if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
+                    const gHist = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE));
+                    const dates = Object.keys(gHist).sort();
+                    if(dates.length > 0) trailCount = gHist[dates[dates.length-1]].trail_count || 0;
+                }
+            } catch(e) {}
+        }
+
         const metaData = {
             last_updated: new Date().toISOString(),
             versions: { backend: SCRIPT_VERSION, node_env: process.version },
@@ -329,19 +420,20 @@ async function run() {
             total_hp: ranking.reduce((acc, curr) => acc + curr.delegated_hp, 0),
             project_account_hp: projectHp,
             total_hbr_staked: tokenSum,
-            curation_trail_count: curationTrailUsers.length,
+            curation_trail_count: trailCount, // Valor corrigido
             active_community_members: ranking.length,
             active_brazilians: activeMembersCount,
-            votes_24h: votes24h,
-            votes_month_current: historyNamed[curLabel] || 0,
-            votes_month_prev1: historyNamed[getMonthLabel(d1)] || 0,
-            votes_month_prev2: historyNamed[getMonthLabel(d2)] || 0,
+            votes_24h: voteData.votes24h,
+            votes_month_current: voteData.historyNamed[curLabel] || 0,
+            votes_month_prev1: voteData.historyNamed[getMonthLabel(d1)] || 0,
+            votes_month_prev2: voteData.historyNamed[getMonthLabel(d2)] || 0,
             activity_log: activityLog,
             top_grower: topGrower
         };
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
         updateRankingHistory(ranking);
+        updateGlobalHistory(metaData); // Feature restaurada
         
         console.log(`✅ Ciclo concluído. Grower: ${topGrower ? topGrower.delegator : 'N/A'}`);
 
