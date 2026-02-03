@@ -163,10 +163,12 @@
     "active_members": 318
   },
   "2026-02-03": {
-    "total_votes": 10,
-    "trail_count": 0,
+    "total_votes": 9,
+    "trail_count": 82,
     "active_brazilians": 51,
-    "total_hp": 41909.08,
-    "active_members": 288
+    "total_hp": 56457.79,
+    "total_delegated_hp": 41909.48,
+    "active_members": 288,
+    "script_version": "2.30.5"
   }
 }
