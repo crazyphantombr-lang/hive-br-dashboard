@@ -1,6 +1,7 @@
 /**
  * ARQUIVO MESTRE DE REGRAS DE NEGÓCIO (Business Rules Manifest)
  * Projeto: Hive BR Dashboard
+ * Versão da Regra: 2.30.5
  * Última Validação: 03/02/2026
  */
 
@@ -43,11 +44,12 @@ const BUSINESS_RULES = {
                 return is_brazilian && days_since_post <= 30;
             }
         },
-        // Regra Corrigida (v2.30.4)
         highlight_card: {
             strategy: "GROWTH_FIRST",
             primary_logic: "Top Grower (Maior Crescimento Absoluto em 30 dias).",
-            fallback_logic: "Top Delegator (Maior Saldo Total) se não houver histórico suficiente.",
+            // REGRA COLD START:
+            integrity_check: "Se o usuário delega há >30 dias e não tem histórico local, crescimento = NULL (Ignorar). Não assumir 0.",
+            fallback_logic: "Top Delegator (Maior Saldo Total) se não houver grower validado.",
             ui_requirement: "O título do card é ESTÁTICO (definido no HTML). O script deve apenas injetar o valor (@usuario + HP), jamais alterar o rótulo."
         }
     },
@@ -55,22 +57,44 @@ const BUSINESS_RULES = {
     // 4. REGRAS DE INTERFACE (Frontend)
     ui: {
         flags: {
-            method: "UNIVERSAL DETECTION (v2.30.0+)",
+            method: "UNIVERSAL DETECTION",
             description: "O sistema converte automaticamente qualquer código ISO 3166-1 alpha-2."
+        },
+        tables: {
+            sorting: "Deve permitir ordenação bidirecional (ASC/DESC) em todas as colunas numéricas e de texto.",
+            sanitization: "Datas de 'Placeholder' da blockchain (ex: 1969/1970) DEVEM ser ocultadas.",
+            formatting: "Remover redundâncias visuais (ex: não repetir 'HP' em todas as células da coluna HP Próprio)."
         }
     },
 
     // 5. PROTOCOLOS DE OPERAÇÃO
     agent_protocol: {
-        compilation: "PROIBIDO compilar sem solicitação explícita.",
-        data_integrity: "Nunca inventar dados. Ler polimorficamente arquivos históricos."
+        compilation: "PROIBIDO compilar sem solicitação explícita (Comando 'compile').",
+        data_integrity: "Nunca inventar dados. Ler polimorficamente arquivos históricos (Numbers vs Objects)."
     },
 
-    // 6. PROTOCOLOS DE DESCOBERTA (Inbox)
-    discovery: {
-        file_path: "data/discovery.json",
-        integrity_rule: "LOG IMUTÁVEL (Append-Only).",
-        sanitization: "Lowercase + Trim para evitar duplicatas."
+    // 6. RETENÇÃO DE DADOS E HISTÓRICO
+    data_retention: {
+        ranking_history: "Salva o estado diário de cada usuário (HP, Trail, Own HP).",
+        global_history: "OBRIGATÓRIO: Salvar o 'snapshot' diário da comunidade (Total HP, Membros, Votos) em 'global_history.json' para análise macro.",
+        discovery: "Log imutável (Append-Only) de novos delegadores."
+    },
+
+    // 7. RESTRIÇÕES TÉCNICAS E API (NOVO - CRÍTICO)
+    api_constraints: {
+        vote_history_scan: {
+            problem: "A API 'get_account_history' tem limite hardcoded de 1000 itens.",
+            solution: "PAGINAÇÃO OBRIGATÓRIA (Loop 'while').",
+            rule: "O script deve buscar transações em lotes até cobrir 90 dias ou 50.000 txs. Jamais confiar em uma única chamada."
+        }
+    },
+
+    // 8. RESILIÊNCIA E FALHAS (NOVO - CRÍTICO)
+    resilience: {
+        external_apis: {
+            target: "hive.vote (Curation Trail)",
+            failure_protocol: "Se a API falhar ou retornar vazio/zero, o sistema DEVE manter o valor do último dia conhecido (Last Known Good Configuration). Jamais sobrescrever com 0."
+        }
     }
 };
 
