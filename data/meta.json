@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-02-05T01:46:38.526Z",
+  "last_updated": "2026-02-05T01:56:42.856Z",
   "versions": {
     "backend": "2.30.5",
     "node_env": "v18.20.8"
   },
   "total_delegators": 65,
-  "total_hp": 41850.776,
-  "project_account_hp": 14549.563217923773,
+  "total_hp": 41850.799000000006,
+  "project_account_hp": 14549.570746631456,
   "total_hbr_staked": 5375.871557999998,
   "curation_trail_count": 82,
   "active_community_members": 288,
@@ -15,18 +15,11 @@
   "votes_month_current": 44,
   "votes_month_prev1": 364,
   "votes_month_prev2": 351,
-  "activity_log": [
-    {
-      "user": "samye2",
-      "old_val": 50.02,
-      "new_val": 0,
-      "diff": -50.02
-    }
-  ],
+  "activity_log": [],
   "top_grower": {
     "delegator": "rimurutempest",
-    "growth": 353.34499999999935,
+    "growth": 353.34799999999996,
     "old_hp": 4508.113,
-    "current_hp": 4861.458
+    "current_hp": 4861.461
   }
 }
