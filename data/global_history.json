@@ -215,5 +215,14 @@
     "total_delegated_hp": 42006.07,
     "active_members": 288,
     "script_version": "2.30.5"
+  },
+  "2026-02-09": {
+    "total_votes": 9,
+    "trail_count": 82,
+    "active_brazilians": 51,
+    "total_hp": 56581.39,
+    "total_delegated_hp": 42006.82,
+    "active_members": 288,
+    "script_version": "2.30.5"
   }
 }
