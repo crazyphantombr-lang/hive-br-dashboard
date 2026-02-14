@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-02-14T18:28:52.616Z",
+  "last_updated": "2026-02-14T18:32:34.458Z",
   "versions": {
     "backend": "2.30.5",
     "node_env": "v18.20.8"
   },
   "total_delegators": 65,
-  "total_hp": 41527.33200000002,
-  "project_account_hp": 14580.874518639484,
+  "total_hp": 41527.33900000002,
+  "project_account_hp": 14580.8774060022,
   "total_hbr_staked": 5394.741557999998,
   "curation_trail_count": 82,
   "active_community_members": 288,
@@ -15,14 +15,7 @@
   "votes_month_current": 144,
   "votes_month_prev1": 364,
   "votes_month_prev2": 351,
-  "activity_log": [
-    {
-      "user": "lucianaabrao",
-      "old_val": 10.41,
-      "new_val": 14.41,
-      "diff": 4
-    }
-  ],
+  "activity_log": [],
   "top_grower": {
     "delegator": "adncabrera",
     "growth": 48.64699999999999,
