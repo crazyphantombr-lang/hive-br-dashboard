@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-02-16T01:51:13.679Z",
+  "last_updated": "2026-02-16T02:00:56.159Z",
   "versions": {
     "backend": "2.30.5",
     "node_env": "v18.20.8"
   },
   "total_delegators": 65,
-  "total_hp": 41531.43100000001,
-  "project_account_hp": 14582.31411137603,
+  "total_hp": 41531.456,
+  "project_account_hp": 14582.321538729178,
   "total_hbr_staked": 5394.749557999998,
   "curation_trail_count": 82,
   "active_community_members": 288,
@@ -18,8 +18,8 @@
   "activity_log": [],
   "top_grower": {
     "delegator": "adncabrera",
-    "growth": 48.644999999999996,
+    "growth": 48.646,
     "old_hp": 51.47,
-    "current_hp": 100.115
+    "current_hp": 100.116
   }
 }
