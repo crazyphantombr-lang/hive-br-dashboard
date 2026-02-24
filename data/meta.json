@@ -1,25 +1,32 @@
 {
-  "last_updated": "2026-02-24T06:58:08.918Z",
+  "last_updated": "2026-02-24T12:57:17.317Z",
   "versions": {
     "backend": "2.30.5",
     "node_env": "v18.20.8"
   },
   "total_delegators": 64,
-  "total_hp": 41455.08100000001,
-  "project_account_hp": 14591.422930302893,
+  "total_hp": 42157.95500000002,
+  "project_account_hp": 14591.702729922643,
   "total_hbr_staked": 5401.806557999998,
   "curation_trail_count": 82,
   "active_community_members": 288,
   "active_brazilians": 51,
-  "votes_24h": 8,
-  "votes_month_current": 252,
+  "votes_24h": 12,
+  "votes_month_current": 256,
   "votes_month_prev1": 364,
   "votes_month_prev2": 351,
-  "activity_log": [],
+  "activity_log": [
+    {
+      "user": "crazyphantombr",
+      "old_val": 300.92,
+      "new_val": 1003,
+      "diff": 702.08
+    }
+  ],
   "top_grower": {
-    "delegator": "adncabrera",
-    "growth": 48.678,
-    "old_hp": 51.5,
-    "current_hp": 100.178
+    "delegator": "crazyphantombr",
+    "growth": 702.745,
+    "old_hp": 300.26,
+    "current_hp": 1003.005
   }
 }
