@@ -1,7 +1,6 @@
-// File: scripts/fetch_delegations.js
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.30.5 (Fix: Pagination, Resilience, Sort & Clean Table)
+ * Version: 2.31.0
  * Author: Hive BR
  * License: MIT
  */
@@ -10,10 +9,8 @@ const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
 
-// --- VERSÃO ---
-const SCRIPT_VERSION = "2.30.5";
+const SCRIPT_VERSION = "2.31.0";
 
-// --- CONFIGURAÇÕES ---
 const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
 const TOKEN_SYMBOL = "HBR";
@@ -31,11 +28,9 @@ const DISCOVERY_FILE = path.join(DATA_DIR, "discovery.json");
 const RANKING_HISTORY_FILE = path.join(DATA_DIR, "ranking_history.json");
 const CURRENT_FILE = path.join(DATA_DIR, "current.json");
 
-// Carrega listas
 let listConfig = { watchlist: [] };
 try { if (fs.existsSync(CONFIG_PATH)) listConfig = JSON.parse(fs.readFileSync(CONFIG_PATH)); } catch (e) {}
 
-// Scanner Universal
 const monitoredSet = new Set(listConfig.watchlist || []);
 Object.keys(listConfig).forEach(key => {
     if ((key.startsWith("verificado_") || key.startsWith("pendente_")) && Array.isArray(listConfig[key])) {
@@ -47,7 +42,6 @@ const FIXED_USERS = [...monitoredSet];
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(HISTORY_DIR)) fs.mkdirSync(HISTORY_DIR, { recursive: true });
 
-// --- AUXILIARES ---
 async function hiveRpc(method, params) {
   for (const node of RPC_NODES) {
     try {
@@ -62,27 +56,40 @@ async function hiveRpc(method, params) {
   return null;
 }
 
-// --- TRILHA COM RESILIÊNCIA ---
+// COTAÇÕES DE MERCADO
+async function fetchMarketData() {
+    let market = { hive_usd: null, usd_brl: null };
+    try {
+        const cgRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=hive&vs_currencies=usd", { timeout: 5000 });
+        const cgData = await cgRes.json();
+        if (cgData.hive && cgData.hive.usd) market.hive_usd = cgData.hive.usd;
+    } catch (e) { console.warn("⚠️ Falha ao buscar cotação HIVE/USD"); }
+    
+    try {
+        const brlRes = await fetch("https://economia.awesomeapi.com.br/last/USD-BRL", { timeout: 5000 });
+        const brlData = await brlRes.json();
+        if (brlData.USDBRL && brlData.USDBRL.bid) market.usd_brl = parseFloat(brlData.USDBRL.bid);
+    } catch (e) { console.warn("⚠️ Falha ao buscar cotação USD/BRL"); }
+    
+    return market;
+}
+
+// TRILHA COM RESILIÊNCIA
 async function fetchCurationTrail() {
     let users = [];
-    // 1. Tenta API
     try {
         const response = await fetch(TRAIL_API_URL, { timeout: 8000 });
         const data = await response.json();
         if (Array.isArray(data)) users = data.map(item => item.follower);
     } catch (e) { console.warn("⚠️ Falha na API da trilha. Tentando fallback..."); }
 
-    // 2. Fallback se vier vazio
     if (users.length === 0) {
         try {
             if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
                 const hist = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE));
                 const dates = Object.keys(hist).sort();
                 if (dates.length > 0) {
-                    const lastData = hist[dates[dates.length - 1]];
-                    console.log(`⚠️ Usando contagem de trilha antiga: ${lastData.trail_count}`);
-                    // Nota: Não temos os nomes, mas evitamos zerar a contagem no meta.
-                    // Para manter a consistência, retornamos vazio aqui mas trataremos no meta.
+                    console.log(`⚠️ Fallback da trilha acionado. A contagem será mantida pelo meta.`);
                 }
             }
         } catch (e) {}
@@ -120,16 +127,16 @@ function detectCountryAndStatus(username, config) {
     return isCert ? `${country}_CERT` : country; 
 }
 
-// --- PAGINAÇÃO INTELIGENTE DE VOTOS (Resgatado v2.25.0) ---
+// PAGINAÇÃO INTELIGENTE DE VOTOS
 async function fetchSmartVoteHistory() {
-    console.log("🗳️ Iniciando varredura profunda de votos...");
+    console.log("🗳️ Iniciando varredura profunda de votos (Paginação)...");
     let lastVotesMap = {}; 
     let historyNamed = {}; 
     let votes24h = 0;
     
     const now = new Date();
     const time24h = new Date(now.getTime() - (86400000));
-    const limitDate = new Date(); limitDate.setDate(limitDate.getDate() - 90); // 3 meses
+    const limitDate = new Date(); limitDate.setDate(limitDate.getDate() - 90);
 
     let start = -1;
     let limit = 1000;
@@ -142,7 +149,6 @@ async function fetchSmartVoteHistory() {
         
         if (!history || history.length === 0) break;
 
-        // Processa do mais recente para o mais antigo
         for (let i = history.length - 1; i >= 0; i--) {
             const tx = history[i];
             const op = tx[1].op;
@@ -164,9 +170,9 @@ async function fetchSmartVoteHistory() {
         totalScanned += history.length;
         if (active) {
             const firstId = history[0][0];
-            if (firstId <= 0) break; // Chegou no início da conta
+            if (firstId <= 0) break; 
             start = firstId - 1;
-            limit = Math.min(1000, start); // Ajusta limite se estiver perto do fim
+            limit = Math.min(1000, start); 
         }
     }
     
@@ -174,8 +180,8 @@ async function fetchSmartVoteHistory() {
     return { lastVotesMap, historyNamed, votes24h };
 }
 
-// --- ATUALIZA HISTÓRICO GLOBAL (Restaurado) ---
-function updateGlobalHistory(data) {
+// HISTÓRICO GLOBAL
+function updateGlobalHistory(data, marketData) {
     let globalData = {};
     try {
         if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
@@ -192,6 +198,7 @@ function updateGlobalHistory(data) {
         total_hp: parseFloat((data.total_hp + data.project_account_hp).toFixed(2)),
         total_delegated_hp: parseFloat(data.total_hp.toFixed(2)),
         active_members: data.active_community_members,
+        market: marketData,
         script_version: SCRIPT_VERSION
     };
 
@@ -222,23 +229,7 @@ function updateDiscoveryLog(delegations, config) {
     if (newFinds > 0) fs.writeFileSync(DISCOVERY_FILE, JSON.stringify(discoveryData, null, 2));
 }
 
-function generateActivityLog(currentRanking) {
-    let oldRanking = [];
-    try { if (fs.existsSync(CURRENT_FILE)) oldRanking = JSON.parse(fs.readFileSync(CURRENT_FILE)); } catch (e) { return []; }
-    const changes = [];
-    currentRanking.forEach(curr => {
-        const prev = oldRanking.find(p => p.delegator === curr.delegator);
-        const oldVal = prev ? prev.delegated_hp : 0;
-        const newVal = curr.delegated_hp;
-        const diff = newVal - oldVal;
-        if (Math.abs(diff) > 1) {
-            changes.push({ user: curr.delegator, old_val: parseFloat(oldVal.toFixed(2)), new_val: parseFloat(newVal.toFixed(2)), diff: parseFloat(diff.toFixed(2)) });
-        }
-    });
-    return changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff)).slice(0, 10);
-}
-
-// --- CRESCIMENTO INTELIGENTE (Polimórfico + Antiguidade) ---
+// LEITURA POLIMÓRFICA
 function getHpFromHistory(entry) {
     if (entry === undefined || entry === null) return null;
     if (typeof entry === 'number') return entry;
@@ -246,6 +237,36 @@ function getHpFromHistory(entry) {
     return 0;
 }
 
+// LOG DE ATIVIDADES - 15 DIAS
+function generateActivityLog(currentRanking) {
+    let history = {};
+    try { if (fs.existsSync(RANKING_HISTORY_FILE)) history = JSON.parse(fs.readFileSync(RANKING_HISTORY_FILE)); } catch (e) { return []; }
+
+    const targetDate = new Date(); 
+    targetDate.setDate(targetDate.getDate() - 15);
+    const targetStr = targetDate.toISOString().split('T')[0];
+
+    const changes = [];
+    currentRanking.forEach(curr => {
+        const userHist = history[curr.delegator];
+        if (userHist) {
+            const dates = Object.keys(userHist).sort();
+            if (dates.length > 0) {
+                let compareDate = dates.find(d => d >= targetStr) || dates[0];
+                const oldHp = getHpFromHistory(userHist[compareDate]);
+                const newVal = curr.delegated_hp;
+                const diff = newVal - oldHp;
+                
+                if (Math.abs(diff) >= 1) {
+                    changes.push({ user: curr.delegator, old_val: parseFloat(oldHp.toFixed(2)), new_val: parseFloat(newVal.toFixed(2)), diff: parseFloat(diff.toFixed(2)) });
+                }
+            }
+        }
+    });
+    return changes.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff)).slice(0, 10);
+}
+
+// CRESCIMENTO TOP
 function calculateTopGrower(currentRanking) {
     let history = {};
     try { if (fs.existsSync(RANKING_HISTORY_FILE)) history = JSON.parse(fs.readFileSync(RANKING_HISTORY_FILE)); } catch (e) { return null; }
@@ -272,11 +293,7 @@ function calculateTopGrower(currentRanking) {
 
         if (oldHp === null) {
             const daysDelegating = user.timestamp ? (now - new Date(user.timestamp)) / (1000 * 60 * 60 * 24) : 999;
-            if (daysDelegating < 30) {
-                oldHp = 0; // Novo de verdade
-            } else {
-                return; // Veterano sem log = Ignora
-            }
+            if (daysDelegating < 30) { oldHp = 0; } else { return; }
         }
 
         const currentHp = user.delegated_hp;
@@ -284,12 +301,7 @@ function calculateTopGrower(currentRanking) {
 
         if (growth > maxGrowth && growth > 10) { 
             maxGrowth = growth;
-            bestGrower = {
-                delegator: user.delegator,
-                growth: growth,
-                old_hp: oldHp,
-                current_hp: currentHp
-            };
+            bestGrower = { delegator: user.delegator, growth: growth, old_hp: oldHp, current_hp: currentHp };
         }
     });
     return bestGrower;
@@ -311,16 +323,17 @@ function updateRankingHistory(ranking) {
     fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
 }
 
-// --- MAIN ---
+// MAIN
 async function run() {
     try {
         console.log(`🚀 Hive BR Dashboard v${SCRIPT_VERSION}`);
+        
+        const marketData = await fetchMarketData();
         
         const globals = await hiveRpc("condenser_api.get_dynamic_global_properties", []);
         const totalVests = parseFloat(globals.total_vesting_shares);
         const totalFund = parseFloat(globals.total_vesting_fund_hive);
         const vestToHp = (val) => {
-            // Safe parse (v2.25 logic)
              let vests = (typeof val === 'string') ? parseFloat(val.replace(' VESTS', '')) : parseFloat(val);
              return (vests * totalFund / totalVests);
         };
@@ -354,7 +367,6 @@ async function run() {
             accountsMap[acc.name] = acc;
         });
 
-        // VOTOS COM PAGINAÇÃO
         const voteData = await fetchSmartVoteHistory();
 
         const heBalances = await fetchHiveEngineBalances(allAccounts);
@@ -400,10 +412,8 @@ async function run() {
         const d1 = new Date(); d1.setMonth(d1.getMonth() - 1);
         const d2 = new Date(); d2.setMonth(d2.getMonth() - 2);
 
-        // Fallback de Trilha para o Meta
         let trailCount = curationTrailUsers.length;
         if (trailCount === 0) {
-            // Tenta ler do histórico global
              try {
                 if (fs.existsSync(GLOBAL_HISTORY_FILE)) {
                     const gHist = JSON.parse(fs.readFileSync(GLOBAL_HISTORY_FILE));
@@ -420,7 +430,7 @@ async function run() {
             total_hp: ranking.reduce((acc, curr) => acc + curr.delegated_hp, 0),
             project_account_hp: projectHp,
             total_hbr_staked: tokenSum,
-            curation_trail_count: trailCount, // Valor corrigido
+            curation_trail_count: trailCount, 
             active_community_members: ranking.length,
             active_brazilians: activeMembersCount,
             votes_24h: voteData.votes24h,
@@ -428,12 +438,13 @@ async function run() {
             votes_month_prev1: voteData.historyNamed[getMonthLabel(d1)] || 0,
             votes_month_prev2: voteData.historyNamed[getMonthLabel(d2)] || 0,
             activity_log: activityLog,
-            top_grower: topGrower
+            top_grower: topGrower,
+            market: marketData
         };
 
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
         updateRankingHistory(ranking);
-        updateGlobalHistory(metaData); // Feature restaurada
+        updateGlobalHistory(metaData, marketData);
         
         console.log(`✅ Ciclo concluído. Grower: ${topGrower ? topGrower.delegator : 'N/A'}`);
 
