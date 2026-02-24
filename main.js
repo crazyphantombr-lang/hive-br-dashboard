@@ -1,7 +1,6 @@
-// File: public/main.js
 /**
  * Hive BR Dashboard - Main Script
- * Version: 2.30.5 (Fix: Sort, Clean Dates, UI Polish)
+ * Version: 2.31.0
  * Author: Hive BR
  * License: MIT
  */
@@ -9,7 +8,7 @@
 const CONFIG = {
     API_URL: './data/current.json',
     META_URL: './data/meta.json',
-    UI_VERSION: "2.30.5" 
+    UI_VERSION: "2.31.0" 
 };
 
 const regionNames = new Intl.DisplayNames(['pt-BR'], { type: 'region' });
@@ -70,8 +69,18 @@ async function loadMeta() {
     const res = await fetch(CONFIG.META_URL);
     const meta = await res.json();
     
+    let marketInfo = "";
+    if (meta.market && meta.market.hive_usd) {
+        marketInfo = ` | HIVE: $${meta.market.hive_usd} | USD: R$${meta.market.usd_brl}`;
+    }
+
     const date = new Date(meta.last_updated);
-    els.lastUpdated.innerHTML = `Atualizado em: ${date.toLocaleString('pt-BR')}<br><span style="font-size: 0.75em; opacity: 0.6; font-weight: normal;">Core: v${meta.versions?.backend || '?'} | UI: v${CONFIG.UI_VERSION}</span>`;
+    els.lastUpdated.innerHTML = `
+        Atualizado em: ${date.toLocaleString('pt-BR')}<br>
+        <span style="font-size: 0.75em; opacity: 0.6; font-weight: normal;">
+            Core: v${meta.versions?.backend || '?'} | UI: v${CONFIG.UI_VERSION}${marketInfo}
+        </span>
+    `;
 
     els.communityPower.innerText = `${formatHP(meta.project_account_hp + meta.total_hp)} HP`;
     els.ownHp.innerText = `${formatHP(meta.project_account_hp)} HP`;
@@ -94,7 +103,6 @@ async function loadMeta() {
     els.votesM1.innerText = meta.votes_month_prev1 || 0;
     els.votesM2.innerText = meta.votes_month_prev2 || 0;
 
-    // Card Destaque
     if (meta.top_grower) {
         const grower = meta.top_grower;
         els.growth.innerHTML = `<a href="https://peakd.com/@${grower.delegator}" target="_blank" style="color:inherit; text-decoration:none;">@${grower.delegator}</a><div style="font-size:0.6em; color:var(--accent-green); margin-top:2px;">+${formatHP(grower.growth)} HP 🚀</div>`;
@@ -108,7 +116,6 @@ async function loadData() {
     const res = await fetch(CONFIG.API_URL);
     globalData = await res.json();
     
-    // Fallback Card Destaque (Se não houver crescimento validado)
     if ((!els.growth.innerHTML.includes("🚀")) && globalData.length > 0) {
         const topUser = globalData[0];
         els.growth.innerHTML = `<a href="https://peakd.com/@${topUser.delegator}" target="_blank" style="color:inherit; text-decoration:none;">@${topUser.delegator}</a><div style="font-size:0.6em; color:var(--accent-green); margin-top:2px;">Top Delegador</div>`;
@@ -195,7 +202,8 @@ function renderTable(data) {
             </td>
             <td style="font-weight:bold; font-family:monospace; font-size:1.1em; color:${item.delegated_hp > 0 ? '#4dff91' : '#666'};">${formatVal(item.delegated_hp)}</td>
             <td style="font-size:0.9em;">${timeLabel} ${veteranBadge}</td>
-            <td style="font-family:monospace; color:#888;">${formatVal(item.total_account_hp)}</td> <td style="text-align:center;">${pdHtml}</td>
+            <td style="font-family:monospace; color:#888;">${formatVal(item.total_account_hp)}</td>
+            <td style="text-align:center;">${pdHtml}</td>
             <td style="font-family:monospace; color:${item.token_balance > 0 ? '#4da6ff' : '#444'}; font-weight:bold;">${formatVal(item.token_balance)}</td>
             <td>${activityHtml}</td>
             <td>${voteHtml}</td>
@@ -215,9 +223,16 @@ window.handleSort = (key) => {
 
     globalData.sort((a, b) => {
         let valA = a[key]; let valB = b[key];
-        if (valA === null || valA === undefined) valA = 0;
-        if (valB === null || valB === undefined) valB = 0;
-        if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
+        
+        if (key === 'timestamp' || key === 'last_user_post' || key === 'last_vote_date' || key === 'next_withdrawal') {
+            valA = valA ? new Date(valA).getTime() : 0;
+            valB = valB ? new Date(valB).getTime() : 0;
+        } else {
+            if (valA === null || valA === undefined) valA = 0;
+            if (valB === null || valB === undefined) valB = 0;
+            if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
+        }
+
         if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
         if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
         return 0;
