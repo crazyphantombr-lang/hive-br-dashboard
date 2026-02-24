@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <script src="https://www.googletagmanager.com/gtag/js?id=G-0B2JEW0JXF" async></script>
+  <script src="https://www.googletagmanager.com/gtag/js?id=G-0B2JEW0JXF" async=""></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -23,7 +23,12 @@
   <div class="container">
     <header>
       <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 5px;">
-          <div class="last-updated" id="last-updated">Carregando dados...</div>
+          <div class="last-updated" id="last-updated">
+        Carregando dados...<br>
+        <span style="font-size: 0.75em; opacity: 0.6; font-weight: normal;">
+            Core: v2.31.0 | UI: v2.31.0
+        </span>
+    </div>
           <button class="modal-btn" onclick="openModal()">🔔 Novidades</button>
       </div>
       <h1>HIVE BR <span class="highlight">DASHBOARD</span></h1>
@@ -37,7 +42,7 @@
         </div>
         <div class="project-info">
             <h3>PODER DE VOTO DA COMUNIDADE</h3>
-            <p id="stat-community-power">0 HP</p>
+            <p id="stat-community-power">Carregando...</p>
         </div>
       </div>
     </div>
@@ -45,11 +50,11 @@
     <div class="stats-grid">
       <div class="stat-card">
         <h3>HP Próprio</h3>
-        <p id="stat-own-hp" style="color: #4da6ff;">0 HP</p>
+        <p id="stat-own-hp" style="color: #4da6ff;">Carregando...</p>
       </div>
       <div class="stat-card">
         <h3>HP Delegado</h3>
-        <p id="stat-delegated-hp" style="color:var(--accent-purple);">0 HP</p>
+        <p id="stat-delegated-hp" style="color:var(--accent-purple);">Carregando...</p>
       </div>
       <div class="stat-card">
         <h3>Delegadores</h3>
@@ -57,12 +62,14 @@
       </div>
       <div class="stat-card">
         <h3>Delegador Destaque nos últimos 30 dias</h3>
-        <p id="stat-growth">—</p>
+        <p id="stat-growth">
+            Carregando...
+        </p>
       </div>
     </div>
 
     <div id="activity-panel" class="activity-container" style="display: none;">
-      <h3 class="section-title">⚡ Últimas Alterações nas Delegações (7 dias)</h3>
+      <h3 class="section-title">⚡ Últimas Alterações nas Delegações (15 dias)</h3>
       <table class="activity-table">
         <thead>
           <tr>
@@ -83,7 +90,7 @@
                 <span style="font-size: 3rem;">🗳️</span>
             </div>
             <div class="project-info">
-                <h3 id="lbl-votes-current">MÊS ATUAL</h3>
+                <h3 id="lbl-votes-current">Votos em ...</h3>
                 <p id="stat-votes-current" style="color: #ffcc00;">0</p>
             </div>
         </div>
@@ -116,11 +123,11 @@
             <p id="stat-votes-24h" style="color:#ffcc00;">0</p>
         </div>
         <div class="stat-card">
-            <h3 id="lbl-votes-m1">Mês Anterior</h3>
+            <h3 id="lbl-votes-m1">Votos em ...</h3>
             <p id="stat-votes-m1" style="color:#a3a3cc;">0</p>
         </div>
         <div class="stat-card">
-            <h3 id="lbl-votes-m2">2 Meses Atrás</h3>
+            <h3 id="lbl-votes-m2">Votos em ...</h3>
             <p id="stat-votes-m2" style="color:#a3a3cc;">0</p>
         </div>
     </div>
@@ -159,20 +166,20 @@
 
   <div id="news-modal" class="modal-overlay" onclick="closeModalOnOverlay(event)">
       <div class="modal-content">
-          <span class="modal-close" onclick="closeModal()">&times;</span>
+          <span class="modal-close" onclick="closeModal()">×</span>
           <h2 style="margin-top:0; color:var(--accent-green);">🔔 O que há de novo?</h2>
           <p style="color:#888; font-size:0.9em; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;">
-              Atualização v2.29.0 • 28/01/2026
+              Atualização v2.31.0 • 24/02/2026
           </p>
           <ul style="line-height:1.6; padding-left:20px; color: var(--text-primary);">
               <li style="margin-bottom:10px;">
-                  <strong>🌍 Padronização Internacional:</strong> Adotamos o padrão ISO para bandeiras. Isso permite que a comunidade cresça e receba membros de novos países (como 🇨🇺 Cuba e 🇻🇪 Venezuela) com identificação visual imediata.
+                  <strong>💰 Histórico Financeiro:</strong> Agora o painel rastreia o valor da HIVE em USD e BRL diretamente na camada de cache diário, preparando o terreno para relatórios de patrimônio fiduciário.
               </li>
               <li style="margin-bottom:10px;">
-                  <strong>🚀 Performance:</strong> Removemos o gráfico de "Histórico de Delegação" para tornar a leitura da tabela mais limpa e o carregamento do painel mais rápido.
+                  <strong>📊 Alterações de 15 Dias:</strong> O painel de atividade recente foi expandido e refinado para comparar variações exatas usando uma janela histórica de 15 dias.
               </li>
               <li>
-                  <strong>✨ Melhorias Visuais:</strong> Refinamentos no design, inclusão deste painel de novidades e correção na renderização de status.
+                  <strong>⚙️ Resiliência & Correções:</strong> Ordenação da tabela restaurada (basta clicar no título da coluna), limpeza visual na exibição de Power Downs nulos (bug 1969) e proteção do histórico da Trilha contra quedas na API externa.
               </li>
           </ul>
       </div>
