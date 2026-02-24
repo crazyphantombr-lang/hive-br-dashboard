@@ -1,8 +1,8 @@
 /**
  * ARQUIVO MESTRE DE REGRAS DE NEGÓCIO (Business Rules Manifest)
  * Projeto: Hive BR Dashboard
- * Versão da Regra: 2.30.5
- * Última Validação: 03/02/2026
+ * Versão da Regra: 2.31.0
+ * Última Validação: 24/02/2026
  */
 
 const BUSINESS_RULES = {
@@ -47,10 +47,15 @@ const BUSINESS_RULES = {
         highlight_card: {
             strategy: "GROWTH_FIRST",
             primary_logic: "Top Grower (Maior Crescimento Absoluto em 30 dias).",
-            // REGRA COLD START:
             integrity_check: "Se o usuário delega há >30 dias e não tem histórico local, crescimento = NULL (Ignorar). Não assumir 0.",
             fallback_logic: "Top Delegator (Maior Saldo Total) se não houver grower validado.",
             ui_requirement: "O título do card é ESTÁTICO (definido no HTML). O script deve apenas injetar o valor (@usuario + HP), jamais alterar o rótulo."
+        },
+        activity_log: {
+            definition: "Monitoramento das maiores alterações de delegação da comunidade.",
+            lookback_period: "15 dias",
+            logic: "O backend DEVE cruzar o HP atual com o dado histórico de 15 dias atrás usando 'ranking_history.json' (usando Leitura Polimórfica). Não usar variação de 'current.json'.",
+            threshold: "Ignorar ruídos (alterações menores que 1 HP)."
         }
     },
 
@@ -76,11 +81,16 @@ const BUSINESS_RULES = {
     // 6. RETENÇÃO DE DADOS E HISTÓRICO
     data_retention: {
         ranking_history: "Salva o estado diário de cada usuário (HP, Trail, Own HP).",
-        global_history: "OBRIGATÓRIO: Salvar o 'snapshot' diário da comunidade (Total HP, Membros, Votos) em 'global_history.json' para análise macro.",
-        discovery: "Log imutável (Append-Only) de novos delegadores."
+        global_history: "OBRIGATÓRIO: Salvar o 'snapshot' diário da comunidade (Total HP, Membros, Votos) em 'global_history.json'.",
+        discovery: "Log imutável (Append-Only) de novos delegadores.",
+        market_data: {
+            requirement: "O sistema DEVE iniciar o rastreio diário do valor de mercado.",
+            targets: ["HIVE (USD)", "USD (BRL)"],
+            storage: "As cotações devem ser salvas diariamente dentro do 'global_history.json'."
+        }
     },
 
-    // 7. RESTRIÇÕES TÉCNICAS E API (NOVO - CRÍTICO)
+    // 7. RESTRIÇÕES TÉCNICAS E API 
     api_constraints: {
         vote_history_scan: {
             problem: "A API 'get_account_history' tem limite hardcoded de 1000 itens.",
@@ -89,7 +99,7 @@ const BUSINESS_RULES = {
         }
     },
 
-    // 8. RESILIÊNCIA E FALHAS (NOVO - CRÍTICO)
+    // 8. RESILIÊNCIA E FALHAS 
     resilience: {
         external_apis: {
             target: "hive.vote (Curation Trail)",
