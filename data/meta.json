@@ -1,26 +1,26 @@
 {
-  "last_updated": "2026-02-27T06:52:19.763Z",
+  "last_updated": "2026-02-27T12:51:20.129Z",
   "versions": {
     "backend": "2.31.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 64,
-  "total_hp": 41463.68000000001,
-  "project_account_hp": 14594.78680728919,
+  "total_hp": 41464.473,
+  "project_account_hp": 14595.066814831205,
   "total_hbr_staked": 5401.965557999999,
   "curation_trail_count": 81,
   "active_community_members": 288,
   "active_brazilians": 50,
-  "votes_24h": 11,
-  "votes_month_current": 291,
+  "votes_24h": 13,
+  "votes_month_current": 294,
   "votes_month_prev1": 364,
   "votes_month_prev2": 351,
   "activity_log": [
     {
       "user": "rimurutempest",
       "old_val": 5001.53,
-      "new_val": 4504.94,
-      "diff": -496.59
+      "new_val": 4505.03,
+      "diff": -496.5
     },
     {
       "user": "hellene8",
@@ -31,14 +31,14 @@
     {
       "user": "matheusggr",
       "old_val": 10280.69,
-      "new_val": 10292.05,
-      "diff": 11.36
+      "new_val": 10292.24,
+      "diff": 11.55
     },
     {
       "user": "wiseagent",
       "old_val": 7029.44,
-      "new_val": 7037.21,
-      "diff": 7.77
+      "new_val": 7037.34,
+      "diff": 7.9
     },
     {
       "user": "lucianaabrao",
@@ -49,42 +49,42 @@
     {
       "user": "tfranzini",
       "old_val": 3133.03,
-      "new_val": 3136.49,
-      "diff": 3.46
+      "new_val": 3136.55,
+      "diff": 3.52
     },
     {
       "user": "mengao",
       "old_val": 2027.26,
-      "new_val": 2029.5,
-      "diff": 2.24
+      "new_val": 2029.54,
+      "diff": 2.28
     },
     {
       "user": "shiftrox",
       "old_val": 1205.52,
-      "new_val": 1206.85,
-      "diff": 1.33
+      "new_val": 1206.87,
+      "diff": 1.35
     },
     {
       "user": "michupa",
       "old_val": 1075.24,
-      "new_val": 1076.43,
-      "diff": 1.19
+      "new_val": 1076.45,
+      "diff": 1.21
     },
     {
       "user": "gwajnberg",
       "old_val": 1037.72,
-      "new_val": 1038.87,
-      "diff": 1.15
+      "new_val": 1038.89,
+      "diff": 1.17
     }
   ],
   "top_grower": {
     "delegator": "adncabrera",
-    "growth": 48.690999999999995,
+    "growth": 48.693000000000005,
     "old_hp": 51.51,
-    "current_hp": 100.201
+    "current_hp": 100.203
   },
   "market": {
-    "hive_usd": 0.067006,
+    "hive_usd": 0.066544,
     "usd_brl": null
   }
 }
