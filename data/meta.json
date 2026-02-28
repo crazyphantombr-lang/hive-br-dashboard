@@ -1,18 +1,18 @@
 {
-  "last_updated": "2026-02-28T18:27:35.803Z",
+  "last_updated": "2026-02-28T18:31:13.919Z",
   "versions": {
     "backend": "2.31.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 64,
-  "total_hp": 41468.410000000054,
-  "project_account_hp": 14596.452209299065,
+  "total_hp": 41468.41700000006,
+  "project_account_hp": 14596.454908991367,
   "total_hbr_staked": 5401.965557999999,
   "curation_trail_count": 81,
   "active_community_members": 288,
   "active_brazilians": 50,
-  "votes_24h": 18,
-  "votes_month_current": 315,
+  "votes_24h": 19,
+  "votes_month_current": 316,
   "votes_month_prev1": 364,
   "votes_month_prev2": 351,
   "activity_log": [
@@ -61,7 +61,7 @@
     {
       "user": "shiftrox",
       "old_val": 1205.61,
-      "new_val": 1206.98,
+      "new_val": 1206.99,
       "diff": 1.38
     },
     {
@@ -84,7 +84,7 @@
     "current_hp": 100.213
   },
   "market": {
-    "hive_usd": 0.063748,
+    "hive_usd": 0.063774,
     "usd_brl": null
   }
 }
