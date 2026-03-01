@@ -1,7 +1,7 @@
 // File: scripts/generate_report.js
 /**
  * Script: AI Report Generator
- * Version: 2.32.0 (Feature: Bulletproof AI Payload & New Members)
+ * Version: 2.32.0
  * Author: Hive BR
  * License: MIT
  * Description: Gera relatórios narrativos usando dados pré-calculados exatos e cita novatos.
@@ -50,7 +50,6 @@ async function generateReport() {
     const now = new Date();
     
     // Identificação inteligente do "Mês Alvo" do relatório
-    // Se hoje é dia 1 a 5, o relatório refere-se ao mês passado.
     let targetDate = new Date(now);
     if (now.getDate() <= 5) {
         targetDate.setMonth(now.getMonth() - 1);
@@ -58,7 +57,6 @@ async function generateReport() {
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const reportMonthName = `${monthNames[targetDate.getMonth()]} de ${targetDate.getFullYear()}`;
     
-    // Verifica se é o último dia do mês ou início (ou forçado)
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
     const isLastDay = tomorrow.getDate() === 1 || now.getDate() === 1;
@@ -96,12 +94,10 @@ async function generateReport() {
         if (userHist) {
             const dates = Object.keys(userHist).sort();
             if (dates.length > 0) {
-                // Tenta achar a data exata de 30 dias atrás, ou a mais antiga disponível
                 const compareDate = dates.find(d => d >= targetStr) || dates[0];
                 const oldHp = getHpFromHistory(userHist[compareDate]);
                 const diff = curr.delegated_hp - oldHp;
                 
-                // Exige pelo menos +1 HP de crescimento e um histórico mínimo de 3 dias para evitar novatos
                 if (diff >= 1 && dates.length > 3) { 
                     changes.push({ 
                         name: curr.delegator, 
@@ -116,7 +112,6 @@ async function generateReport() {
 
     changes.sort((a, b) => b.diff - a.diff);
     const topMovers = changes.slice(0, 5);
-    const topGainer = topMovers.length > 0 ? topMovers[0] : null;
 
     // 3. AUDITORIA DE NOVATOS
     const firstDayOfMonthStr = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-01`;
@@ -146,19 +141,18 @@ async function generateReport() {
         }
     });
 
-    // 4. TOP 10 RANKING
+    // 4. TOP 10 RANKING (Removida a coluna BR)
     const top10 = currentData.slice(0, 10).map((u, i) => {
-        return `| ${i + 1} | @${u.delegator} | ${Math.floor(u.delegated_hp)} HP | ${u.country_code.startsWith("BR") ? "Sim" : "Não"} |`;
+        return `| ${i + 1} | @${u.delegator} | ${Math.floor(u.delegated_hp)} HP |`;
     }).join("\n");
 
-    // FORMATAÇÃO DE LISTAS PARA A IA
     const formatMovers = topMovers.map(u => `- @${u.name}: +${Math.floor(u.diff)} HP`).join("\n") || "- Nenhum movimento relevante mapeado.";
     const formatNewcomers = newDelegators.map(u => `- @${u.user}: +${Math.floor(u.hp)} HP`).join("\n") || "- Nenhum novo membro este mês.";
     const formatNewBR = newBrazilians.map(u => `- @${u.user} (${u.status})`).join("\n") || "- Nenhuma nova conta brasileira mapeada.";
 
     // --- PROMPT BLINDADO ---
     const prompt = `
-Você é Hiver, o mascote entusiasmado e empolgado da comunidade Hive BR.
+Você é Hiver, o mascote entusiasmado da comunidade Hive BR.
 Sua missão é gerar um post oficial em Markdown (estilo blog) resumindo o mês de ${reportMonthName}.
 
 REGRAS ESTABELECIDAS:
@@ -166,39 +160,41 @@ REGRAS ESTABELECIDAS:
 - NÃO INVENTE NÚMEROS. Use EXATAMENTE os dados fornecidos abaixo. Se a diferença for zero ou negativa, não diga que é "0" ou cite o "@Ninguém", apenas fale que foi um mês de "consolidação" e foque nos usuários que subiram.
 - O título deve conter "Hive BR: [Mês/Ano] - [Frase de efeito]"
 - Inclua a imagem de capa no topo: ![Capa](${COVER_IMAGE_URL})
+- Sem chamadas para ação (CTAs) agressivas ou forçadas no final, apenas uma assinatura suave.
 
 DADOS ESTATÍSTICOS OFICIAIS DE ${reportMonthName.toUpperCase()}:
 - HP Total da Comunidade: ${Math.floor(endHp)} HP
 - HP no início do mês: ${Math.floor(startHp)} HP
 - Crescimento Líquido no mês: ${Math.floor(netGrowth)} HP
-- Membros Ativos na Comunidade: ${metaData.active_community_members || currentData.length}
+- Delegadores Ativos na Comunidade: ${metaData.total_delegators || currentData.length}
+- Contas Brasileiras Ativas (últimos 30 dias na blockchain): ${metaData.active_brazilians || 0}
 
 ESTRUTURA DO POST:
 1. INTRODUÇÃO
    - Saudações do Hiver.
-   - Resumo rápido de como foi o mês (Use o HP Total e o Crescimento Líquido).
+   - Resumo rápido de como foi o mês. Utilize os números de HP Total, Crescimento Líquido, total de delegadores e a força das Contas Brasileiras Ativas na blockchain.
 
 2. 🚀 QUEM ESTÁ TURBINANDO (TOP MOVERS)
    - Liste os usuários que mais subiram suas delegações:
 ${formatMovers}
-   - Exalte quem está no topo dessa lista como o grande destaque.
+   - Exalte quem está no topo dessa lista.
 
 3. 👋 BOAS-VINDAS AOS NOVATOS
    - Celebre nominalmente os novos membros que enviaram delegações:
 ${formatNewcomers}
-   - Dê um destaque especial para novas contas BRASILEIRAS (informe o status):
+   - Dê um destaque especial para novas contas BRASILEIRAS informando seu status de verificação:
 ${formatNewBR}
 
 4. O TOP 10 (A ELITE)
-   - Apresente a tabela abaixo.
-| Rank | Usuário | HP Delegado | BR? |
-|---|---|---|---|
+   - Apresente a tabela abaixo com o Top 10.
+| Rank | Usuário | HP Delegado |
+|---|---|---|
 ${top10}
-   - Elogie os líderes.
+   - Elogie a dedicação destes líderes.
 
 5. ENCERRAMENTO
    - Reforce a união da comunidade.
-   - Adicione o link do Discord: ${DISCORD_LINK}
+   - Deixe o link do Discord (${DISCORD_LINK}) de forma natural, como um ponto de encontro.
 `;
 
     console.log(`🤖 Disparando Prompt Blindado para Gemini...`);
