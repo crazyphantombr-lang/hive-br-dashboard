@@ -1,10 +1,9 @@
-// File: scripts/generate_report.js
 /**
  * Script: AI Report Generator
  * Version: 2.32.0
  * Author: Hive BR
  * License: MIT
- * Description: Gera relatórios narrativos usando dados pré-calculados exatos e cita novatos.
+ * Description: Gera relatórios narrativos usando dados pré-calculados exatos, cita novatos e previne alucinações.
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -13,7 +12,6 @@ const path = require("path");
 
 // --- CONFIGURAÇÕES ---
 const COVER_IMAGE_URL = "https://files.peakd.com/file/peakd-hive/crazyphantombr/23tknNzYZVr2stDGwN8Sv9BpmnRmeRgcZNaC1ZhHFB1U99MTAe5qfGrcsZd4a51PPnRkZ.png";
-const DISCORD_LINK = "https://discord.gg/NgfkeVJT5w";
 const MODEL_NAME = "gemini-2.5-flash"; 
 
 const DATA_DIR = "data";
@@ -86,6 +84,14 @@ async function generateReport() {
     }
     const endHp = metaData.total_hp || 0;
     const netGrowth = endHp - startHp;
+
+    // Lógica para capturar os votos do mês alvo
+    let votesDistributed = 0;
+    if (targetDate.getMonth() === now.getMonth()) {
+        votesDistributed = metaData.votes_month_current || 0;
+    } else {
+        votesDistributed = metaData.votes_month_prev1 || 0;
+    }
 
     // 2. CÁLCULO DE TOP MOVERS (Lógica Polimórfica Antialucinação)
     const changes = [];
@@ -160,7 +166,7 @@ REGRAS ESTABELECIDAS:
 - NÃO INVENTE NÚMEROS. Use EXATAMENTE os dados fornecidos abaixo. Se a diferença for zero ou negativa, não diga que é "0" ou cite o "@Ninguém", apenas fale que foi um mês de "consolidação" e foque nos usuários que subiram.
 - O título deve conter "Hive BR: [Mês/Ano] - [Frase de efeito]"
 - Inclua a imagem de capa no topo: ![Capa](${COVER_IMAGE_URL})
-- Sem chamadas para ação (CTAs) agressivas ou forçadas no final, apenas uma assinatura suave.
+- SEM CHAMADAS PARA AÇÃO (CTAs). Não faça perguntas ao leitor no final e não direcione para outras páginas.
 
 DADOS ESTATÍSTICOS OFICIAIS DE ${reportMonthName.toUpperCase()}:
 - HP Total da Comunidade: ${Math.floor(endHp)} HP
@@ -168,11 +174,12 @@ DADOS ESTATÍSTICOS OFICIAIS DE ${reportMonthName.toUpperCase()}:
 - Crescimento Líquido no mês: ${Math.floor(netGrowth)} HP
 - Delegadores Ativos na Comunidade: ${metaData.total_delegators || currentData.length}
 - Contas Brasileiras Ativas (últimos 30 dias na blockchain): ${metaData.active_brazilians || 0}
+- Total de Votos Distribuídos no Mês: ${votesDistributed}
 
 ESTRUTURA DO POST:
 1. INTRODUÇÃO
    - Saudações do Hiver.
-   - Resumo rápido de como foi o mês. Utilize os números de HP Total, Crescimento Líquido, total de delegadores e a força das Contas Brasileiras Ativas na blockchain.
+   - Resumo rápido de como foi o mês. Utilize obrigatoriamente os números de HP Total, Crescimento Líquido, Votos Distribuídos, total de delegadores e a força das Contas Brasileiras Ativas na blockchain.
 
 2. 🚀 QUEM ESTÁ TURBINANDO (TOP MOVERS)
    - Liste os usuários que mais subiram suas delegações:
@@ -193,8 +200,13 @@ ${top10}
    - Elogie a dedicação destes líderes.
 
 5. ENCERRAMENTO
-   - Reforce a união da comunidade.
-   - Deixe o link do Discord (${DISCORD_LINK}) de forma natural, como um ponto de encontro.
+   - O relatório deve terminar **exatamente** com este bloco de texto literal (incluindo a linha divisória):
+
+Até o próximo mês, Hivers! Continuem brilhando e construindo o futuro!
+
+---
+
+Responsável por esta publicação: @crazyphantombr
 `;
 
     console.log(`🤖 Disparando Prompt Blindado para Gemini...`);
