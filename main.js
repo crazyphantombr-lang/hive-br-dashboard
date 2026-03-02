@@ -1,6 +1,6 @@
 /**
  * Hive BR Dashboard - Main Script
- * Version: 2.31.0
+ * Version: 2.31.1
  * Author: Hive BR
  * License: MIT
  */
@@ -8,7 +8,7 @@
 const CONFIG = {
     API_URL: './data/current.json',
     META_URL: './data/meta.json',
-    UI_VERSION: "2.31.0" 
+    UI_VERSION: "2.31.1" 
 };
 
 const regionNames = new Intl.DisplayNames(['pt-BR'], { type: 'region' });
@@ -182,8 +182,13 @@ function renderTable(data) {
         else if (hp >= 100) bonusTag = `<span class="bonus-tag bonus-bronze">+10%</span>`;
         else if (hp >= 10) bonusTag = `<span class="bonus-tag bonus-honor">+5%</span>`;
 
+        // CORREÇÃO MATEMÁTICA: BÔNUS HBR (+10% a cada 10 tokens, Máx 20%)
         let tokenBonus = `<span style="opacity:0.3; font-size:0.8em">—</span>`;
-        if (item.token_balance >= 1000) tokenBonus = `<span class="bonus-tag bonus-hbr">+2%</span>`;
+        if (item.token_balance >= 10) {
+            let bonusPercent = Math.floor(item.token_balance / 10) * 10;
+            if (bonusPercent > 20) bonusPercent = 20;
+            tokenBonus = `<span class="bonus-tag bonus-hbr">+${bonusPercent}%</span>`;
+        }
 
         let trailBonus = `<span style="opacity:0.3; font-size:0.8em">—</span>`;
         if (item.in_curation_trail) trailBonus = `<span class="bonus-tag bonus-trail">+5%</span>`;
