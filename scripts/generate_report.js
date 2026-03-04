@@ -1,9 +1,9 @@
 /**
  * Script: AI Report Generator
- * Version: 2.32.0
+ * Version: 2.33.0
  * Author: Hive BR
  * License: MIT
- * Description: Gera relatórios narrativos usando dados pré-calculados exatos, cita novatos e previne alucinações.
+ * Description: Gera relatórios narrativos com dados exatos, novatos, e métrica de Força Brasileira.
  */
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -93,7 +93,7 @@ async function generateReport() {
         votesDistributed = metaData.votes_month_prev1 || 0;
     }
 
-    // 2. CÁLCULO DE TOP MOVERS (Lógica Polimórfica Antialucinação)
+    // 2. CÁLCULO DE TOP MOVERS 
     const changes = [];
     currentData.forEach(curr => {
         const userHist = historyData[curr.delegator];
@@ -147,22 +147,52 @@ async function generateReport() {
         }
     });
 
-    // 4. TOP 10 RANKING (Removida a coluna BR)
+    // 4. TOP 10 RANKING
     const top10 = currentData.slice(0, 10).map((u, i) => {
         return `| ${i + 1} | @${u.delegator} | ${Math.floor(u.delegated_hp)} HP |`;
     }).join("\n");
 
+    // 5. CÁLCULO DO TOP 5 HP PRÓPRIO (Apenas Brasileiros)
+    const ownHpData = [];
+    currentData.forEach(curr => {
+        if (curr.country_code && curr.country_code.startsWith("BR")) {
+            const userHist = historyData[curr.delegator];
+            if (userHist) {
+                const dates = Object.keys(userHist).sort();
+                if (dates.length > 0) {
+                    const compareDate = dates.find(d => d >= targetStr) || dates[0];
+                    
+                    const historyEntry = userHist[compareDate];
+                    const oldOwnHp = (historyEntry && historyEntry.own !== undefined) ? historyEntry.own : 0;
+                    
+                    const currentOwnHp = curr.total_account_hp - curr.delegated_hp;
+                    const diffOwn = currentOwnHp - oldOwnHp;
+                    
+                    ownHpData.push({
+                        name: curr.delegator,
+                        currentOwn: currentOwnHp,
+                        diffOwn: diffOwn
+                    });
+                }
+            }
+        }
+    });
+
+    ownHpData.sort((a, b) => b.currentOwn - a.currentOwn);
+    const top5OwnHp = ownHpData.slice(0, 5);
+
     const formatMovers = topMovers.map(u => `- @${u.name}: +${Math.floor(u.diff)} HP`).join("\n") || "- Nenhum movimento relevante mapeado.";
     const formatNewcomers = newDelegators.map(u => `- @${u.user}: +${Math.floor(u.hp)} HP`).join("\n") || "- Nenhum novo membro este mês.";
     const formatNewBR = newBrazilians.map(u => `- @${u.user} (${u.status})`).join("\n") || "- Nenhuma nova conta brasileira mapeada.";
+    const formatTopOwn = top5OwnHp.map(u => `- @${u.name}: ${Math.floor(u.currentOwn)} HP (Crescimento de ${u.diffOwn >= 0 ? '+' : ''}${Math.floor(u.diffOwn)} HP no mês)`).join("\n") || "- Dados insuficientes para esta métrica.";
 
     // --- PROMPT BLINDADO ---
     const prompt = `
-Você é Hiver, o mascote entusiasmado da comunidade Hive BR.
-Sua missão é gerar um post oficial em Markdown (estilo blog) resumindo o mês de ${reportMonthName}.
+Você é um dos administradores da comunidade Hive BR.
+A sua missão é redigir um post oficial em Markdown (estilo blog) resumindo o mês de ${reportMonthName}. 
+Assuma um tom de liderança, gratidão e transparência, dirigindo-se à comunidade de forma encorajadora, profissional e analítica, destacando a evolução sustentável do nosso ecossistema Web3.
 
 REGRAS ESTABELECIDAS:
-- Mantenha um tom otimista, focado na força da comunidade e da Web3.
 - NÃO INVENTE NÚMEROS. Use EXATAMENTE os dados fornecidos abaixo. Se a diferença for zero ou negativa, não diga que é "0" ou cite o "@Ninguém", apenas fale que foi um mês de "consolidação" e foque nos usuários que subiram.
 - O título deve conter "Hive BR: [Mês/Ano] - [Frase de efeito]"
 - Inclua a imagem de capa no topo: ![Capa](${COVER_IMAGE_URL})
@@ -178,7 +208,7 @@ DADOS ESTATÍSTICOS OFICIAIS DE ${reportMonthName.toUpperCase()}:
 
 ESTRUTURA DO POST:
 1. INTRODUÇÃO
-   - Saudações do Hiver.
+   - Saudações da administração.
    - Resumo rápido de como foi o mês. Utilize obrigatoriamente os números de HP Total, Crescimento Líquido, Votos Distribuídos, total de delegadores e a força das Contas Brasileiras Ativas na blockchain.
 
 2. 🚀 QUEM ESTÁ TURBINANDO (TOP MOVERS)
@@ -192,14 +222,19 @@ ${formatNewcomers}
    - Dê um destaque especial para novas contas BRASILEIRAS informando seu status de verificação:
 ${formatNewBR}
 
-4. O TOP 10 (A ELITE)
+4. 💪 FORÇA BRASILEIRA (MAIORES HPs PRÓPRIOS)
+   - Exalte os 5 brasileiros com o maior HP Próprio acumulado e comente sobre o crescimento deles durante este mês:
+${formatTopOwn}
+   - Elogie o compromisso de fortalecer as próprias contas e o ecossistema nacional.
+
+5. O TOP 10 (A ELITE)
    - Apresente a tabela abaixo com o Top 10.
 | Rank | Usuário | HP Delegado |
 |---|---|---|
 ${top10}
    - Elogie a dedicação destes líderes.
 
-5. ENCERRAMENTO
+6. ENCERRAMENTO
    - O relatório deve terminar **exatamente** com este bloco de texto literal (incluindo a linha divisória):
 
 Até o próximo mês, Hivers! Continuem brilhando e construindo o futuro!
@@ -209,7 +244,7 @@ Até o próximo mês, Hivers! Continuem brilhando e construindo o futuro!
 Responsável por esta publicação: @crazyphantombr
 `;
 
-    console.log(`🤖 Disparando Prompt Blindado para Gemini...`);
+    console.log(`🤖 Disparando Prompt Administrador para Gemini...`);
     
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
