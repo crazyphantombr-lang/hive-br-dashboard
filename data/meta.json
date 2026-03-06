@@ -1,38 +1,38 @@
 {
-  "last_updated": "2026-03-05T19:15:13.667Z",
+  "last_updated": "2026-03-06T01:49:23.449Z",
   "versions": {
     "backend": "2.31.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 61,
-  "total_hp": 43456.96499999998,
-  "project_account_hp": 14602.086832585821,
-  "total_hbr_staked": 5447.2715579999995,
+  "total_hp": 43457.88,
+  "project_account_hp": 14602.395281650237,
+  "total_hbr_staked": 5452.696558,
   "curation_trail_count": 81,
   "active_community_members": 288,
   "active_brazilians": 48,
-  "votes_24h": 6,
-  "votes_month_current": 38,
+  "votes_24h": 5,
+  "votes_month_current": 40,
   "votes_month_prev1": 317,
   "votes_month_prev2": 364,
   "activity_log": [
     {
       "user": "michupa",
-      "old_val": 1075.73,
-      "new_val": 3000.68,
-      "diff": 1924.95
+      "old_val": 1075.81,
+      "new_val": 3000.74,
+      "diff": 1924.93
     },
     {
       "user": "hellene8",
-      "old_val": 102.25,
+      "old_val": 102.26,
       "new_val": 0,
-      "diff": -102.25
+      "diff": -102.26
     },
     {
       "user": "grafvisionsp",
-      "old_val": 50.64,
+      "old_val": 50.65,
       "new_val": 125.02,
-      "diff": 74.38
+      "diff": 74.37
     },
     {
       "user": "us3incanada",
@@ -54,9 +54,9 @@
     },
     {
       "user": "matheusggr",
-      "old_val": 10285.36,
-      "new_val": 10297.19,
-      "diff": 11.83
+      "old_val": 10286.13,
+      "new_val": 10297.41,
+      "diff": 11.28
     },
     {
       "user": "kedleona",
@@ -66,25 +66,25 @@
     },
     {
       "user": "wiseagent",
-      "old_val": 7032.63,
-      "new_val": 7040.73,
-      "diff": 8.1
+      "old_val": 7033.16,
+      "new_val": 7040.88,
+      "diff": 7.72
     },
     {
       "user": "rimurutempest",
-      "old_val": 4502.01,
-      "new_val": 4507.19,
-      "diff": 5.18
+      "old_val": 4502.35,
+      "new_val": 4507.29,
+      "diff": 4.94
     }
   ],
   "top_grower": {
     "delegator": "michupa",
-    "growth": 1926.1490000000001,
-    "old_hp": 1074.53,
-    "current_hp": 3000.679
+    "growth": 1926.1420000000003,
+    "old_hp": 1074.6,
+    "current_hp": 3000.742
   },
   "market": {
-    "hive_usd": 0.06373,
+    "hive_usd": 0.064321,
     "usd_brl": null
   }
 }
