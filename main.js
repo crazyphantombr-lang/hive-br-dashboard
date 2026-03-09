@@ -1,6 +1,6 @@
 /**
  * Hive BR Dashboard - Main Script
- * Version: 2.31.2
+ * Version: 2.31.3
  * Author: Hive BR
  * License: MIT
  */
@@ -8,7 +8,7 @@
 const CONFIG = {
     API_URL: './data/current.json',
     META_URL: './data/meta.json',
-    UI_VERSION: "2.31.2" 
+    UI_VERSION: "2.31.3" 
 };
 
 const regionNames = new Intl.DisplayNames(['pt-BR'], { type: 'region' });
@@ -175,14 +175,18 @@ function renderTable(data) {
              else voteHtml = `<span style="color:#ccc; font-size:0.9em;">${daysSinceVote} dias atrás</span>`;
         }
 
+        // CORREÇÃO MATEMÁTICA: BÔNUS POR RANKING (Top 10 / 20 / 30 / 40)
         let bonusTag = `<span style="opacity:0.3; font-size:0.8em">—</span>`;
-        const hp = item.delegated_hp;
-        if (hp >= 5000) bonusTag = `<span class="bonus-tag bonus-gold">+20%</span>`;
-        else if (hp >= 1000) bonusTag = `<span class="bonus-tag bonus-silver">+15%</span>`;
-        else if (hp >= 100) bonusTag = `<span class="bonus-tag bonus-bronze">+10%</span>`;
-        else if (hp >= 10) bonusTag = `<span class="bonus-tag bonus-honor">+5%</span>`;
+        if (item.delegated_hp > 0) {
+            const absoluteRank = globalData.filter(u => u.delegated_hp > item.delegated_hp).length + 1;
+            
+            if (absoluteRank <= 10) bonusTag = `<span class="bonus-tag bonus-gold">+20%</span>`;
+            else if (absoluteRank <= 20) bonusTag = `<span class="bonus-tag bonus-silver">+15%</span>`;
+            else if (absoluteRank <= 30) bonusTag = `<span class="bonus-tag bonus-bronze">+10%</span>`;
+            else if (absoluteRank <= 40) bonusTag = `<span class="bonus-tag bonus-honor">+5%</span>`;
+        }
 
-        // CORREÇÃO MATEMÁTICA: BÔNUS HBR (+1% a cada 10 tokens, Máx 20%)
+        // BÔNUS HBR (+1% a cada 10 tokens, Máx 20%)
         let tokenBonus = `<span style="opacity:0.3; font-size:0.8em">—</span>`;
         if (item.token_balance >= 10) {
             let bonusPercent = Math.floor(item.token_balance / 10);
