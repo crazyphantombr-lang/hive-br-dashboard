@@ -1,32 +1,32 @@
 {
-  "last_updated": "2026-03-09T18:51:14.416Z",
+  "last_updated": "2026-03-10T01:43:20.837Z",
   "versions": {
     "backend": "2.31.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 60,
-  "total_hp": 43561.40300000001,
-  "project_account_hp": 14606.603675304006,
+  "total_hp": 43761.69199999999,
+  "project_account_hp": 14606.930112590228,
   "total_hbr_staked": 5452.902558,
   "curation_trail_count": 81,
   "active_community_members": 288,
   "active_brazilians": 48,
-  "votes_24h": 9,
-  "votes_month_current": 75,
+  "votes_24h": 8,
+  "votes_month_current": 78,
   "votes_month_prev1": 317,
   "votes_month_prev2": 364,
   "activity_log": [
     {
       "user": "michupa",
-      "old_val": 1076.06,
-      "new_val": 3001.61,
-      "diff": 1925.55
+      "old_val": 1076.14,
+      "new_val": 3001.67,
+      "diff": 1925.53
     },
     {
       "user": "rimurutempest",
-      "old_val": 4503.38,
-      "new_val": 4600.6,
-      "diff": 97.22
+      "old_val": 4503.73,
+      "new_val": 4800.02,
+      "diff": 296.29
     },
     {
       "user": "grafvisionsp",
@@ -43,20 +43,20 @@
     {
       "user": "adncabrera",
       "old_val": 100.17,
-      "new_val": 140.85,
-      "diff": 40.68
+      "new_val": 140.86,
+      "diff": 40.69
     },
     {
       "user": "thayavlis",
-      "old_val": 15.04,
+      "old_val": 15.05,
       "new_val": 0,
-      "diff": -15.04
+      "diff": -15.05
     },
     {
       "user": "matheusggr",
-      "old_val": 10288.48,
-      "new_val": 10300.38,
-      "diff": 11.9
+      "old_val": 10289.28,
+      "new_val": 10300.61,
+      "diff": 11.33
     },
     {
       "user": "kedleona",
@@ -66,25 +66,25 @@
     },
     {
       "user": "wiseagent",
-      "old_val": 7034.77,
-      "new_val": 7042.9,
-      "diff": 8.13
+      "old_val": 7035.32,
+      "new_val": 7043.06,
+      "diff": 7.74
     },
     {
       "user": "tfranzini",
-      "old_val": 3135.41,
-      "new_val": 3139.03,
-      "diff": 3.62
+      "old_val": 3135.65,
+      "new_val": 3139.1,
+      "diff": 3.45
     }
   ],
   "top_grower": {
     "delegator": "michupa",
-    "growth": 1926.767,
-    "old_hp": 1074.84,
-    "current_hp": 3001.607
+    "growth": 1926.754,
+    "old_hp": 1074.92,
+    "current_hp": 3001.674
   },
   "market": {
-    "hive_usd": 0.062489,
+    "hive_usd": 0.062049,
     "usd_brl": null
   }
 }
