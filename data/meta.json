@@ -1,32 +1,32 @@
 {
-  "last_updated": "2026-03-14T06:43:12.238Z",
+  "last_updated": "2026-03-14T12:41:24.970Z",
   "versions": {
     "backend": "2.31.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 60,
-  "total_hp": 43824.636,
-  "project_account_hp": 14611.71163683797,
+  "total_hp": 43825.48100000001,
+  "project_account_hp": 14611.994300432476,
   "total_hbr_staked": 5453.5975579999995,
   "curation_trail_count": 79,
   "active_community_members": 288,
   "active_brazilians": 48,
   "votes_24h": 8,
-  "votes_month_current": 116,
+  "votes_month_current": 117,
   "votes_month_prev1": 317,
   "votes_month_prev2": 364,
   "activity_log": [
     {
       "user": "michupa",
       "old_val": 1076.47,
-      "new_val": 3002.66,
-      "diff": 1926.19
+      "new_val": 3002.72,
+      "diff": 1926.25
     },
     {
       "user": "rimurutempest",
       "old_val": 4505.11,
-      "new_val": 4850.2,
-      "diff": 345.09
+      "new_val": 4850.3,
+      "diff": 345.19
     },
     {
       "user": "grafvisionsp",
@@ -43,7 +43,7 @@
     {
       "user": "adncabrera",
       "old_val": 100.2,
-      "new_val": 140.9,
+      "new_val": 140.91,
       "diff": 40.7
     },
     {
@@ -55,8 +55,8 @@
     {
       "user": "matheusggr",
       "old_val": 10292.44,
-      "new_val": 10303.98,
-      "diff": 11.54
+      "new_val": 10304.18,
+      "diff": 11.74
     },
     {
       "user": "kedleona",
@@ -67,24 +67,24 @@
     {
       "user": "wiseagent",
       "old_val": 7037.47,
-      "new_val": 7045.37,
-      "diff": 7.9
+      "new_val": 7045.5,
+      "diff": 8.03
     },
     {
       "user": "tfranzini",
       "old_val": 3136.61,
-      "new_val": 3140.13,
-      "diff": 3.52
+      "new_val": 3140.19,
+      "diff": 3.58
     }
   ],
   "top_grower": {
     "delegator": "michupa",
-    "growth": 1927.4170000000001,
+    "growth": 1927.4750000000001,
     "old_hp": 1075.24,
-    "current_hp": 3002.657
+    "current_hp": 3002.715
   },
   "market": {
-    "hive_usd": 0.061885,
+    "hive_usd": 0.062452,
     "usd_brl": null
   }
 }
