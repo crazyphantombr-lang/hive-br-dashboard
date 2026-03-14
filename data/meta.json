@@ -1,32 +1,32 @@
 {
-  "last_updated": "2026-03-14T12:47:12.227Z",
+  "last_updated": "2026-03-14T18:32:08.896Z",
   "versions": {
     "backend": "2.31.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 60,
-  "total_hp": 43825.493,
-  "project_account_hp": 14611.998966960142,
+  "total_hp": 43826.31100000003,
+  "project_account_hp": 14612.271031318862,
   "total_hbr_staked": 5453.5975579999995,
   "curation_trail_count": 79,
   "active_community_members": 288,
   "active_brazilians": 48,
-  "votes_24h": 8,
-  "votes_month_current": 117,
+  "votes_24h": 7,
+  "votes_month_current": 119,
   "votes_month_prev1": 317,
   "votes_month_prev2": 364,
   "activity_log": [
     {
       "user": "michupa",
       "old_val": 1076.47,
-      "new_val": 3002.72,
-      "diff": 1926.25
+      "new_val": 3002.77,
+      "diff": 1926.3
     },
     {
       "user": "rimurutempest",
       "old_val": 4505.11,
-      "new_val": 4850.3,
-      "diff": 345.19
+      "new_val": 4850.39,
+      "diff": 345.28
     },
     {
       "user": "grafvisionsp",
@@ -44,7 +44,7 @@
       "user": "adncabrera",
       "old_val": 100.2,
       "new_val": 140.91,
-      "diff": 40.7
+      "diff": 40.71
     },
     {
       "user": "thayavlis",
@@ -55,8 +55,8 @@
     {
       "user": "matheusggr",
       "old_val": 10292.44,
-      "new_val": 10304.18,
-      "diff": 11.74
+      "new_val": 10304.38,
+      "diff": 11.94
     },
     {
       "user": "kedleona",
@@ -67,24 +67,24 @@
     {
       "user": "wiseagent",
       "old_val": 7037.47,
-      "new_val": 7045.51,
-      "diff": 8.04
+      "new_val": 7045.64,
+      "diff": 8.17
     },
     {
       "user": "tfranzini",
       "old_val": 3136.61,
-      "new_val": 3140.19,
-      "diff": 3.58
+      "new_val": 3140.25,
+      "diff": 3.64
     }
   ],
   "top_grower": {
     "delegator": "michupa",
-    "growth": 1927.4759999999999,
+    "growth": 1927.532,
     "old_hp": 1075.24,
-    "current_hp": 3002.716
+    "current_hp": 3002.772
   },
   "market": {
-    "hive_usd": 0.062359,
+    "hive_usd": 0.06233,
     "usd_brl": null
   }
 }
