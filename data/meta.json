@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-03-19T18:53:03.410Z",
+  "last_updated": "2026-03-19T18:56:20.501Z",
   "versions": {
     "backend": "2.31.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 60,
-  "total_hp": 43941.91300000001,
-  "project_account_hp": 14617.936534053119,
+  "total_hp": 43941.92200000002,
+  "project_account_hp": 14617.93915140897,
   "total_hbr_staked": 5453.9905579999995,
   "curation_trail_count": 79,
   "active_community_members": 288,
@@ -79,12 +79,12 @@
   ],
   "top_grower": {
     "delegator": "michupa",
-    "growth": 1928.286,
+    "growth": 1928.2869999999998,
     "old_hp": 1075.65,
-    "current_hp": 3003.936
+    "current_hp": 3003.937
   },
   "market": {
-    "hive_usd": 0.062093,
+    "hive_usd": 0.062125,
     "usd_brl": null
   }
 }
