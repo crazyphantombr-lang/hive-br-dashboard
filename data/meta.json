@@ -1,90 +1,90 @@
 {
-  "last_updated": "2026-03-24T13:08:23.098Z",
+  "last_updated": "2026-03-24T18:57:39.023Z",
   "versions": {
     "backend": "2.31.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 61,
-  "total_hp": 41958.61699999999,
-  "project_account_hp": 14623.303912314204,
+  "total_hp": 41959.406,
+  "project_account_hp": 14623.579576076405,
   "total_hbr_staked": 5474.221557999999,
   "curation_trail_count": 79,
   "active_community_members": 289,
   "active_brazilians": 46,
-  "votes_24h": 15,
-  "votes_month_current": 217,
+  "votes_24h": 14,
+  "votes_month_current": 219,
   "votes_month_prev1": 317,
   "votes_month_prev2": 364,
   "activity_log": [
     {
       "user": "wiseagent",
       "old_val": 7042.9,
-      "new_val": 5000.75,
-      "diff": -2042.15
+      "new_val": 5000.85,
+      "diff": -2042.05
     },
     {
       "user": "rimurutempest",
       "old_val": 4600.6,
-      "new_val": 5001.47,
-      "diff": 400.87
+      "new_val": 5001.56,
+      "diff": 400.96
     },
     {
       "user": "matheusggr",
       "old_val": 10300.38,
-      "new_val": 10312.16,
-      "diff": 11.78
+      "new_val": 10312.35,
+      "diff": 11.97
     },
     {
       "user": "tfranzini",
       "old_val": 3139.03,
-      "new_val": 3142.62,
-      "diff": 3.59
+      "new_val": 3142.68,
+      "diff": 3.65
     },
     {
       "user": "michupa",
       "old_val": 3001.61,
-      "new_val": 3005.04,
-      "diff": 3.43
+      "new_val": 3005.1,
+      "diff": 3.49
     },
     {
       "user": "mengao",
       "old_val": 2031.14,
-      "new_val": 2033.47,
-      "diff": 2.33
+      "new_val": 2033.51,
+      "diff": 2.37
     },
     {
       "user": "shiftrox",
       "old_val": 1207.83,
-      "new_val": 1209.21,
-      "diff": 1.38
+      "new_val": 1209.23,
+      "diff": 1.4
     },
     {
       "user": "gwajnberg",
       "old_val": 1039.71,
-      "new_val": 1040.9,
-      "diff": 1.19
+      "new_val": 1040.92,
+      "diff": 1.21
     },
     {
       "user": "kaibagt",
       "old_val": 1028.94,
-      "new_val": 1030.11,
-      "diff": 1.17
+      "new_val": 1030.13,
+      "diff": 1.19
     },
     {
       "user": "josiva",
       "old_val": 1027.17,
-      "new_val": 1028.34,
-      "diff": 1.17
+      "new_val": 1028.36,
+      "diff": 1.19
     }
   ],
   "top_grower": {
     "delegator": "michupa",
-    "growth": 1928.9790000000003,
+    "growth": 1929.036,
     "old_hp": 1076.06,
-    "current_hp": 3005.039
+    "current_hp": 3005.096
   },
   "market": {
-    "hive_usd": 0.062413,
+    "hive_usd": 0.061529,
     "usd_brl": null
   }
 }
