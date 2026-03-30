@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-03-30T07:24:46.766Z",
+  "last_updated": "2026-03-30T13:10:24.119Z",
   "versions": {
     "backend": "2.31.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 59,
-  "total_hp": 41951.12700000001,
-  "project_account_hp": 14629.848077765322,
+  "total_hp": 41951.918,
+  "project_account_hp": 14630.123768058902,
   "total_hbr_staked": 5474.6015579999985,
   "curation_trail_count": 79,
   "active_community_members": 289,
@@ -19,14 +19,14 @@
     {
       "user": "wiseagent",
       "old_val": 7046.19,
-      "new_val": 5002.99,
-      "diff": -2043.2
+      "new_val": 5003.09,
+      "diff": -2043.1
     },
     {
       "user": "rimurutempest",
       "old_val": 4850.77,
-      "new_val": 5003.71,
-      "diff": 152.94
+      "new_val": 5003.8,
+      "diff": 153.03
     },
     {
       "user": "jkatrina",
@@ -37,8 +37,8 @@
     {
       "user": "matheusggr",
       "old_val": 10305.18,
-      "new_val": 10316.77,
-      "diff": 11.59
+      "new_val": 10316.97,
+      "diff": 11.79
     },
     {
       "user": "claytonlins",
@@ -49,42 +49,42 @@
     {
       "user": "tfranzini",
       "old_val": 3140.5,
-      "new_val": 3144.03,
-      "diff": 3.53
+      "new_val": 3144.09,
+      "diff": 3.59
     },
     {
       "user": "michupa",
       "old_val": 3003.01,
-      "new_val": 3006.38,
-      "diff": 3.37
+      "new_val": 3006.44,
+      "diff": 3.43
     },
     {
       "user": "mengao",
       "old_val": 2032.09,
-      "new_val": 2034.38,
-      "diff": 2.29
+      "new_val": 2034.41,
+      "diff": 2.33
     },
     {
       "user": "shiftrox",
       "old_val": 1208.39,
-      "new_val": 1209.75,
-      "diff": 1.36
+      "new_val": 1209.77,
+      "diff": 1.38
     },
     {
       "user": "gwajnberg",
       "old_val": 1040.2,
-      "new_val": 1041.37,
-      "diff": 1.17
+      "new_val": 1041.38,
+      "diff": 1.18
     }
   ],
   "top_grower": {
     "delegator": "michupa",
-    "growth": 1929.824,
+    "growth": 1929.8809999999999,
     "old_hp": 1076.56,
-    "current_hp": 3006.384
+    "current_hp": 3006.441
   },
   "market": {
-    "hive_usd": 0.057258,
+    "hive_usd": 0.058203,
     "usd_brl": null
   }
 }
