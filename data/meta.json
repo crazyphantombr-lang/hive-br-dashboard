@@ -1,32 +1,32 @@
 {
-  "last_updated": "2026-04-05T12:54:21.774Z",
+  "last_updated": "2026-04-05T18:37:44.138Z",
   "versions": {
     "backend": "2.31.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 60,
-  "total_hp": 42399.96099999996,
-  "project_account_hp": 14849.408582662807,
-  "total_hbr_staked": 5500.861557999999,
+  "total_hp": 42400.75299999999,
+  "project_account_hp": 14849.684700811318,
+  "total_hbr_staked": 5506.995557999999,
   "curation_trail_count": 79,
   "active_community_members": 290,
-  "active_brazilians": 42,
+  "active_brazilians": 44,
   "votes_24h": 14,
-  "votes_month_current": 38,
+  "votes_month_current": 39,
   "votes_month_prev1": 306,
   "votes_month_prev2": 317,
   "activity_log": [
     {
       "user": "wiseagent",
       "old_val": 7049.45,
-      "new_val": 5005.44,
-      "diff": -2044.01
+      "new_val": 5005.53,
+      "diff": -2043.92
     },
     {
       "user": "wagnertamanaha",
       "old_val": 202.28,
-      "new_val": 500.13,
-      "diff": 297.85
+      "new_val": 500.14,
+      "diff": 297.86
     },
     {
       "user": "adncabrera",
@@ -49,8 +49,8 @@
     {
       "user": "matheusggr",
       "old_val": 10309.95,
-      "new_val": 10321.82,
-      "diff": 11.87
+      "new_val": 10322.01,
+      "diff": 12.06
     },
     {
       "user": "claytonlins",
@@ -61,30 +61,30 @@
     {
       "user": "rimurutempest",
       "old_val": 5000.4,
-      "new_val": 5006.15,
-      "diff": 5.75
+      "new_val": 5006.25,
+      "diff": 5.85
     },
     {
       "user": "tfranzini",
       "old_val": 3141.95,
-      "new_val": 3145.57,
-      "diff": 3.62
+      "new_val": 3145.63,
+      "diff": 3.68
     },
     {
       "user": "michupa",
       "old_val": 3004.39,
-      "new_val": 3007.85,
-      "diff": 3.46
+      "new_val": 3007.91,
+      "diff": 3.52
     }
   ],
   "top_grower": {
     "delegator": "rimurutempest",
-    "growth": 498.6230000000005,
+    "growth": 498.71600000000035,
     "old_hp": 4507.53,
-    "current_hp": 5006.153
+    "current_hp": 5006.246
   },
   "market": {
-    "hive_usd": 0.057379,
+    "hive_usd": 0.058165,
     "usd_brl": null
   }
 }
