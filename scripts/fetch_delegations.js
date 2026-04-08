@@ -1,6 +1,6 @@
 /**
  * Script: Fetch Delegations & Community Stats
- * Version: 2.31.0
+ * Version: 2.32.0
  * Author: Hive BR
  * License: MIT
  */
@@ -9,7 +9,7 @@ const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
 
-const SCRIPT_VERSION = "2.31.0";
+const SCRIPT_VERSION = "2.32.0";
 
 const VOTER_ACCOUNT = "hive-br.voter";
 const PROJECT_ACCOUNT = "hive-br";
@@ -323,6 +323,38 @@ function updateRankingHistory(ranking) {
     fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
 }
 
+function processColdStorageSnapshot(metaData, rankingData) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const snapshotFileName = `${year}-${month}-01_snapshot.json`;
+    
+    const historyDir = path.join(HISTORY_DIR, String(year));
+    const snapshotPath = path.join(historyDir, snapshotFileName);
+
+    if (!fs.existsSync(snapshotPath)) {
+        console.log(`[Cold Storage] Arquivo de auditoria ${snapshotFileName} ausente. Disparando Fallback de criação...`);
+        
+        if (!fs.existsSync(historyDir)) {
+            fs.mkdirSync(historyDir, { recursive: true });
+        }
+
+        const snapshotPayload = {
+            meta: metaData,
+            ranking: rankingData
+        };
+
+        try {
+            fs.writeFileSync(snapshotPath, JSON.stringify(snapshotPayload, null, 2), 'utf8');
+            console.log(`[Cold Storage] ✅ Snapshot gravado com sucesso: ${snapshotPath}`);
+        } catch (error) {
+            console.error(`[Cold Storage] ❌ Erro crítico ao gravar snapshot:`, error);
+        }
+    } else {
+        console.log(`[Cold Storage] 🔒 Snapshot de ${month}/${year} já consolidado. Sobrescrita bloqueada.`);
+    }
+}
+
 // MAIN
 async function run() {
     try {
@@ -445,6 +477,8 @@ async function run() {
         fs.writeFileSync(path.join(DATA_DIR, "meta.json"), JSON.stringify(metaData, null, 2));
         updateRankingHistory(ranking);
         updateGlobalHistory(metaData, marketData);
+        
+        processColdStorageSnapshot(metaData, ranking);
         
         console.log(`✅ Ciclo concluído. Grower: ${topGrower ? topGrower.delegator : 'N/A'}`);
 
