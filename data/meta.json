@@ -1,32 +1,32 @@
 {
-  "last_updated": "2026-04-10T07:25:05.010Z",
+  "last_updated": "2026-04-10T13:01:13.748Z",
   "versions": {
     "backend": "2.32.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 60,
-  "total_hp": 42415.753999999986,
-  "project_account_hp": 14854.939158462737,
+  "total_hp": 42416.524000000005,
+  "project_account_hp": 14855.20859549657,
   "total_hbr_staked": 5499.730557999998,
   "curation_trail_count": 79,
   "active_community_members": 287,
   "active_brazilians": 46,
-  "votes_24h": 10,
-  "votes_month_current": 89,
+  "votes_24h": 11,
+  "votes_month_current": 90,
   "votes_month_prev1": 306,
   "votes_month_prev2": 317,
   "activity_log": [
     {
       "user": "wagnertamanaha",
       "old_val": 202.36,
-      "new_val": 500.32,
-      "diff": 297.96
+      "new_val": 500.33,
+      "diff": 297.97
     },
     {
       "user": "adncabrera",
       "old_val": 141.04,
-      "new_val": 200.1,
-      "diff": 59.06
+      "new_val": 200.11,
+      "diff": 59.07
     },
     {
       "user": "ogechukwu-martha",
@@ -43,48 +43,48 @@
     {
       "user": "matheusggr",
       "old_val": 10313.95,
-      "new_val": 10325.66,
-      "diff": 11.71
+      "new_val": 10325.85,
+      "diff": 11.9
     },
     {
       "user": "rimurutempest",
       "old_val": 5002.34,
-      "new_val": 5008.02,
-      "diff": 5.68
+      "new_val": 5008.11,
+      "diff": 5.77
     },
     {
       "user": "wiseagent",
       "old_val": 5001.63,
-      "new_val": 5007.3,
-      "diff": 5.67
+      "new_val": 5007.39,
+      "diff": 5.76
     },
     {
       "user": "tfranzini",
       "old_val": 3143.17,
-      "new_val": 3146.74,
-      "diff": 3.57
+      "new_val": 3146.8,
+      "diff": 3.63
     },
     {
       "user": "michupa",
       "old_val": 3005.56,
-      "new_val": 3008.97,
-      "diff": 3.41
+      "new_val": 3009.03,
+      "diff": 3.47
     },
     {
       "user": "mengao",
       "old_val": 2033.82,
-      "new_val": 2036.13,
-      "diff": 2.31
+      "new_val": 2036.17,
+      "diff": 2.35
     }
   ],
   "top_grower": {
     "delegator": "wagnertamanaha",
-    "growth": 298.199,
+    "growth": 298.20799999999997,
     "old_hp": 202.12,
-    "current_hp": 500.319
+    "current_hp": 500.328
   },
   "market": {
-    "hive_usd": 0.059578,
+    "hive_usd": 0.060279,
     "usd_brl": null
   }
 }
