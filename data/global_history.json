@@ -952,12 +952,12 @@
   "2026-04-11": {
     "total_votes": 6,
     "trail_count": 79,
-    "active_brazilians": 47,
-    "total_hp": 57276.16,
-    "total_delegated_hp": 42419.8,
+    "active_brazilians": 48,
+    "total_hp": 57277.23,
+    "total_delegated_hp": 42420.6,
     "active_members": 287,
     "market": {
-      "hive_usd": 0.059151,
+      "hive_usd": 0.059431,
       "usd_brl": null
     },
     "script_version": "2.32.0"
