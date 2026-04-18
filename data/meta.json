@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-04-18T18:42:08.039Z",
+  "last_updated": "2026-04-18T18:48:02.493Z",
   "versions": {
     "backend": "2.32.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 60,
-  "total_hp": 42490.072,
-  "project_account_hp": 14921.447704007873,
+  "total_hp": 42490.08899999999,
+  "project_account_hp": 14921.452630372345,
   "total_hbr_staked": 5486.9990655799975,
   "curation_trail_count": 79,
   "active_community_members": 287,
@@ -79,12 +79,12 @@
   ],
   "top_grower": {
     "delegator": "wagnertamanaha",
-    "growth": 298.398,
+    "growth": 298.399,
     "old_hp": 202.25,
-    "current_hp": 500.648
+    "current_hp": 500.649
   },
   "market": {
-    "hive_usd": 0.062689,
+    "hive_usd": 0.062534,
     "usd_brl": null
   }
 }
