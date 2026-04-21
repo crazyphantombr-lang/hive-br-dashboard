@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-04-20T21:40:30.751Z",
+  "last_updated": "2026-04-21T21:38:38.857Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -1419,8 +1419,8 @@
       "igormuba": false,
       "nexo.witness": false,
       "mengao": false,
-      "fernandosoder": true,
-      "perfilbrasil": true
+      "fernandosoder": false,
+      "perfilbrasil": false
     },
     "pedagogia": {
       "igormuba": false,
