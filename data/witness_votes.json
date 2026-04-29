@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-04-28T21:51:50.696Z",
+  "last_updated": "2026-04-29T21:54:43.382Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -481,7 +481,7 @@
       "igormuba": false,
       "nexo.witness": false,
       "mengao": false,
-      "fernandosoder": false,
+      "fernandosoder": true,
       "perfilbrasil": false
     },
     "tekabybrazil": {
