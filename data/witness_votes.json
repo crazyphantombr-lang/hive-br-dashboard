@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-10T21:41:03.431Z",
+  "last_updated": "2026-05-11T22:00:22.899Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -255,10 +255,10 @@
     },
     "lobaobh": {
       "igormuba": false,
-      "nexo.witness": true,
-      "mengao": true,
-      "fernandosoder": true,
-      "perfilbrasil": true
+      "nexo.witness": false,
+      "mengao": false,
+      "fernandosoder": false,
+      "perfilbrasil": false
     },
     "luizeba": {
       "igormuba": false,
