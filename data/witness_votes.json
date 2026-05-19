@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-05-18T21:58:55.364Z",
+  "last_updated": "2026-05-19T22:10:35.877Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -1003,11 +1003,11 @@
       "perfilbrasil": false
     },
     "gtpacheko17": {
-      "igormuba": true,
+      "igormuba": false,
       "nexo.witness": false,
       "mengao": false,
       "fernandosoder": false,
-      "perfilbrasil": true
+      "perfilbrasil": false
     },
     "handrehermann": {
       "igormuba": false,
