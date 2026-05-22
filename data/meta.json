@@ -1,17 +1,17 @@
 {
-  "last_updated": "2026-05-22T08:55:16.703Z",
+  "last_updated": "2026-05-22T08:58:27.417Z",
   "versions": {
     "backend": "2.32.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 59,
-  "total_hp": 37589.008,
-  "project_account_hp": 14959.922752085662,
+  "total_hp": 37589.014,
+  "project_account_hp": 14959.925257212424,
   "total_hbr_staked": 5527.633065549998,
   "curation_trail_count": 79,
   "active_community_members": 286,
   "active_brazilians": 41,
-  "votes_24h": 11,
+  "votes_24h": 10,
   "votes_month_current": 246,
   "votes_month_prev1": 300,
   "votes_month_prev2": 306,
@@ -79,12 +79,12 @@
   ],
   "top_grower": {
     "delegator": "grafvisionsp",
-    "growth": 24.72099999999999,
+    "growth": 24.721999999999994,
     "old_hp": 125.48,
-    "current_hp": 150.201
+    "current_hp": 150.202
   },
   "market": {
-    "hive_usd": 0.060565,
+    "hive_usd": 0.060588,
     "usd_brl": null
   }
 }
