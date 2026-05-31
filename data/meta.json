@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-05-31T08:39:34.624Z",
+  "last_updated": "2026-05-31T08:42:14.706Z",
   "versions": {
     "backend": "2.32.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 59,
-  "total_hp": 38382.095,
-  "project_account_hp": 14970.27472940138,
+  "total_hp": 38382.102,
+  "project_account_hp": 14970.276809432862,
   "total_hbr_staked": 5527.633065549998,
   "curation_trail_count": 79,
   "active_community_members": 286,
@@ -84,7 +84,7 @@
     "current_hp": 150.305
   },
   "market": {
-    "hive_usd": 0.067816,
+    "hive_usd": 0.068707,
     "usd_brl": null
   }
 }
