@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-04T22:16:37.160Z",
+  "last_updated": "2026-06-05T22:11:24.061Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -240,11 +240,11 @@
       "perfilbrasil": false
     },
     "lincemarrom": {
-      "igormuba": true,
-      "nexo.witness": true,
-      "mengao": true,
-      "fernandosoder": true,
-      "perfilbrasil": true
+      "igormuba": false,
+      "nexo.witness": false,
+      "mengao": false,
+      "fernandosoder": false,
+      "perfilbrasil": false
     },
     "lipe100dedos": {
       "igormuba": true,
