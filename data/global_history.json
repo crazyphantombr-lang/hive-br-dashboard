@@ -1704,14 +1704,14 @@
     "script_version": "2.32.0"
   },
   "2026-06-08": {
-    "total_votes": 11,
+    "total_votes": 9,
     "trail_count": 79,
     "active_brazilians": 40,
-    "total_hp": 53592.15,
-    "total_delegated_hp": 38612.53,
+    "total_hp": 53593.01,
+    "total_delegated_hp": 38613.15,
     "active_members": 286,
     "market": {
-      "hive_usd": 0.04821424,
+      "hive_usd": 0.04950283,
       "usd_brl": null
     },
     "script_version": "2.32.0"
