@@ -1743,14 +1743,14 @@
     "script_version": "2.32.0"
   },
   "2026-06-11": {
-    "total_votes": 12,
+    "total_votes": 8,
     "trail_count": 79,
     "active_brazilians": 40,
-    "total_hp": 52652.69,
-    "total_delegated_hp": 37669.83,
+    "total_hp": 52653.84,
+    "total_delegated_hp": 37670.66,
     "active_members": 287,
     "market": {
-      "hive_usd": 0.051848,
+      "hive_usd": 0.04924922,
       "usd_brl": null
     },
     "script_version": "2.32.0"
