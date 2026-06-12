@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-06-12T10:08:45.001Z",
+  "last_updated": "2026-06-12T14:49:31.628Z",
   "versions": {
     "backend": "2.32.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 59,
-  "total_hp": 37673.67999999997,
-  "project_account_hp": 15202.537011200697,
+  "total_hp": 37674.26799999998,
+  "project_account_hp": 15202.775520436404,
   "total_hbr_staked": 5540.492557999998,
   "curation_trail_count": 79,
   "active_community_members": 287,
@@ -25,14 +25,14 @@
     {
       "user": "rimurutempest",
       "old_val": 3370.54,
-      "new_val": 3601.26,
-      "diff": 230.72
+      "new_val": 3601.32,
+      "diff": 230.78
     },
     {
       "user": "shiftrox",
       "old_val": 1215.32,
-      "new_val": 1000.22,
-      "diff": -215.1
+      "new_val": 1000.23,
+      "diff": -215.09
     },
     {
       "user": "grafvisionsp",
@@ -43,48 +43,48 @@
     {
       "user": "matheusggr",
       "old_val": 10364.27,
-      "new_val": 10376.05,
-      "diff": 11.78
+      "new_val": 10376.21,
+      "diff": 11.94
     },
     {
       "user": "tfranzini",
       "old_val": 3158.51,
-      "new_val": 3162.09,
-      "diff": 3.58
+      "new_val": 3162.14,
+      "diff": 3.63
     },
     {
       "user": "michupa",
       "old_val": 3020.23,
-      "new_val": 3023.66,
-      "diff": 3.43
+      "new_val": 3023.7,
+      "diff": 3.47
     },
     {
       "user": "wiseagent",
       "old_val": 2503.5,
-      "new_val": 2506.35,
-      "diff": 2.85
+      "new_val": 2506.39,
+      "diff": 2.89
     },
     {
       "user": "mengao",
       "old_val": 2043.74,
-      "new_val": 2046.07,
-      "diff": 2.33
+      "new_val": 2046.1,
+      "diff": 2.36
     },
     {
       "user": "gwajnberg",
       "old_val": 1046.16,
-      "new_val": 1047.35,
-      "diff": 1.19
+      "new_val": 1047.37,
+      "diff": 1.21
     }
   ],
   "top_grower": {
     "delegator": "rimurutempest",
-    "growth": 1000.665,
+    "growth": 1000.721,
     "old_hp": 2600.6,
-    "current_hp": 3601.265
+    "current_hp": 3601.321
   },
   "market": {
-    "hive_usd": 0.050581,
+    "hive_usd": 0.050311,
     "usd_brl": null
   }
 }
