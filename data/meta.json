@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-06-15T03:44:30.944Z",
+  "last_updated": "2026-06-15T04:04:16.097Z",
   "versions": {
     "backend": "2.32.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 59,
-  "total_hp": 37829.947,
-  "project_account_hp": 15205.847016720427,
+  "total_hp": 37829.988000000005,
+  "project_account_hp": 15205.86366566548,
   "total_hbr_staked": 5540.492557999998,
   "curation_trail_count": 79,
   "active_community_members": 287,
@@ -32,7 +32,7 @@
       "user": "shiftrox",
       "old_val": 1215.61,
       "new_val": 1000.43,
-      "diff": -215.18
+      "diff": -215.17
     },
     {
       "user": "grafvisionsp",
@@ -43,14 +43,14 @@
     {
       "user": "matheusggr",
       "old_val": 10366.78,
-      "new_val": 10378.31,
-      "diff": 11.53
+      "new_val": 10378.32,
+      "diff": 11.54
     },
     {
       "user": "tfranzini",
       "old_val": 3159.27,
-      "new_val": 3162.78,
-      "diff": 3.51
+      "new_val": 3162.79,
+      "diff": 3.52
     },
     {
       "user": "michupa",
@@ -79,12 +79,12 @@
   ],
   "top_grower": {
     "delegator": "rimurutempest",
-    "growth": 1148.9279999999999,
+    "growth": 1148.9319999999998,
     "old_hp": 2601.19,
-    "current_hp": 3750.118
+    "current_hp": 3750.122
   },
   "market": {
-    "hive_usd": 0.050663,
+    "hive_usd": 0.050659,
     "usd_brl": null
   }
 }
