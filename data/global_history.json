@@ -1821,14 +1821,14 @@
     "script_version": "2.32.0"
   },
   "2026-06-17": {
-    "total_votes": 13,
+    "total_votes": 12,
     "trail_count": 79,
     "active_brazilians": 41,
-    "total_hp": 56094.9,
-    "total_delegated_hp": 40886.28,
+    "total_hp": 56095.72,
+    "total_delegated_hp": 40886.88,
     "active_members": 287,
     "market": {
-      "hive_usd": 0.052034,
+      "hive_usd": 0.051906,
       "usd_brl": null
     },
     "script_version": "2.32.0"
