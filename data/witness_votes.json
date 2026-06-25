@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-24T22:11:12.579Z",
+  "last_updated": "2026-06-25T22:16:57.783Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -88,9 +88,9 @@
     "dstampede": {
       "igormuba": false,
       "nexo.witness": false,
-      "mengao": true,
+      "mengao": false,
       "fernandosoder": false,
-      "perfilbrasil": true
+      "perfilbrasil": false
     },
     "edufecchio": {
       "igormuba": false,
