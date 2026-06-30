@@ -1990,14 +1990,14 @@
     "script_version": "2.32.0"
   },
   "2026-06-30": {
-    "total_votes": 10,
+    "total_votes": 8,
     "trail_count": 79,
     "active_brazilians": 40,
-    "total_hp": 56763.95,
-    "total_delegated_hp": 41292.5,
+    "total_hp": 56764.81,
+    "total_delegated_hp": 41293.13,
     "active_members": 287,
     "market": {
-      "hive_usd": 0.04945835,
+      "hive_usd": 0.04898516,
       "usd_brl": null
     },
     "script_version": "2.32.0"
