@@ -2032,11 +2032,11 @@
     "total_votes": 10,
     "trail_count": 79,
     "active_brazilians": 40,
-    "total_hp": 56927,
-    "total_delegated_hp": 41452.25,
+    "total_hp": 56927.04,
+    "total_delegated_hp": 41452.28,
     "active_members": 287,
     "market": {
-      "hive_usd": 0.050303,
+      "hive_usd": 0.050269,
       "usd_brl": null
     },
     "script_version": "2.32.0"
