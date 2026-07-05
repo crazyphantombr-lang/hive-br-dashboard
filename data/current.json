@@ -1,8 +1,8 @@
 [
   {
     "delegator": "matheusggr",
-    "delegated_hp": 10394.531,
-    "total_account_hp": 29859.83745613379,
+    "delegated_hp": 10394.788,
+    "total_account_hp": 29860.576371169183,
     "token_balance": 2428.449,
     "country_code": "BR_CERT",
     "last_user_post": "2023-07-11T21:49:54",
@@ -13,8 +13,8 @@
   },
   {
     "delegator": "rimurutempest",
-    "delegated_hp": 7201.816,
-    "total_account_hp": 13621.208093116786,
+    "delegated_hp": 7201.994,
+    "total_account_hp": 13621.54516512781,
     "token_balance": 200.20995677,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-04T17:56:39",
@@ -25,8 +25,8 @@
   },
   {
     "delegator": "tfranzini",
-    "delegated_hp": 3167.727,
-    "total_account_hp": 4031.0977861959063,
+    "delegated_hp": 3167.805,
+    "total_account_hp": 4031.1975402139155,
     "token_balance": 514.893,
     "country_code": "BR_CERT",
     "last_user_post": "2026-02-25T16:42:36",
@@ -37,8 +37,8 @@
   },
   {
     "delegator": "michupa",
-    "delegated_hp": 3029.044,
-    "total_account_hp": 55165.08336190549,
+    "delegated_hp": 3029.118,
+    "total_account_hp": 55167.57989074729,
     "token_balance": 203.57372422,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-04T11:00:54",
@@ -49,11 +49,11 @@
   },
   {
     "delegator": "wiseagent",
-    "delegated_hp": 2510.81,
-    "total_account_hp": 101049.55463432573,
+    "delegated_hp": 2510.873,
+    "total_account_hp": 101052.05521844138,
     "token_balance": 200,
     "country_code": "BR_CERT",
-    "last_user_post": "2026-07-04T18:56:36",
+    "last_user_post": "2026-07-04T19:21:48",
     "next_withdrawal": "1969-12-31T23:59:59",
     "timestamp": "2026-05-10T14:17:30.000Z",
     "in_curation_trail": false,
@@ -61,8 +61,8 @@
   },
   {
     "delegator": "mengao",
-    "delegated_hp": 2049.71,
-    "total_account_hp": 44722.89755728685,
+    "delegated_hp": 2049.761,
+    "total_account_hp": 44734.18669255706,
     "token_balance": 200.80588465,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-02T16:08:57",
@@ -73,23 +73,23 @@
   },
   {
     "delegator": "shiftrox",
-    "delegated_hp": 1100.959,
-    "total_account_hp": 31037.135733499195,
+    "delegated_hp": 1100.986,
+    "total_account_hp": 31055.79128110875,
     "token_balance": 172.493,
     "country_code": "BR_CERT",
-    "last_user_post": "2026-07-04T14:35:21",
+    "last_user_post": "2026-07-05T00:16:15",
     "next_withdrawal": "1969-12-31T23:59:59",
     "timestamp": "2026-06-23T19:53:21.000Z",
     "in_curation_trail": false,
-    "last_vote_date": "2026-07-03T21:11:54Z"
+    "last_vote_date": "2026-07-04T19:11:33Z"
   },
   {
     "delegator": "gwajnberg",
-    "delegated_hp": 1049.215,
-    "total_account_hp": 31339.149348443214,
+    "delegated_hp": 1049.241,
+    "total_account_hp": 31343.785127224102,
     "token_balance": 150.48400001,
     "country_code": "BR_CERT",
-    "last_user_post": "2026-07-04T00:25:57",
+    "last_user_post": "2026-07-04T20:47:15",
     "next_withdrawal": "1969-12-31T23:59:59",
     "timestamp": "2025-11-05T21:52:12.000Z",
     "in_curation_trail": false,
@@ -97,8 +97,8 @@
   },
   {
     "delegator": "kaibagt",
-    "delegated_hp": 1038.342,
-    "total_account_hp": 6954.318546269043,
+    "delegated_hp": 1038.367,
+    "total_account_hp": 6954.490638650398,
     "token_balance": 100.61831016,
     "country_code": "BR_CERT",
     "last_user_post": "2025-06-19T18:48:24",
@@ -109,20 +109,20 @@
   },
   {
     "delegator": "elderdark",
-    "delegated_hp": 1034.254,
-    "total_account_hp": 12852.686149390458,
+    "delegated_hp": 1034.279,
+    "total_account_hp": 12873.777763544054,
     "token_balance": 130.47239327,
     "country_code": "BR_CERT",
-    "last_user_post": "2026-07-03T23:30:45",
+    "last_user_post": "2026-07-04T23:57:33",
     "next_withdrawal": "1969-12-31T23:59:59",
     "timestamp": "2025-05-08T02:36:12.000Z",
     "in_curation_trail": true,
-    "last_vote_date": "2026-07-03T23:31:00Z"
+    "last_vote_date": "2026-07-04T23:57:48Z"
   },
   {
     "delegator": "blessskateshop",
-    "delegated_hp": 1013.209,
-    "total_account_hp": 14732.849506875735,
+    "delegated_hp": 1013.234,
+    "total_account_hp": 14734.064400700128,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-04T05:56:06",
@@ -133,8 +133,8 @@
   },
   {
     "delegator": "pablito.saldo",
-    "delegated_hp": 628.291,
-    "total_account_hp": 3200.182085624408,
+    "delegated_hp": 628.307,
+    "total_account_hp": 3200.315295244919,
     "token_balance": 51.915,
     "country_code": "BR_CERT",
     "last_user_post": "2026-05-11T03:27:00",
@@ -145,8 +145,8 @@
   },
   {
     "delegator": "xvlad",
-    "delegated_hp": 546.281,
-    "total_account_hp": 6270.699561266398,
+    "delegated_hp": 546.295,
+    "total_account_hp": 6273.275625693697,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-04T16:49:51",
@@ -157,8 +157,8 @@
   },
   {
     "delegator": "legalizabrazil",
-    "delegated_hp": 545.231,
-    "total_account_hp": 706.6399481598545,
+    "delegated_hp": 545.244,
+    "total_account_hp": 706.6574347547858,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2024-11-24T13:51:27",
@@ -169,8 +169,8 @@
   },
   {
     "delegator": "wagnertamanaha",
-    "delegated_hp": 503.656,
-    "total_account_hp": 4471.650533589245,
+    "delegated_hp": 503.668,
+    "total_account_hp": 4471.761189577147,
     "token_balance": 12,
     "country_code": "BR",
     "last_user_post": "2026-05-01T02:47:15",
@@ -181,8 +181,8 @@
   },
   {
     "delegator": "ricestrela",
-    "delegated_hp": 502.174,
-    "total_account_hp": 2776.45537796038,
+    "delegated_hp": 502.187,
+    "total_account_hp": 2776.5510942518977,
     "token_balance": 63.80972072,
     "country_code": "PT",
     "last_user_post": "2026-07-04T09:36:09",
@@ -193,8 +193,8 @@
   },
   {
     "delegator": "lobaobh",
-    "delegated_hp": 417.578,
-    "total_account_hp": 702.1193949206872,
+    "delegated_hp": 417.588,
+    "total_account_hp": 702.1427718347254,
     "token_balance": 57.858,
     "country_code": "BR_CERT",
     "last_user_post": "2025-04-17T05:12:48",
@@ -205,8 +205,8 @@
   },
   {
     "delegator": "coyotelation",
-    "delegated_hp": 415.114,
-    "total_account_hp": 17257.98489610044,
+    "delegated_hp": 415.124,
+    "total_account_hp": 17258.411964216233,
     "token_balance": 31.038,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-04T16:33:54",
@@ -217,8 +217,8 @@
   },
   {
     "delegator": "crazyphantombr",
-    "delegated_hp": 303.017,
-    "total_account_hp": 13194.440810738668,
+    "delegated_hp": 303.025,
+    "total_account_hp": 13194.767321916535,
     "token_balance": 307.87017843,
     "country_code": "BR_CERT",
     "last_user_post": "2026-06-30T19:19:45",
@@ -229,8 +229,8 @@
   },
   {
     "delegator": "suzanne7",
-    "delegated_hp": 300.577,
-    "total_account_hp": 48951.65986798388,
+    "delegated_hp": 300.585,
+    "total_account_hp": 48952.87123149304,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-07-03T12:06:09",
@@ -241,8 +241,8 @@
   },
   {
     "delegator": "markitoelias",
-    "delegated_hp": 236.497,
-    "total_account_hp": 279.18664160356707,
+    "delegated_hp": 236.503,
+    "total_account_hp": 279.19355038890336,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-03-15T09:42:54",
@@ -253,8 +253,8 @@
   },
   {
     "delegator": "nane-qts",
-    "delegated_hp": 227.252,
-    "total_account_hp": 653.1222875627058,
+    "delegated_hp": 227.258,
+    "total_account_hp": 653.1384498033387,
     "token_balance": 40.257,
     "country_code": "BR",
     "last_user_post": "2024-01-03T02:35:03",
@@ -265,8 +265,8 @@
   },
   {
     "delegator": "thomashnblum",
-    "delegated_hp": 220.013,
-    "total_account_hp": 684.333699488624,
+    "delegated_hp": 220.019,
+    "total_account_hp": 684.3506340905127,
     "token_balance": 26.461,
     "country_code": "BR_CERT",
     "last_user_post": "2026-01-17T20:56:54",
@@ -277,8 +277,8 @@
   },
   {
     "delegator": "viniciotricolor",
-    "delegated_hp": 218.741,
-    "total_account_hp": 1071.75494234474,
+    "delegated_hp": 218.747,
+    "total_account_hp": 1071.7904673385408,
     "token_balance": 27.123,
     "country_code": "BR",
     "last_user_post": "2026-05-29T05:49:33",
@@ -289,8 +289,8 @@
   },
   {
     "delegator": "syel25",
-    "delegated_hp": 216.337,
-    "total_account_hp": 2156.0037614362623,
+    "delegated_hp": 216.342,
+    "total_account_hp": 2156.0571141578916,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-30T14:50:33",
@@ -301,8 +301,8 @@
   },
   {
     "delegator": "felipefabar",
-    "delegated_hp": 214.114,
-    "total_account_hp": 985.1333891029001,
+    "delegated_hp": 214.119,
+    "total_account_hp": 985.1577673291428,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-24T13:13:27",
@@ -313,8 +313,8 @@
   },
   {
     "delegator": "adncabrera",
-    "delegated_hp": 201.439,
-    "total_account_hp": 1597.5063082843533,
+    "delegated_hp": 201.444,
+    "total_account_hp": 1597.5688484450852,
     "token_balance": 3.51600001,
     "country_code": "CU",
     "last_user_post": "2026-04-03T15:43:12",
@@ -325,8 +325,8 @@
   },
   {
     "delegator": "grafvisionsp",
-    "delegated_hp": 200.141,
-    "total_account_hp": 2295.870057033757,
+    "delegated_hp": 200.146,
+    "total_account_hp": 2295.9268709031203,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-28T23:52:57",
@@ -337,8 +337,8 @@
   },
   {
     "delegator": "lincemarrom",
-    "delegated_hp": 163.955,
-    "total_account_hp": 752.1113258117939,
+    "delegated_hp": 163.959,
+    "total_account_hp": 752.1299376467628,
     "token_balance": 26.76524818,
     "country_code": "BR_CERT",
     "last_user_post": "2025-04-26T21:09:51",
@@ -349,8 +349,8 @@
   },
   {
     "delegator": "reibar",
-    "delegated_hp": 157.524,
-    "total_account_hp": 345.97058511920886,
+    "delegated_hp": 157.528,
+    "total_account_hp": 345.9791465478343,
     "token_balance": 25.58,
     "country_code": "BR_CERT",
     "last_user_post": "2025-10-15T23:50:03",
@@ -361,8 +361,8 @@
   },
   {
     "delegator": "sinvistaalsol",
-    "delegated_hp": 157.278,
-    "total_account_hp": 157.4526016491475,
+    "delegated_hp": 157.282,
+    "total_account_hp": 157.45649798967148,
     "token_balance": 0,
     "country_code": "VE",
     "last_user_post": "2020-12-27T19:35:18",
@@ -373,8 +373,8 @@
   },
   {
     "delegator": "ogechukwu-martha",
-    "delegated_hp": 133.217,
-    "total_account_hp": 340.5035223838998,
+    "delegated_hp": 133.221,
+    "total_account_hp": 340.5119485239504,
     "token_balance": 0,
     "country_code": "NG",
     "last_user_post": "2026-01-22T04:48:54",
@@ -385,8 +385,8 @@
   },
   {
     "delegator": "jaopalas",
-    "delegated_hp": 119.011,
-    "total_account_hp": 436.88755805040995,
+    "delegated_hp": 119.013,
+    "total_account_hp": 436.89836932109733,
     "token_balance": 8.516,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-03T18:20:27",
@@ -397,8 +397,8 @@
   },
   {
     "delegator": "dreloop07",
-    "delegated_hp": 110.641,
-    "total_account_hp": 2603.147464299778,
+    "delegated_hp": 110.644,
+    "total_account_hp": 2603.211882091856,
     "token_balance": 6.733,
     "country_code": "BR",
     "last_user_post": "2026-06-11T14:20:18",
@@ -409,8 +409,8 @@
   },
   {
     "delegator": "underlock",
-    "delegated_hp": 110.322,
-    "total_account_hp": 10779.940259529376,
+    "delegated_hp": 110.325,
+    "total_account_hp": 10780.894271512598,
     "token_balance": 25.31899872,
     "country_code": "BR_CERT",
     "last_user_post": "2026-02-09T23:20:48",
@@ -421,8 +421,8 @@
   },
   {
     "delegator": "imagemvirtual",
-    "delegated_hp": 110.234,
-    "total_account_hp": 127.71285361535229,
+    "delegated_hp": 110.237,
+    "total_account_hp": 127.71601401258782,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2019-05-30T15:46:30",
@@ -433,8 +433,8 @@
   },
   {
     "delegator": "giovanalrico",
-    "delegated_hp": 110.234,
-    "total_account_hp": 124.83606417688398,
+    "delegated_hp": 110.237,
+    "total_account_hp": 124.83915338475109,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2019-04-23T00:46:03",
@@ -445,8 +445,8 @@
   },
   {
     "delegator": "mauriciolimax",
-    "delegated_hp": 109.236,
-    "total_account_hp": 1921.8856307695498,
+    "delegated_hp": 109.238,
+    "total_account_hp": 1921.9331899764934,
     "token_balance": 13.611,
     "country_code": "BR",
     "last_user_post": "2025-09-27T15:39:54",
@@ -457,11 +457,11 @@
   },
   {
     "delegator": "eii",
-    "delegated_hp": 101.983,
-    "total_account_hp": 5276.5483021124155,
+    "delegated_hp": 101.986,
+    "total_account_hp": 5276.67887619478,
     "token_balance": 0,
     "country_code": "BR",
-    "last_user_post": "2026-07-04T07:37:15",
+    "last_user_post": "2026-07-05T01:44:00",
     "next_withdrawal": "1969-12-31T23:59:59",
     "timestamp": "2025-10-24T10:50:09.000Z",
     "in_curation_trail": false,
@@ -469,8 +469,8 @@
   },
   {
     "delegator": "d35tr0",
-    "delegated_hp": 75.853,
-    "total_account_hp": 169.8767168178678,
+    "delegated_hp": 75.855,
+    "total_account_hp": 169.8809206070011,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-10-31T03:20:36",
@@ -481,8 +481,8 @@
   },
   {
     "delegator": "arthursiq5",
-    "delegated_hp": 73.048,
-    "total_account_hp": 262.33159486789407,
+    "delegated_hp": 73.05,
+    "total_account_hp": 262.3380865562695,
     "token_balance": 15.463,
     "country_code": "BR",
     "last_user_post": "2025-04-16T15:40:24",
@@ -493,8 +493,8 @@
   },
   {
     "delegator": "casagrande",
-    "delegated_hp": 61.182,
-    "total_account_hp": 81.09955330384207,
+    "delegated_hp": 61.183,
+    "total_account_hp": 81.10156020288792,
     "token_balance": 5.03961038,
     "country_code": "BR_CERT",
     "last_user_post": "2026-06-20T19:18:12",
@@ -505,8 +505,8 @@
   },
   {
     "delegator": "matheusggr.leo",
-    "delegated_hp": 55.122,
-    "total_account_hp": 136.32669343540417,
+    "delegated_hp": 55.123,
+    "total_account_hp": 136.3300669917289,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2025-10-14T11:49:42",
@@ -517,8 +517,8 @@
   },
   {
     "delegator": "zombialien",
-    "delegated_hp": 53.185,
-    "total_account_hp": 321.4501460554019,
+    "delegated_hp": 53.186,
+    "total_account_hp": 321.47312281695514,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-07-29T17:26:45",
@@ -529,8 +529,8 @@
   },
   {
     "delegator": "hive-br.leo",
-    "delegated_hp": 44.809,
-    "total_account_hp": 45.90027848180859,
+    "delegated_hp": 44.81,
+    "total_account_hp": 45.901414335476545,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2023-07-15T22:43:27",
@@ -541,8 +541,8 @@
   },
   {
     "delegator": "ogepaul1986",
-    "delegated_hp": 34.76,
-    "total_account_hp": 39.86284711209102,
+    "delegated_hp": 34.761,
+    "total_account_hp": 39.863833562775085,
     "token_balance": 0,
     "country_code": "NG",
     "last_user_post": "2025-08-29T15:44:45",
@@ -553,8 +553,8 @@
   },
   {
     "delegator": "speedtuning",
-    "delegated_hp": 32.593,
-    "total_account_hp": 505.88056340356616,
+    "delegated_hp": 32.594,
+    "total_account_hp": 505.8930819832457,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-28T00:53:39",
@@ -565,8 +565,8 @@
   },
   {
     "delegator": "boeltermc",
-    "delegated_hp": 21.597,
-    "total_account_hp": 3488.7952625728594,
+    "delegated_hp": 21.598,
+    "total_account_hp": 3489.061661765818,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-06-16T00:47:45",
@@ -578,7 +578,7 @@
   {
     "delegator": "portugalzin",
     "delegated_hp": 20.267,
-    "total_account_hp": 24.263399242665955,
+    "total_account_hp": 24.263999667585765,
     "token_balance": 0,
     "country_code": "PT_CERT",
     "last_user_post": "2024-09-13T18:55:39",
@@ -589,8 +589,8 @@
   },
   {
     "delegator": "v-36",
-    "delegated_hp": 20.259,
-    "total_account_hp": 152.13980993999635,
+    "delegated_hp": 20.26,
+    "total_account_hp": 152.1435748095544,
     "token_balance": 1.231,
     "country_code": "BR",
     "last_user_post": "2026-06-12T10:53:57",
@@ -602,7 +602,7 @@
   {
     "delegator": "name0",
     "delegated_hp": 15.18,
-    "total_account_hp": 25663.967011262608,
+    "total_account_hp": 25664.60209479648,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-25T11:58:30",
@@ -614,7 +614,7 @@
   {
     "delegator": "lucianaabrao",
     "delegated_hp": 14.573,
-    "total_account_hp": 15.65680122935613,
+    "total_account_hp": 15.65718867439335,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-10-27T02:54:45",
@@ -626,7 +626,7 @@
   {
     "delegator": "ayummi",
     "delegated_hp": 14.187,
-    "total_account_hp": 16.1734992361189,
+    "total_account_hp": 16.173899467425517,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-07-02T03:19:39",
@@ -638,7 +638,7 @@
   {
     "delegator": "keepkeybr",
     "delegated_hp": 14.102,
-    "total_account_hp": 15.36247979893972,
+    "total_account_hp": 15.362859960664347,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-08-20T19:24:33",
@@ -650,7 +650,7 @@
   {
     "delegator": "sieghard1990",
     "delegated_hp": 10.472,
-    "total_account_hp": 221.9897799206039,
+    "total_account_hp": 221.997274025062,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-15T18:59:24",
@@ -662,7 +662,7 @@
   {
     "delegator": "manopunkttt",
     "delegated_hp": 10.249,
-    "total_account_hp": 107.93740171459916,
+    "total_account_hp": 107.9400727461855,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-11-28T13:44:18",
@@ -674,7 +674,7 @@
   {
     "delegator": "emviagem",
     "delegated_hp": 9.649,
-    "total_account_hp": 10.283628368378409,
+    "total_account_hp": 10.28388284825061,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-08-05T00:43:51",
@@ -686,7 +686,7 @@
   {
     "delegator": "ladyaryastark",
     "delegated_hp": 5.001,
-    "total_account_hp": 1912.225007795323,
+    "total_account_hp": 1912.414378450321,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-07-02T23:26:15",
@@ -698,10 +698,10 @@
   {
     "delegator": "ronnie10",
     "delegated_hp": 2.004,
-    "total_account_hp": 1563.375696453124,
+    "total_account_hp": 1563.414383931238,
     "token_balance": 0,
     "country_code": "BR",
-    "last_user_post": "2026-07-04T00:58:18",
+    "last_user_post": "2026-07-04T23:13:27",
     "next_withdrawal": "1969-12-31T23:59:59",
     "timestamp": "2026-06-08T17:58:24.000Z",
     "in_curation_trail": false,
@@ -721,7 +721,7 @@
   {
     "delegator": "aiuna",
     "delegated_hp": 0,
-    "total_account_hp": 11.709969263538095,
+    "total_account_hp": 11.710259039809166,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2025-06-25T23:55:15",
@@ -732,10 +732,10 @@
   {
     "delegator": "biologistbrito",
     "delegated_hp": 0,
-    "total_account_hp": 14599.633401842535,
+    "total_account_hp": 14600.033691612123,
     "token_balance": 0,
     "country_code": "PT_CERT",
-    "last_user_post": "2026-07-04T18:43:48",
+    "last_user_post": "2026-07-04T19:36:51",
     "next_withdrawal": "1969-12-31T23:59:59",
     "in_curation_trail": false,
     "last_vote_date": null
@@ -743,7 +743,7 @@
   {
     "delegator": "bralph",
     "delegated_hp": 0,
-    "total_account_hp": 5.31839309295044,
+    "total_account_hp": 5.3185247025289,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2023-11-20T05:46:15",
@@ -754,7 +754,7 @@
   {
     "delegator": "brazilians",
     "delegated_hp": 0,
-    "total_account_hp": 5177.9094053977215,
+    "total_account_hp": 5181.339169355611,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-04-05T17:59:09",
@@ -765,7 +765,7 @@
   {
     "delegator": "coyote.sports",
     "delegated_hp": 0,
-    "total_account_hp": 9.119223126230308,
+    "total_account_hp": 9.119448791593994,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2021-03-11T04:55:12",
@@ -776,7 +776,7 @@
   {
     "delegator": "discernente",
     "delegated_hp": 0,
-    "total_account_hp": 415.1177416522561,
+    "total_account_hp": 415.1280142045169,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-03-05T22:24:00",
@@ -787,7 +787,7 @@
   {
     "delegator": "dstampede",
     "delegated_hp": 0,
-    "total_account_hp": 35.33396925545595,
+    "total_account_hp": 35.33484363399808,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-03-20T12:33:24",
@@ -798,7 +798,7 @@
   {
     "delegator": "edufecchio",
     "delegated_hp": 0,
-    "total_account_hp": 3.2142091676597127,
+    "total_account_hp": 3.214288706856279,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2017-11-22T19:22:24",
@@ -809,7 +809,7 @@
   {
     "delegator": "eujotave",
     "delegated_hp": 0,
-    "total_account_hp": 0.0004238007189105353,
+    "total_account_hp": 0.0004238112063327684,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2024-11-09T02:47:54",
@@ -820,7 +820,7 @@
   {
     "delegator": "fernandosoder",
     "delegated_hp": 0,
-    "total_account_hp": 1280.4305835473735,
+    "total_account_hp": 1283.7463207875892,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-03T14:14:06",
@@ -842,7 +842,7 @@
   {
     "delegator": "geovanna-gg",
     "delegated_hp": 0,
-    "total_account_hp": 530.9575217052496,
+    "total_account_hp": 530.9756626629044,
     "token_balance": 10,
     "country_code": "BR_CERT",
     "last_user_post": "2025-10-23T00:12:24",
@@ -853,7 +853,7 @@
   {
     "delegator": "heutorybr",
     "delegated_hp": 0,
-    "total_account_hp": 100.28873795300146,
+    "total_account_hp": 100.29121970985841,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2023-05-16T10:29:54",
@@ -864,7 +864,7 @@
   {
     "delegator": "hive-br",
     "delegated_hp": 0,
-    "total_account_hp": 16048.317093078651,
+    "total_account_hp": 16048.714226613292,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-06-30T19:34:15",
@@ -875,10 +875,10 @@
   {
     "delegator": "hive-br.voter",
     "delegated_hp": 0,
-    "total_account_hp": 42326.281087961215,
+    "total_account_hp": 42329.71436801231,
     "token_balance": 0,
     "country_code": "BR_CERT",
-    "last_user_post": "2026-07-04T18:03:42",
+    "last_user_post": "2026-07-04T23:57:45",
     "next_withdrawal": "2026-07-07T00:26:33",
     "in_curation_trail": false,
     "last_vote_date": null
@@ -886,7 +886,7 @@
   {
     "delegator": "hivebr.spt",
     "delegated_hp": 0,
-    "total_account_hp": 28.527534655211962,
+    "total_account_hp": 28.528240600926182,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2022-06-07T13:24:00",
@@ -897,7 +897,7 @@
   {
     "delegator": "hranhuk",
     "delegated_hp": 0,
-    "total_account_hp": 211.64010382617676,
+    "total_account_hp": 211.64534109697703,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-04-23T19:53:39",
@@ -908,7 +908,7 @@
   {
     "delegator": "jarmeson",
     "delegated_hp": 0,
-    "total_account_hp": 5.069145459666804,
+    "total_account_hp": 5.069270901334136,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2025-08-02T23:37:30",
@@ -919,7 +919,7 @@
   {
     "delegator": "jeffparajiujitsu",
     "delegated_hp": 0,
-    "total_account_hp": 8.226422191231048,
+    "total_account_hp": 8.226625763238212,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2022-07-17T22:43:48",
@@ -930,18 +930,18 @@
   {
     "delegator": "jkatrina",
     "delegated_hp": 0,
-    "total_account_hp": 1.8573213727362365,
+    "total_account_hp": 0.3079469680341396,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2024-10-16T19:30:48",
-    "next_withdrawal": "2026-07-04T20:44:24",
+    "next_withdrawal": "1969-12-31T23:59:59",
     "in_curation_trail": true,
     "last_vote_date": null
   },
   {
     "delegator": "josiva",
     "delegated_hp": 0,
-    "total_account_hp": 3706.1608350503193,
+    "total_account_hp": 3706.252548140473,
     "token_balance": 90.222,
     "country_code": "BR_CERT",
     "last_user_post": "2026-01-31T14:05:42",
@@ -952,7 +952,7 @@
   {
     "delegator": "jsantana",
     "delegated_hp": 0,
-    "total_account_hp": 15.274147222331573,
+    "total_account_hp": 15.27452519816791,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2025-11-25T18:34:21",
@@ -963,7 +963,7 @@
   {
     "delegator": "lipe100dedos",
     "delegated_hp": 0,
-    "total_account_hp": 5.160835880769443,
+    "total_account_hp": 5.1609635914186756,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2025-03-18T01:44:00",
@@ -974,7 +974,7 @@
   {
     "delegator": "luizeba",
     "delegated_hp": 0,
-    "total_account_hp": 12.306896275326338,
+    "total_account_hp": 12.307200823223164,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2025-08-15T18:09:54",
@@ -985,7 +985,7 @@
   {
     "delegator": "luminipro",
     "delegated_hp": 0,
-    "total_account_hp": 0.09356114411094865,
+    "total_account_hp": 0.09356345938598033,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2025-03-14T03:51:24",
@@ -996,7 +996,7 @@
   {
     "delegator": "marcosalomao95",
     "delegated_hp": 0,
-    "total_account_hp": 1013.5011215237349,
+    "total_account_hp": 1013.5262017412069,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-04-13T23:35:09",
@@ -1007,7 +1007,7 @@
   {
     "delegator": "mathfb",
     "delegated_hp": 0,
-    "total_account_hp": 6.462995465612658,
+    "total_account_hp": 6.463155399655508,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2023-06-22T15:00:27",
@@ -1018,7 +1018,7 @@
   {
     "delegator": "perfilbrasil",
     "delegated_hp": 0,
-    "total_account_hp": 4048.4736307458606,
+    "total_account_hp": 4053.302704867262,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-04T03:00:06",
@@ -1029,7 +1029,7 @@
   {
     "delegator": "pirulito.zoado",
     "delegated_hp": 0,
-    "total_account_hp": 5.846435664321897,
+    "total_account_hp": 5.846580340903683,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2024-09-03T13:01:39",
@@ -1040,7 +1040,7 @@
   {
     "delegator": "pixbee",
     "delegated_hp": 0,
-    "total_account_hp": 56.22030256090451,
+    "total_account_hp": 56.22169379509718,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-03-01T20:24:54",
@@ -1051,7 +1051,7 @@
   {
     "delegator": "raigremon",
     "delegated_hp": 0,
-    "total_account_hp": 17.62519956630238,
+    "total_account_hp": 17.625635721555422,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "1970-01-01T00:00:00",
@@ -1062,7 +1062,7 @@
   {
     "delegator": "sintropia",
     "delegated_hp": 0,
-    "total_account_hp": 16.13607330731294,
+    "total_account_hp": 16.136472612473145,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2025-07-08T17:04:00",
@@ -1073,7 +1073,7 @@
   {
     "delegator": "sousafrc",
     "delegated_hp": 0,
-    "total_account_hp": 95.54799687031337,
+    "total_account_hp": 95.55036131223615,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2024-06-23T13:14:42",
@@ -1084,7 +1084,7 @@
   {
     "delegator": "tekabybrazil",
     "delegated_hp": 0,
-    "total_account_hp": 179.5518937188295,
+    "total_account_hp": 179.55633693102368,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-28T18:38:33",
@@ -1095,7 +1095,7 @@
   {
     "delegator": "tokenizedsociety",
     "delegated_hp": 0,
-    "total_account_hp": 21208.156526022944,
+    "total_account_hp": 21208.6813455486,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-01T18:54:15",
@@ -1106,7 +1106,7 @@
   {
     "delegator": "vaipraonde",
     "delegated_hp": 0,
-    "total_account_hp": 4485.4688130627965,
+    "total_account_hp": 4485.57981099946,
     "token_balance": 65.82056277,
     "country_code": "BR_CERT",
     "last_user_post": "2026-07-03T19:54:24",
@@ -1117,7 +1117,7 @@
   {
     "delegator": "vempromundo",
     "delegated_hp": 0,
-    "total_account_hp": 9235.871520208942,
+    "total_account_hp": 9236.100072167446,
     "token_balance": 200,
     "country_code": "BR_CERT",
     "last_user_post": "2026-06-20T17:28:15",
@@ -1128,7 +1128,7 @@
   {
     "delegator": "wlffreitas",
     "delegated_hp": 0,
-    "total_account_hp": 3.6368490067386996,
+    "total_account_hp": 3.6369390046302312,
     "token_balance": 0,
     "country_code": "BR_CERT",
     "last_user_post": "2025-03-27T03:40:27",
@@ -1139,7 +1139,7 @@
   {
     "delegator": "xlety",
     "delegated_hp": 0,
-    "total_account_hp": 1078.2312747290155,
+    "total_account_hp": 1078.3439876822902,
     "token_balance": 51.43796971,
     "country_code": "BR_CERT",
     "last_user_post": "2025-11-25T21:47:12",
@@ -1150,7 +1150,7 @@
   {
     "delegator": "zallin",
     "delegated_hp": 0,
-    "total_account_hp": 94.16904063930379,
+    "total_account_hp": 94.17137095741417,
     "token_balance": 60.546,
     "country_code": "BR_CERT",
     "last_user_post": "2025-07-11T13:09:12",
@@ -1161,7 +1161,7 @@
   {
     "delegator": "elisangelapa",
     "delegated_hp": 0,
-    "total_account_hp": 0.35809976657340026,
+    "total_account_hp": 0.35810862815217076,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-05-17T01:38:51",
@@ -1183,7 +1183,7 @@
   {
     "delegator": "aiyumi",
     "delegated_hp": 0,
-    "total_account_hp": 1970.1217540110722,
+    "total_account_hp": 1970.1705068747717,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-01-27T20:53:30",
@@ -1194,7 +1194,7 @@
   {
     "delegator": "ale-rio",
     "delegated_hp": 0,
-    "total_account_hp": 7.3805921226974025,
+    "total_account_hp": 7.380774763694615,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-05-15T00:59:48",
@@ -1205,7 +1205,7 @@
   {
     "delegator": "alexandrefeliz",
     "delegated_hp": 0,
-    "total_account_hp": 225.20049356082558,
+    "total_account_hp": 225.20606639861865,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-12-05T21:39:12",
@@ -1216,7 +1216,7 @@
   {
     "delegator": "alina97",
     "delegated_hp": 0,
-    "total_account_hp": 513.258214334112,
+    "total_account_hp": 513.2709154820056,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-16T23:33:57",
@@ -1227,7 +1227,7 @@
   {
     "delegator": "alinequeiroz",
     "delegated_hp": 0,
-    "total_account_hp": 23.069401105138773,
+    "total_account_hp": 23.069971983240812,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-12-17T23:12:03",
@@ -1238,7 +1238,7 @@
   {
     "delegator": "alucardy",
     "delegated_hp": 0,
-    "total_account_hp": 5.145551788084941,
+    "total_account_hp": 5.145679120512225,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-02-27T14:40:15",
@@ -1260,7 +1260,7 @@
   {
     "delegator": "anacvv05",
     "delegated_hp": 0,
-    "total_account_hp": 526.0617384472139,
+    "total_account_hp": 526.074756432615,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-05-22T11:01:00",
@@ -1271,7 +1271,7 @@
   {
     "delegator": "anafenalli",
     "delegated_hp": 0,
-    "total_account_hp": 0.23076154662802117,
+    "total_account_hp": 0.23076725708028484,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-05-01T02:14:36",
@@ -1282,7 +1282,7 @@
   {
     "delegator": "anazn",
     "delegated_hp": 0,
-    "total_account_hp": 7.503342734864713,
+    "total_account_hp": 7.503528413462953,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-11-14T20:46:42",
@@ -1293,7 +1293,7 @@
   {
     "delegator": "aphiel",
     "delegated_hp": 0,
-    "total_account_hp": 1.6452408876655706,
+    "total_account_hp": 1.6452816009892959,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-03-22T16:15:36",
@@ -1304,7 +1304,7 @@
   {
     "delegator": "avedorada",
     "delegated_hp": 0,
-    "total_account_hp": 0.8835806363356328,
+    "total_account_hp": 0.88360250152556,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-10-16T19:07:24",
@@ -1315,7 +1315,7 @@
   {
     "delegator": "avel692",
     "delegated_hp": 0,
-    "total_account_hp": 183.33744726341024,
+    "total_account_hp": 183.3419841533559,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2020-02-29T19:02:57",
@@ -1326,7 +1326,7 @@
   {
     "delegator": "badge-182654",
     "delegated_hp": 0,
-    "total_account_hp": 2.2151438799888914,
+    "total_account_hp": 2.215198696198822,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "1970-01-01T00:00:00",
@@ -1337,7 +1337,7 @@
   {
     "delegator": "barizon",
     "delegated_hp": 0,
-    "total_account_hp": 65.42635135658438,
+    "total_account_hp": 65.42997113089092,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-11-22T14:38:36",
@@ -1348,7 +1348,7 @@
   {
     "delegator": "bastter",
     "delegated_hp": 0,
-    "total_account_hp": 124.20163921481247,
+    "total_account_hp": 124.20471272312513,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2021-02-21T00:08:51",
@@ -1359,7 +1359,7 @@
   {
     "delegator": "bergmannadv",
     "delegated_hp": 0,
-    "total_account_hp": 6.624945473652212,
+    "total_account_hp": 6.625109415328932,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-09-25T00:01:03",
@@ -1370,7 +1370,7 @@
   {
     "delegator": "bernardonassar",
     "delegated_hp": 0,
-    "total_account_hp": 111.17764059467086,
+    "total_account_hp": 111.18039180958807,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-05-29T23:24:06",
@@ -1381,7 +1381,7 @@
   {
     "delegator": "boba1961",
     "delegated_hp": 0,
-    "total_account_hp": 1.0989293330821965,
+    "total_account_hp": 1.0989565273161988,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-03-07T12:18:33",
@@ -1392,7 +1392,7 @@
   {
     "delegator": "bodhi.rio",
     "delegated_hp": 0,
-    "total_account_hp": 53.25687950779005,
+    "total_account_hp": 53.25819740876874,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-05-24T01:48:51",
@@ -1414,7 +1414,7 @@
   {
     "delegator": "brancarosamel",
     "delegated_hp": 0,
-    "total_account_hp": 17.42638149170352,
+    "total_account_hp": 17.426812726981193,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-11-28T00:46:33",
@@ -1425,7 +1425,7 @@
   {
     "delegator": "caaio",
     "delegated_hp": 0,
-    "total_account_hp": 29.504664257058298,
+    "total_account_hp": 29.505394382936107,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2021-10-31T18:11:00",
@@ -1436,7 +1436,7 @@
   {
     "delegator": "canellov",
     "delegated_hp": 0,
-    "total_account_hp": 20.766620887023734,
+    "total_account_hp": 20.76713478025675,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-09-05T17:31:45",
@@ -1447,7 +1447,7 @@
   {
     "delegator": "capuah-iruet",
     "delegated_hp": 0,
-    "total_account_hp": 0.14271642622510483,
+    "total_account_hp": 0.1427199579025056,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-11-02T04:37:51",
@@ -1458,7 +1458,7 @@
   {
     "delegator": "carlosro",
     "delegated_hp": 0,
-    "total_account_hp": 85.76676987040419,
+    "total_account_hp": 85.76889226493789,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-02-29T09:49:21",
@@ -1469,7 +1469,7 @@
   {
     "delegator": "carolramos",
     "delegated_hp": 0,
-    "total_account_hp": 33.752357794368,
+    "total_account_hp": 33.753193034167644,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-26T13:12:12",
@@ -1480,7 +1480,7 @@
   {
     "delegator": "christiantatsch",
     "delegated_hp": 0,
-    "total_account_hp": 150.18027257034475,
+    "total_account_hp": 150.1839889489615,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-05-28T20:38:12",
@@ -1491,7 +1491,7 @@
   {
     "delegator": "claytonlins",
     "delegated_hp": 0,
-    "total_account_hp": 9.283881054399577,
+    "total_account_hp": 9.28411079440764,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-11-04T01:35:42",
@@ -1502,7 +1502,7 @@
   {
     "delegator": "cleateles1",
     "delegated_hp": 0,
-    "total_account_hp": 7.454066681065547,
+    "total_account_hp": 7.4542511402727865,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-01-01T12:55:42",
@@ -1513,7 +1513,7 @@
   {
     "delegator": "coiotes",
     "delegated_hp": 0,
-    "total_account_hp": 82.21668930659665,
+    "total_account_hp": 82.21872385042089,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-01-03T01:28:57",
@@ -1524,7 +1524,7 @@
   {
     "delegator": "cril692003",
     "delegated_hp": 0,
-    "total_account_hp": 19.909380801699214,
+    "total_account_hp": 19.909873481568667,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-11-29T23:07:39",
@@ -1535,7 +1535,7 @@
   {
     "delegator": "crisciacm",
     "delegated_hp": 0,
-    "total_account_hp": 1036.4885078448326,
+    "total_account_hp": 1036.5141569108591,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-05-15T20:55:27",
@@ -1546,7 +1546,7 @@
   {
     "delegator": "cryptoshaman007",
     "delegated_hp": 0,
-    "total_account_hp": 5.287902422918122,
+    "total_account_hp": 5.28803327797089,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-05-31T01:14:36",
@@ -1557,7 +1557,7 @@
   {
     "delegator": "david0808",
     "delegated_hp": 0,
-    "total_account_hp": 10.661172151520352,
+    "total_account_hp": 10.661435974135236,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-09-04T19:31:18",
@@ -1568,7 +1568,7 @@
   {
     "delegator": "deividluchi",
     "delegated_hp": 0,
-    "total_account_hp": 159.37158186549948,
+    "total_account_hp": 159.3755256933327,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2018-08-10T16:21:06",
@@ -1579,7 +1579,7 @@
   {
     "delegator": "diegoguerra",
     "delegated_hp": 0,
-    "total_account_hp": 182.84791655601387,
+    "total_account_hp": 182.85244133197529,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-12-05T17:09:54",
@@ -1601,7 +1601,7 @@
   {
     "delegator": "disruptivas",
     "delegated_hp": 0,
-    "total_account_hp": 182.13680029109383,
+    "total_account_hp": 182.14130746968888,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2018-10-18T21:49:45",
@@ -1612,7 +1612,7 @@
   {
     "delegator": "doblershiva",
     "delegated_hp": 0,
-    "total_account_hp": 200.35316313162383,
+    "total_account_hp": 200.37012539334646,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-09-17T03:08:51",
@@ -1623,7 +1623,7 @@
   {
     "delegator": "dolandoteiro",
     "delegated_hp": 0,
-    "total_account_hp": 6.308951742252318,
+    "total_account_hp": 6.309107864311146,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-09-21T03:06:18",
@@ -1634,7 +1634,7 @@
   {
     "delegator": "donamona",
     "delegated_hp": 0,
-    "total_account_hp": 15.072288984004246,
+    "total_account_hp": 15.072661964632973,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-18T23:51:30",
@@ -1645,7 +1645,7 @@
   {
     "delegator": "dudutaulois",
     "delegated_hp": 0,
-    "total_account_hp": 2362.988719650063,
+    "total_account_hp": 2363.1222217057384,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-02-14T16:54:42",
@@ -1656,7 +1656,7 @@
   {
     "delegator": "dunatos",
     "delegated_hp": 0,
-    "total_account_hp": 25.439310941401086,
+    "total_account_hp": 25.43994046556954,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2020-08-26T20:20:54",
@@ -1667,7 +1667,7 @@
   {
     "delegator": "edvamfilho",
     "delegated_hp": 0,
-    "total_account_hp": 2.1238303515905717,
+    "total_account_hp": 2.123882908145232,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-02-26T12:38:03",
@@ -1678,7 +1678,7 @@
   {
     "delegator": "ehvinho",
     "delegated_hp": 0,
-    "total_account_hp": 30.121127048732458,
+    "total_account_hp": 30.121872429670713,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-05-24T23:19:30",
@@ -1689,7 +1689,7 @@
   {
     "delegator": "eijibr",
     "delegated_hp": 0,
-    "total_account_hp": 0.001562018612109656,
+    "total_account_hp": 0.0015620572660052022,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-02-01T01:59:18",
@@ -1700,7 +1700,7 @@
   {
     "delegator": "elcoachjesus",
     "delegated_hp": 0,
-    "total_account_hp": 25.74760282093174,
+    "total_account_hp": 25.748239974127152,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-11-11T00:50:36",
@@ -1711,7 +1711,7 @@
   {
     "delegator": "emanueledornelas",
     "delegated_hp": 0,
-    "total_account_hp": 303.34159907874056,
+    "total_account_hp": 303.349105605484,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-05-26T22:58:03",
@@ -1722,7 +1722,7 @@
   {
     "delegator": "endrius",
     "delegated_hp": 0,
-    "total_account_hp": 6.802053147084382,
+    "total_account_hp": 6.802221471488335,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-01-04T21:32:42",
@@ -1733,7 +1733,7 @@
   {
     "delegator": "ericpso",
     "delegated_hp": 0,
-    "total_account_hp": 202.39563281724375,
+    "total_account_hp": 202.40064132328155,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-09-18T10:08:12",
@@ -1744,7 +1744,7 @@
   {
     "delegator": "escadas",
     "delegated_hp": 0,
-    "total_account_hp": 36.3369362099365,
+    "total_account_hp": 36.33783540801637,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-09-07T02:47:03",
@@ -1755,7 +1755,7 @@
   {
     "delegator": "estourefugiado",
     "delegated_hp": 0,
-    "total_account_hp": 29.454992575623926,
+    "total_account_hp": 29.45572147232048,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2018-06-26T21:46:27",
@@ -1766,7 +1766,7 @@
   {
     "delegator": "f0rtunate",
     "delegated_hp": 0,
-    "total_account_hp": 3.2171629230248526,
+    "total_account_hp": 3.2172425353153957,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-02-17T10:44:54",
@@ -1777,7 +1777,7 @@
   {
     "delegator": "fabiocola",
     "delegated_hp": 0,
-    "total_account_hp": 36.50403226461216,
+    "total_account_hp": 36.50493559767056,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2020-03-01T00:33:57",
@@ -1799,7 +1799,7 @@
   {
     "delegator": "felipefortes",
     "delegated_hp": 0,
-    "total_account_hp": 19.52650497585869,
+    "total_account_hp": 19.526988181038107,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2019-04-30T20:28:57",
@@ -1810,7 +1810,7 @@
   {
     "delegator": "feliperochatv",
     "delegated_hp": 0,
-    "total_account_hp": 126.49142886632141,
+    "total_account_hp": 126.494559038037,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-02-13T01:20:30",
@@ -1821,7 +1821,7 @@
   {
     "delegator": "fireguardian",
     "delegated_hp": 0,
-    "total_account_hp": 110.71572157868299,
+    "total_account_hp": 110.71846136289814,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-04-11T20:35:33",
@@ -1832,7 +1832,7 @@
   {
     "delegator": "fireguardian.spt",
     "delegated_hp": 0,
-    "total_account_hp": 0.4148838517975286,
+    "total_account_hp": 0.4148941185619236,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2021-06-15T16:55:33",
@@ -1843,7 +1843,7 @@
   {
     "delegator": "floressenciarte",
     "delegated_hp": 0,
-    "total_account_hp": 6.317734673778403,
+    "total_account_hp": 6.317891013180683,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-10-07T21:03:30",
@@ -1854,7 +1854,7 @@
   {
     "delegator": "fmajuniorphoto",
     "delegated_hp": 0,
-    "total_account_hp": 624.6490799355784,
+    "total_account_hp": 624.6645375748802,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-04-17T11:01:54",
@@ -1865,7 +1865,7 @@
   {
     "delegator": "frankrey11",
     "delegated_hp": 0,
-    "total_account_hp": 163.18677664821138,
+    "total_account_hp": 163.1908148873016,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-04-25T20:58:24",
@@ -1876,7 +1876,7 @@
   {
     "delegator": "fredsilva007",
     "delegated_hp": 0,
-    "total_account_hp": 152.82132019872807,
+    "total_account_hp": 152.8251019330188,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2021-05-13T15:40:57",
@@ -1887,7 +1887,7 @@
   {
     "delegator": "g4tzbr",
     "delegated_hp": 0,
-    "total_account_hp": 42.21063731176988,
+    "total_account_hp": 42.21168186114524,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-10-01T20:04:39",
@@ -1898,7 +1898,7 @@
   {
     "delegator": "gabrielmilego",
     "delegated_hp": 0,
-    "total_account_hp": 0.0006272093337329034,
+    "total_account_hp": 0.0006272248547285457,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "1970-01-01T00:00:00",
@@ -1909,7 +1909,7 @@
   {
     "delegator": "game3x3",
     "delegated_hp": 0,
-    "total_account_hp": 66.64422713790896,
+    "total_account_hp": 66.64587632376023,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-05-19T14:07:03",
@@ -1920,7 +1920,7 @@
   {
     "delegator": "greengineer",
     "delegated_hp": 0,
-    "total_account_hp": 63.17404897631846,
+    "total_account_hp": 63.17561228873447,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-10-28T09:23:45",
@@ -1931,7 +1931,7 @@
   {
     "delegator": "gtpacheko17",
     "delegated_hp": 0,
-    "total_account_hp": 257.1522218450506,
+    "total_account_hp": 257.1585853640545,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-25T17:30:18",
@@ -1942,7 +1942,7 @@
   {
     "delegator": "handrehermann",
     "delegated_hp": 0,
-    "total_account_hp": 106.58016534204718,
+    "total_account_hp": 106.58280278730325,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-19T16:15:24",
@@ -1953,7 +1953,7 @@
   {
     "delegator": "hevelyn.jeeh",
     "delegated_hp": 0,
-    "total_account_hp": 5.245236483898585,
+    "total_account_hp": 5.24536628313503,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-03T18:38:03",
@@ -1964,7 +1964,7 @@
   {
     "delegator": "ismaelrd04",
     "delegated_hp": 0,
-    "total_account_hp": 107.83136248113374,
+    "total_account_hp": 107.83403088866078,
     "token_balance": 0,
     "country_code": "VE",
     "last_user_post": "2026-06-15T11:30:36",
@@ -1975,7 +1975,7 @@
   {
     "delegator": "iuriomagico",
     "delegated_hp": 0,
-    "total_account_hp": 143.97400793317124,
+    "total_account_hp": 143.97757073083628,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-07-17T09:00:51",
@@ -1986,7 +1986,7 @@
   {
     "delegator": "j377e",
     "delegated_hp": 0,
-    "total_account_hp": 19.11364435830919,
+    "total_account_hp": 19.114117346791407,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-01-10T17:04:54",
@@ -1997,7 +1997,7 @@
   {
     "delegator": "jacalf",
     "delegated_hp": 0,
-    "total_account_hp": 31.876211680125635,
+    "total_account_hp": 31.877000492593766,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2018-03-09T13:11:21",
@@ -2019,7 +2019,7 @@
   {
     "delegator": "jklio123",
     "delegated_hp": 0,
-    "total_account_hp": 2306.8827640683444,
+    "total_account_hp": 2306.9398504594465,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-04-07T17:53:24",
@@ -2030,7 +2030,7 @@
   {
     "delegator": "joaophelip",
     "delegated_hp": 0,
-    "total_account_hp": 57.08455833735087,
+    "total_account_hp": 57.085970958518224,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-07-18T18:49:03",
@@ -2041,7 +2041,7 @@
   {
     "delegator": "joaoprobst",
     "delegated_hp": 0,
-    "total_account_hp": 49.629226048640774,
+    "total_account_hp": 49.63045417928201,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2018-12-13T17:38:57",
@@ -2052,7 +2052,7 @@
   {
     "delegator": "jontv",
     "delegated_hp": 0,
-    "total_account_hp": 130.75210910311336,
+    "total_account_hp": 130.7553447101212,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-08-23T08:11:06",
@@ -2063,7 +2063,7 @@
   {
     "delegator": "jose.music",
     "delegated_hp": 0,
-    "total_account_hp": 15.888594315833798,
+    "total_account_hp": 15.888987496849886,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-02-27T19:38:33",
@@ -2074,7 +2074,7 @@
   {
     "delegator": "jsaez",
     "delegated_hp": 0,
-    "total_account_hp": 82.75695428400934,
+    "total_account_hp": 82.759002197294,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-05-29T19:11:57",
@@ -2085,7 +2085,7 @@
   {
     "delegator": "jucabala",
     "delegated_hp": 0,
-    "total_account_hp": 225.11689870850768,
+    "total_account_hp": 225.13047234274885,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-12-06T15:43:03",
@@ -2096,7 +2096,7 @@
   {
     "delegator": "juliasantos",
     "delegated_hp": 0,
-    "total_account_hp": 8.270568225597495,
+    "total_account_hp": 8.2707728900476,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-08-08T13:10:24",
@@ -2107,7 +2107,7 @@
   {
     "delegator": "jullyette",
     "delegated_hp": 0,
-    "total_account_hp": 5.19054749820851,
+    "total_account_hp": 5.190675944104908,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-01-10T19:19:24",
@@ -2118,7 +2118,7 @@
   {
     "delegator": "kat.eli",
     "delegated_hp": 0,
-    "total_account_hp": 140.01235814522317,
+    "total_account_hp": 140.01582290743855,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-09-05T13:59:39",
@@ -2129,7 +2129,7 @@
   {
     "delegator": "kaveira",
     "delegated_hp": 0,
-    "total_account_hp": 56.63801961492652,
+    "total_account_hp": 56.63942118599434,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-02-06T22:57:51",
@@ -2140,7 +2140,7 @@
   {
     "delegator": "kelday666",
     "delegated_hp": 0,
-    "total_account_hp": 328.08207648197424,
+    "total_account_hp": 328.09019523946955,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-11-04T16:43:36",
@@ -2151,7 +2151,7 @@
   {
     "delegator": "kevbest",
     "delegated_hp": 0,
-    "total_account_hp": 4.516444434906874,
+    "total_account_hp": 4.516556199369904,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-12-18T01:17:21",
@@ -2162,7 +2162,7 @@
   {
     "delegator": "kingforceblack",
     "delegated_hp": 0,
-    "total_account_hp": 1.1092009696150016,
+    "total_account_hp": 1.1092284180321246,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-20T19:05:30",
@@ -2173,7 +2173,7 @@
   {
     "delegator": "kojiri",
     "delegated_hp": 0,
-    "total_account_hp": 617.4152743418776,
+    "total_account_hp": 617.430552972579,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-13T13:11:27",
@@ -2184,7 +2184,7 @@
   {
     "delegator": "laribf",
     "delegated_hp": 0,
-    "total_account_hp": 2.118035585670438,
+    "total_account_hp": 2.118087998827142,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-07-31T21:22:45",
@@ -2195,7 +2195,7 @@
   {
     "delegator": "laurasoares",
     "delegated_hp": 0,
-    "total_account_hp": 29.819399652043625,
+    "total_account_hp": 29.820137566400383,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2019-05-29T20:38:18",
@@ -2217,7 +2217,7 @@
   {
     "delegator": "lesulzbacher",
     "delegated_hp": 0,
-    "total_account_hp": 0.0005335834504870271,
+    "total_account_hp": 0.0005335966546055954,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-05-05T16:52:36",
@@ -2228,7 +2228,7 @@
   {
     "delegator": "liquideity",
     "delegated_hp": 0,
-    "total_account_hp": 6.083595543902625,
+    "total_account_hp": 6.08374608927057,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-03-17T22:44:33",
@@ -2239,7 +2239,7 @@
   {
     "delegator": "litekoiner",
     "delegated_hp": 0,
-    "total_account_hp": 19.89405627090079,
+    "total_account_hp": 19.89454857154761,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-03-29T01:18:15",
@@ -2250,7 +2250,7 @@
   {
     "delegator": "luanaecard",
     "delegated_hp": 0,
-    "total_account_hp": 0.11837008010425518,
+    "total_account_hp": 0.11837300930412299,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-12-14T14:26:33",
@@ -2261,7 +2261,7 @@
   {
     "delegator": "ludgero",
     "delegated_hp": 0,
-    "total_account_hp": 0.3284379439099497,
+    "total_account_hp": 0.328446071473782,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-11-06T19:03:24",
@@ -2272,7 +2272,7 @@
   {
     "delegator": "luidimarg",
     "delegated_hp": 0,
-    "total_account_hp": 342.63817394254886,
+    "total_account_hp": 342.64665290693694,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-07-17T16:41:36",
@@ -2283,7 +2283,7 @@
   {
     "delegator": "luizhadad",
     "delegated_hp": 0,
-    "total_account_hp": 369.47225008080545,
+    "total_account_hp": 369.48139308438493,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-02-14T02:03:48",
@@ -2294,7 +2294,7 @@
   {
     "delegator": "maismau",
     "delegated_hp": 0,
-    "total_account_hp": 131.1821466321777,
+    "total_account_hp": 131.1853928809446,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-11-08T19:29:42",
@@ -2305,7 +2305,7 @@
   {
     "delegator": "marianaemilia",
     "delegated_hp": 0,
-    "total_account_hp": 409.752899804564,
+    "total_account_hp": 409.76303959781995,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-09-02T11:59:12",
@@ -2338,7 +2338,7 @@
   {
     "delegator": "megamariano",
     "delegated_hp": 0,
-    "total_account_hp": 60.76840773812,
+    "total_account_hp": 60.769911520256144,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-21T01:43:54",
@@ -2349,7 +2349,7 @@
   {
     "delegator": "meinickenutri",
     "delegated_hp": 0,
-    "total_account_hp": 0.5173439979465159,
+    "total_account_hp": 0.5173568002016894,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-04-27T05:24:51",
@@ -2360,7 +2360,7 @@
   {
     "delegator": "micloop",
     "delegated_hp": 0,
-    "total_account_hp": 138.71305271261204,
+    "total_account_hp": 138.71648532206294,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2019-07-09T11:30:09",
@@ -2382,7 +2382,7 @@
   {
     "delegator": "mrprofessor",
     "delegated_hp": 0,
-    "total_account_hp": 1.7696884158740167,
+    "total_account_hp": 1.7697322087908525,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-04-22T21:42:48",
@@ -2393,7 +2393,7 @@
   {
     "delegator": "mrprofessordaily",
     "delegated_hp": 0,
-    "total_account_hp": 0.0009206964988559903,
+    "total_account_hp": 0.0009207192825193988,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-02-15T00:28:24",
@@ -2404,7 +2404,7 @@
   {
     "delegator": "naoebemumcanal",
     "delegated_hp": 0,
-    "total_account_hp": 17.772300823246876,
+    "total_account_hp": 17.77274061868485,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-07-02T22:21:09",
@@ -2415,7 +2415,7 @@
   {
     "delegator": "nascimentoab",
     "delegated_hp": 0,
-    "total_account_hp": 938.8751217157721,
+    "total_account_hp": 938.9633786254095,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-24T18:00:03",
@@ -2426,7 +2426,7 @@
   {
     "delegator": "nascimentocb",
     "delegated_hp": 0,
-    "total_account_hp": 50.242019061412755,
+    "total_account_hp": 50.244262711043135,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2021-03-20T15:24:45",
@@ -2437,7 +2437,7 @@
   {
     "delegator": "nathylieth",
     "delegated_hp": 0,
-    "total_account_hp": 136.72420416668862,
+    "total_account_hp": 136.72758755986044,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-02-18T02:50:06",
@@ -2448,7 +2448,7 @@
   {
     "delegator": "nayha23",
     "delegated_hp": 0,
-    "total_account_hp": 47.329187428093576,
+    "total_account_hp": 47.33035864170969,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-02-10T02:13:09",
@@ -2459,7 +2459,7 @@
   {
     "delegator": "nichollasrdo",
     "delegated_hp": 0,
-    "total_account_hp": 16.33770006580564,
+    "total_account_hp": 16.338104360445225,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-21T02:57:03",
@@ -2470,7 +2470,7 @@
   {
     "delegator": "norseland",
     "delegated_hp": 0,
-    "total_account_hp": 167.17816305964112,
+    "total_account_hp": 167.18430080175537,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-06-07T11:04:21",
@@ -2492,7 +2492,7 @@
   {
     "delegator": "oficialversatil",
     "delegated_hp": 0,
-    "total_account_hp": 7.563486380218255,
+    "total_account_hp": 7.563673547138187,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-09-08T16:17:54",
@@ -2503,7 +2503,7 @@
   {
     "delegator": "orozcorobetson",
     "delegated_hp": 0,
-    "total_account_hp": 2.651593096053795,
+    "total_account_hp": 2.65165871268715,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-22T03:36:51",
@@ -2525,7 +2525,7 @@
   {
     "delegator": "paradaleticia",
     "delegated_hp": 0,
-    "total_account_hp": 627.3893185118984,
+    "total_account_hp": 627.4048439614651,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-08-12T17:01:33",
@@ -2536,7 +2536,7 @@
   {
     "delegator": "pataty69",
     "delegated_hp": 0,
-    "total_account_hp": 3417.1095984478866,
+    "total_account_hp": 3417.555291352763,
     "token_balance": 18.66,
     "country_code": "BR",
     "last_user_post": "2026-04-03T11:44:03",
@@ -2547,7 +2547,7 @@
   {
     "delegator": "pedagogia",
     "delegated_hp": 0,
-    "total_account_hp": 0.017675050034304966,
+    "total_account_hp": 0.01767548742316352,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-21T00:02:39",
@@ -2558,7 +2558,7 @@
   {
     "delegator": "pedrocanella",
     "delegated_hp": 0,
-    "total_account_hp": 29.281606060624792,
+    "total_account_hp": 29.28233066667834,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2021-04-05T11:52:57",
@@ -2569,7 +2569,7 @@
   {
     "delegator": "phgnomo",
     "delegated_hp": 0,
-    "total_account_hp": 1643.1614156969074,
+    "total_account_hp": 1643.2651005260082,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-01-16T18:13:18",
@@ -2591,7 +2591,7 @@
   {
     "delegator": "pythomaster",
     "delegated_hp": 0,
-    "total_account_hp": 58.20038541005538,
+    "total_account_hp": 58.20182564361018,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-03-11T20:10:09",
@@ -2602,7 +2602,7 @@
   {
     "delegator": "qyses",
     "delegated_hp": 0,
-    "total_account_hp": 122.15871132811056,
+    "total_account_hp": 122.16173428189043,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-09-07T22:59:06",
@@ -2613,7 +2613,7 @@
   {
     "delegator": "rdabrasil",
     "delegated_hp": 0,
-    "total_account_hp": 1.4500472088259198,
+    "total_account_hp": 1.450083091864004,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-02-16T21:31:00",
@@ -2624,7 +2624,7 @@
   {
     "delegator": "reas63",
     "delegated_hp": 0,
-    "total_account_hp": 0.44488893232479804,
+    "total_account_hp": 0.4448999415984304,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-05-18T00:54:51",
@@ -2635,7 +2635,7 @@
   {
     "delegator": "renatacristiane",
     "delegated_hp": 0,
-    "total_account_hp": 1.4038939093832636,
+    "total_account_hp": 1.4039286503063937,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-02-01T19:58:03",
@@ -2646,7 +2646,7 @@
   {
     "delegator": "rhommar",
     "delegated_hp": 0,
-    "total_account_hp": 41.817245129107754,
+    "total_account_hp": 41.81827994355408,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-01-31T20:49:51",
@@ -2657,7 +2657,7 @@
   {
     "delegator": "rimasx",
     "delegated_hp": 0,
-    "total_account_hp": 5.31116848947671,
+    "total_account_hp": 5.311299920274288,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-21T00:17:06",
@@ -2679,7 +2679,7 @@
   {
     "delegator": "rodrigojmelo",
     "delegated_hp": 0,
-    "total_account_hp": 0.058271767887764885,
+    "total_account_hp": 0.05827320988775884,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2020-02-13T18:34:18",
@@ -2701,7 +2701,7 @@
   {
     "delegator": "rphspinheiro",
     "delegated_hp": 0,
-    "total_account_hp": 11.0874091615351,
+    "total_account_hp": 11.08768353186096,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-01-17T19:20:03",
@@ -2712,7 +2712,7 @@
   {
     "delegator": "sandranunes",
     "delegated_hp": 0,
-    "total_account_hp": 3.5805954891764338,
+    "total_account_hp": 3.58068409501183,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-02-07T06:21:12",
@@ -2723,7 +2723,7 @@
   {
     "delegator": "santana37",
     "delegated_hp": 0,
-    "total_account_hp": 35.68238755341421,
+    "total_account_hp": 35.68327055395635,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-03-16T02:33:39",
@@ -2734,7 +2734,7 @@
   {
     "delegator": "santinhos",
     "delegated_hp": 0,
-    "total_account_hp": 55.82650920859396,
+    "total_account_hp": 55.82789069793021,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2018-02-26T20:56:00",
@@ -2756,7 +2756,7 @@
   {
     "delegator": "selhomarlopes",
     "delegated_hp": 0,
-    "total_account_hp": 22.827924094200085,
+    "total_account_hp": 22.828488996683724,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-04-08T14:59:18",
@@ -2767,7 +2767,7 @@
   {
     "delegator": "silviamaria",
     "delegated_hp": 0,
-    "total_account_hp": 528.1564200083966,
+    "total_account_hp": 528.169489829033,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-03-25T11:21:48",
@@ -2778,7 +2778,7 @@
   {
     "delegator": "sistemabusiness",
     "delegated_hp": 0,
-    "total_account_hp": 85.32183313798403,
+    "total_account_hp": 85.32394452206124,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-26T15:02:24",
@@ -2789,10 +2789,10 @@
   {
     "delegator": "skaters",
     "delegated_hp": 0,
-    "total_account_hp": 617.1592402174077,
+    "total_account_hp": 617.1745125122586,
     "token_balance": 0,
     "country_code": "BR",
-    "last_user_post": "2026-07-03T18:54:24",
+    "last_user_post": "2026-07-04T19:08:27",
     "next_withdrawal": "1969-12-31T23:59:59",
     "in_curation_trail": false,
     "last_vote_date": "2026-05-17T17:10:45Z"
@@ -2800,7 +2800,7 @@
   {
     "delegator": "sktbr",
     "delegated_hp": 0,
-    "total_account_hp": 403.86786269098485,
+    "total_account_hp": 403.87785685242306,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-07-01T17:54:12",
@@ -2811,7 +2811,7 @@
   {
     "delegator": "splinter100dedos",
     "delegated_hp": 0,
-    "total_account_hp": 5.0974616720179355,
+    "total_account_hp": 5.097587814401575,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-01-27T06:04:51",
@@ -2822,7 +2822,7 @@
   {
     "delegator": "surfgurupro",
     "delegated_hp": 0,
-    "total_account_hp": 71.38575406782071,
+    "total_account_hp": 71.38752058805282,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-08-14T20:42:57",
@@ -2833,7 +2833,7 @@
   {
     "delegator": "surflimpo",
     "delegated_hp": 0,
-    "total_account_hp": 161.94767513845014,
+    "total_account_hp": 161.95168271458925,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-04-19T21:23:06",
@@ -2855,7 +2855,7 @@
   {
     "delegator": "tatianest",
     "delegated_hp": 0,
-    "total_account_hp": 0.22118384768791932,
+    "total_account_hp": 0.22118932112932307,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-02-28T20:56:54",
@@ -2866,7 +2866,7 @@
   {
     "delegator": "tatylayla",
     "delegated_hp": 0,
-    "total_account_hp": 95.6404291976425,
+    "total_account_hp": 95.64779776543791,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2020-03-03T22:06:39",
@@ -2877,7 +2877,7 @@
   {
     "delegator": "teteuzinho",
     "delegated_hp": 0,
-    "total_account_hp": 1.2665077503381947,
+    "total_account_hp": 1.26653909148734,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-05-16T01:46:33",
@@ -2888,7 +2888,7 @@
   {
     "delegator": "teu",
     "delegated_hp": 0,
-    "total_account_hp": 9.866883655849598,
+    "total_account_hp": 9.867127822908326,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-02-23T20:09:03",
@@ -2899,7 +2899,7 @@
   {
     "delegator": "thaliaperez",
     "delegated_hp": 0,
-    "total_account_hp": 46.420163961690015,
+    "total_account_hp": 46.42131268050495,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-06-04T00:03:03",
@@ -2932,7 +2932,7 @@
   {
     "delegator": "tucacheias",
     "delegated_hp": 0,
-    "total_account_hp": 26.337107669471028,
+    "total_account_hp": 26.33775941062247,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-03-31T01:01:42",
@@ -2943,7 +2943,7 @@
   {
     "delegator": "ukyron3",
     "delegated_hp": 0,
-    "total_account_hp": 0.0006086904777712101,
+    "total_account_hp": 0.0006087055404970735,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-02-12T22:06:18",
@@ -2954,7 +2954,7 @@
   {
     "delegator": "unhurried",
     "delegated_hp": 0,
-    "total_account_hp": 64.30116346613497,
+    "total_account_hp": 64.30275467025817,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-11-08T16:25:30",
@@ -2976,7 +2976,7 @@
   {
     "delegator": "usergabs",
     "delegated_hp": 0,
-    "total_account_hp": 5.572246946706359,
+    "total_account_hp": 5.572384838182021,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-05-14T18:48:18",
@@ -2987,7 +2987,7 @@
   {
     "delegator": "vanessabarrostec",
     "delegated_hp": 0,
-    "total_account_hp": 6.789744329593041,
+    "total_account_hp": 6.789912349401553,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-08-16T13:01:36",
@@ -2998,7 +2998,7 @@
   {
     "delegator": "vcorioh",
     "delegated_hp": 0,
-    "total_account_hp": 22.46368817628632,
+    "total_account_hp": 22.464244065345266,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2021-08-10T15:15:42",
@@ -3009,7 +3009,7 @@
   {
     "delegator": "ventrinidad",
     "delegated_hp": 0,
-    "total_account_hp": 16.831996613779115,
+    "total_account_hp": 16.832413140338975,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-06-19T15:13:45",
@@ -3020,7 +3020,7 @@
   {
     "delegator": "vicvondoom",
     "delegated_hp": 0,
-    "total_account_hp": 0.0012492569461371498,
+    "total_account_hp": 0.0012492878603958737,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-07-31T16:16:57",
@@ -3031,7 +3031,7 @@
   {
     "delegator": "vini0",
     "delegated_hp": 0,
-    "total_account_hp": 0.0007223415678987561,
+    "total_account_hp": 0.0007223594430478085,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-11-26T22:47:09",
@@ -3042,7 +3042,7 @@
   {
     "delegator": "vitoragnelli",
     "delegated_hp": 0,
-    "total_account_hp": 23.81982585043191,
+    "total_account_hp": 23.8204152986326,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-05-30T03:30:15",
@@ -3053,7 +3053,7 @@
   {
     "delegator": "vonlecram",
     "delegated_hp": 0,
-    "total_account_hp": 57.059129867622595,
+    "total_account_hp": 57.060541859534055,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-09-28T21:26:36",
@@ -3075,7 +3075,7 @@
   {
     "delegator": "wallabra-wallet",
     "delegated_hp": 0,
-    "total_account_hp": 0.0001436071006562401,
+    "total_account_hp": 0.00014361065437437472,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-10-04T20:30:12",
@@ -3086,7 +3086,7 @@
   {
     "delegator": "wasye",
     "delegated_hp": 0,
-    "total_account_hp": 140.48534537154427,
+    "total_account_hp": 140.48882183835693,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-07-15T21:13:48",
@@ -3097,7 +3097,7 @@
   {
     "delegator": "wellingt556",
     "delegated_hp": 0,
-    "total_account_hp": 2.5726844347733864,
+    "total_account_hp": 2.5727480987237668,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-10-27T12:48:57",
@@ -3119,7 +3119,7 @@
   {
     "delegator": "wlfreitas",
     "delegated_hp": 0,
-    "total_account_hp": 12.830546208265254,
+    "total_account_hp": 12.830863714464662,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2025-09-26T20:11:12",
@@ -3130,7 +3130,7 @@
   {
     "delegator": "xgoivo",
     "delegated_hp": 0,
-    "total_account_hp": 34.04132102282045,
+    "total_account_hp": 34.04216341333799,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-04-10T15:57:45",
@@ -3141,7 +3141,7 @@
   {
     "delegator": "xtryhard",
     "delegated_hp": 0,
-    "total_account_hp": 0.001491334329903633,
+    "total_account_hp": 0.0014913712346376518,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2022-03-25T14:22:48",
@@ -3152,7 +3152,7 @@
   {
     "delegator": "yungbresciani",
     "delegated_hp": 0,
-    "total_account_hp": 407.4501162817372,
+    "total_account_hp": 407.49821286100047,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-04-19T09:31:00",
@@ -3163,7 +3163,7 @@
   {
     "delegator": "newnow497",
     "delegated_hp": 0,
-    "total_account_hp": 168.93751258103111,
+    "total_account_hp": 168.94969600286302,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2026-01-27T23:35:30",
@@ -3174,7 +3174,7 @@
   {
     "delegator": "kedleona",
     "delegated_hp": 0,
-    "total_account_hp": 13.033426981056628,
+    "total_account_hp": 13.033749507767403,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2023-10-10T00:37:54",
@@ -3185,10 +3185,10 @@
   {
     "delegator": "samye2",
     "delegated_hp": 0,
-    "total_account_hp": 60.98332543761787,
+    "total_account_hp": 66.34475650582563,
     "token_balance": 0,
     "country_code": "BR",
-    "last_user_post": "2026-07-03T23:50:15",
+    "last_user_post": "2026-07-04T22:44:27",
     "next_withdrawal": "2026-07-09T22:43:45",
     "in_curation_trail": false,
     "last_vote_date": null
@@ -3196,7 +3196,7 @@
   {
     "delegator": "thayavlis",
     "delegated_hp": 0,
-    "total_account_hp": 5.0427464208770845,
+    "total_account_hp": 5.042871209270709,
     "token_balance": 0,
     "country_code": "BR",
     "last_user_post": "2024-01-15T01:33:54",
@@ -3207,7 +3207,7 @@
   {
     "delegator": "forykw",
     "delegated_hp": 0,
-    "total_account_hp": 124516.53811245666,
+    "total_account_hp": 124526.767933939,
     "token_balance": 0,
     "country_code": "PT_CERT",
     "last_user_post": "2026-07-03T09:41:06",
