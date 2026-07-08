@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-07-07T22:06:31.659Z",
+  "last_updated": "2026-07-08T22:00:22.168Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -466,7 +466,7 @@
     "biologistbrito": {
       "igormuba": false,
       "nexo.witness": false,
-      "mengao": false,
+      "mengao": true,
       "fernandosoder": false,
       "perfilbrasil": false
     },
