@@ -2317,12 +2317,12 @@
   "2026-07-25": {
     "total_votes": 12,
     "trail_count": 79,
-    "active_brazilians": 41,
-    "total_hp": 57883.73,
-    "total_delegated_hp": 42230.05,
+    "active_brazilians": 40,
+    "total_hp": 57884.83,
+    "total_delegated_hp": 42230.85,
     "active_members": 287,
     "market": {
-      "hive_usd": 0.04633118,
+      "hive_usd": 0.04676846,
       "usd_brl": null
     },
     "script_version": "2.32.0"
