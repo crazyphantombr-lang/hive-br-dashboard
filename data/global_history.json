@@ -2326,5 +2326,18 @@
       "usd_brl": null
     },
     "script_version": "2.32.0"
+  },
+  "2026-07-26": {
+    "total_votes": 12,
+    "trail_count": 79,
+    "active_brazilians": 40,
+    "total_hp": 57890.02,
+    "total_delegated_hp": 42231.89,
+    "active_members": 287,
+    "market": {
+      "hive_usd": 0.04722811,
+      "usd_brl": null
+    },
+    "script_version": "2.32.0"
   }
 }
