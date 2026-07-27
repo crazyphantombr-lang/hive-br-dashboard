@@ -1,32 +1,32 @@
 {
-  "last_updated": "2026-07-27T09:46:47.300Z",
+  "last_updated": "2026-07-27T14:22:16.429Z",
   "versions": {
     "backend": "2.32.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 59,
-  "total_hp": 42236.23199999998,
-  "project_account_hp": 15659.738206175074,
+  "total_hp": 42236.87499999998,
+  "project_account_hp": 15664.817367339503,
   "total_hbr_staked": 5552.956557999999,
   "curation_trail_count": 79,
   "active_community_members": 287,
   "active_brazilians": 41,
-  "votes_24h": 14,
-  "votes_month_current": 314,
+  "votes_24h": 15,
+  "votes_month_current": 316,
   "votes_month_prev1": 340,
   "votes_month_prev2": 349,
   "activity_log": [
     {
       "user": "rimurutempest",
       "old_val": 7401.6,
-      "new_val": 7803.47,
-      "diff": 401.87
+      "new_val": 7803.59,
+      "diff": 401.99
     },
     {
       "user": "shiftrox",
       "old_val": 1101.65,
-      "new_val": 1200.65,
-      "diff": 99
+      "new_val": 1200.67,
+      "diff": 99.02
     },
     {
       "user": "casagrande",
@@ -37,54 +37,54 @@
     {
       "user": "matheusggr",
       "old_val": 10401.08,
-      "new_val": 10413.14,
-      "diff": 12.06
+      "new_val": 10413.3,
+      "diff": 12.22
     },
     {
       "user": "tfranzini",
       "old_val": 3169.72,
-      "new_val": 3173.4,
-      "diff": 3.68
+      "new_val": 3173.45,
+      "diff": 3.73
     },
     {
       "user": "michupa",
       "old_val": 3030.95,
-      "new_val": 3034.47,
-      "diff": 3.52
+      "new_val": 3034.51,
+      "diff": 3.56
     },
     {
       "user": "wiseagent",
       "old_val": 2512.39,
-      "new_val": 2515.3,
-      "diff": 2.91
+      "new_val": 2515.34,
+      "diff": 2.95
     },
     {
       "user": "mengao",
       "old_val": 2051,
-      "new_val": 2053.38,
-      "diff": 2.38
+      "new_val": 2053.41,
+      "diff": 2.41
     },
     {
       "user": "gwajnberg",
       "old_val": 1049.88,
-      "new_val": 1051.09,
-      "diff": 1.21
+      "new_val": 1051.11,
+      "diff": 1.23
     },
     {
       "user": "kaibagt",
       "old_val": 1039,
-      "new_val": 1040.2,
-      "diff": 1.2
+      "new_val": 1040.22,
+      "diff": 1.22
     }
   ],
   "top_grower": {
     "delegator": "rimurutempest",
-    "growth": 802.357,
+    "growth": 802.4770000000008,
     "old_hp": 7001.11,
-    "current_hp": 7803.467
+    "current_hp": 7803.587
   },
   "market": {
-    "hive_usd": 0.0463334,
+    "hive_usd": 0.04586032,
     "usd_brl": null
   }
 }
