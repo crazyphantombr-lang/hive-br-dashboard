@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-07-30T22:08:05.534Z",
+  "last_updated": "2026-07-31T21:59:00.777Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -506,11 +506,11 @@
       "perfilbrasil": false
     },
     "aiyumi": {
-      "igormuba": true,
+      "igormuba": false,
       "nexo.witness": false,
       "mengao": false,
-      "fernandosoder": true,
-      "perfilbrasil": true
+      "fernandosoder": false,
+      "perfilbrasil": false
     },
     "ale-rio": {
       "igormuba": false,
