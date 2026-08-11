@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-08-11T12:53:29.255Z",
+  "last_updated": "2026-08-11T12:57:42.350Z",
   "versions": {
     "backend": "2.32.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 60,
-  "total_hp": 34018.59200000001,
-  "project_account_hp": 15757.084748590187,
+  "total_hp": 34018.60200000001,
+  "project_account_hp": 15757.088480765331,
   "total_hbr_staked": 5558.985557999999,
   "curation_trail_count": 79,
   "active_community_members": 288,
@@ -79,12 +79,12 @@
   ],
   "top_grower": {
     "delegator": "promete0sz",
-    "growth": 500.022,
+    "growth": 500.023,
     "old_hp": 0,
-    "current_hp": 500.022
+    "current_hp": 500.023
   },
   "market": {
-    "hive_usd": 0.04080375,
+    "hive_usd": 0.04080353,
     "usd_brl": null
   }
 }
