@@ -2604,11 +2604,11 @@
     "total_votes": 9,
     "trail_count": 79,
     "active_brazilians": 42,
-    "total_hp": 49810,
-    "total_delegated_hp": 34031.26,
+    "total_hp": 49810.03,
+    "total_delegated_hp": 34031.28,
     "active_members": 288,
     "market": {
-      "hive_usd": 0.03927193,
+      "hive_usd": 0.03923553,
       "usd_brl": null
     },
     "script_version": "2.32.0"
