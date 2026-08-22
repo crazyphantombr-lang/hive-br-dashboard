@@ -2679,14 +2679,14 @@
     "script_version": "2.32.0"
   },
   "2026-08-22": {
-    "total_votes": 13,
+    "total_votes": 14,
     "trail_count": 79,
     "active_brazilians": 43,
-    "total_hp": 49865.06,
-    "total_delegated_hp": 34048.92,
+    "total_hp": 49866.07,
+    "total_delegated_hp": 34049.62,
     "active_members": 288,
     "market": {
-      "hive_usd": 0.0445477,
+      "hive_usd": 0.04367507,
       "usd_brl": null
     },
     "script_version": "2.32.0"
