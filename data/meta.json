@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-08-29T20:19:33.875Z",
+  "last_updated": "2026-08-29T20:23:29.074Z",
   "versions": {
     "backend": "2.32.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 60,
-  "total_hp": 34069.84399999999,
-  "project_account_hp": 15854.581554964763,
+  "total_hp": 34069.85499999999,
+  "project_account_hp": 15854.585192599478,
   "total_hbr_staked": 5650.038557999998,
   "curation_trail_count": 79,
   "active_community_members": 288,
@@ -19,8 +19,8 @@
     {
       "user": "matheusggr",
       "old_val": 10428.76,
-      "new_val": 10441.68,
-      "diff": 12.92
+      "new_val": 10441.69,
+      "diff": 12.93
     },
     {
       "user": "tfranzini",
@@ -84,7 +84,7 @@
     "current_hp": 500.776
   },
   "market": {
-    "hive_usd": 0.04283347,
+    "hive_usd": 0.04284233,
     "usd_brl": null
   }
 }
