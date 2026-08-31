@@ -2798,12 +2798,12 @@
   "2026-08-31": {
     "total_votes": 11,
     "trail_count": 79,
-    "active_brazilians": 42,
-    "total_hp": 50029.65,
-    "total_delegated_hp": 34173.41,
+    "active_brazilians": 41,
+    "total_hp": 50007.26,
+    "total_delegated_hp": 34151,
     "active_members": 289,
     "market": {
-      "hive_usd": 0.04241226,
+      "hive_usd": 0.04268449,
       "usd_brl": null
     },
     "script_version": "2.32.0"
