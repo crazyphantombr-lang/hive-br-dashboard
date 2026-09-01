@@ -118,5 +118,30 @@
       }
     ],
     "last_scan": "2026-08-01T02:24:20.354Z"
+  },
+  "2026-09": {
+    "unknown_delegators": [
+      {
+        "user": "suzanne7",
+        "hp": "302.00",
+        "first_seen": "2026-09-01T03:15:53.637Z"
+      },
+      {
+        "user": "ronnie10",
+        "hp": "1.00",
+        "first_seen": "2026-09-01T03:15:53.637Z"
+      },
+      {
+        "user": "promete0sz",
+        "hp": "500.87",
+        "first_seen": "2026-09-01T03:15:53.637Z"
+      },
+      {
+        "user": "elianaicgomes",
+        "hp": "100.02",
+        "first_seen": "2026-09-01T03:15:53.637Z"
+      }
+    ],
+    "last_scan": "2026-09-01T03:15:53.637Z"
   }
 }
