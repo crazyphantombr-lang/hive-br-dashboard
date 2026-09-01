@@ -2811,12 +2811,12 @@
   "2026-09-01": {
     "total_votes": 18,
     "trail_count": 79,
-    "active_brazilians": 41,
-    "total_hp": 50029.09,
-    "total_delegated_hp": 34155.19,
+    "active_brazilians": 42,
+    "total_hp": 50030.26,
+    "total_delegated_hp": 34155.7,
     "active_members": 289,
     "market": {
-      "hive_usd": 0.04400018,
+      "hive_usd": 0.04349527,
       "usd_brl": null
     },
     "script_version": "2.32.0"
