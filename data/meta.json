@@ -1,17 +1,17 @@
 {
-  "last_updated": "2026-09-03T15:41:16.453Z",
+  "last_updated": "2026-09-03T15:46:27.671Z",
   "versions": {
     "backend": "2.32.0",
     "node_env": "v18.20.8"
   },
   "total_delegators": 61,
-  "total_hp": 34160.673,
-  "project_account_hp": 15884.56224543995,
+  "total_hp": 34160.681000000004,
+  "project_account_hp": 15884.56683320326,
   "total_hbr_staked": 5650.038557999998,
   "curation_trail_count": 79,
   "active_community_members": 289,
   "active_brazilians": 42,
-  "votes_24h": 15,
+  "votes_24h": 13,
   "votes_month_current": 34,
   "votes_month_prev1": 360,
   "votes_month_prev2": 367,
@@ -84,7 +84,7 @@
     "current_hp": 500.971
   },
   "market": {
-    "hive_usd": 0.04607843,
+    "hive_usd": 0.04633908,
     "usd_brl": null
   }
 }
