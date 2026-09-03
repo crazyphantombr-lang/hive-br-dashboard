@@ -2837,12 +2837,12 @@
   "2026-09-03": {
     "total_votes": 13,
     "trail_count": 79,
-    "active_brazilians": 42,
-    "total_hp": 50045.25,
-    "total_delegated_hp": 34160.68,
+    "active_brazilians": 41,
+    "total_hp": 50047.09,
+    "total_delegated_hp": 34161.21,
     "active_members": 289,
     "market": {
-      "hive_usd": 0.04633908,
+      "hive_usd": 0.04608905,
       "usd_brl": null
     },
     "script_version": "2.32.0"
