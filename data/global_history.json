@@ -2954,12 +2954,12 @@
   "2026-09-12": {
     "total_votes": 11,
     "trail_count": 79,
-    "active_brazilians": 43,
-    "total_hp": 49660.1,
-    "total_delegated_hp": 33707.17,
+    "active_brazilians": 44,
+    "total_hp": 49661.23,
+    "total_delegated_hp": 33707.94,
     "active_members": 288,
     "market": {
-      "hive_usd": 0.04640424,
+      "hive_usd": 0.04664956,
       "usd_brl": null
     },
     "script_version": "2.32.0"
