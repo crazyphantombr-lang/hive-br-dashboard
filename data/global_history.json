@@ -3032,12 +3032,12 @@
   "2026-09-18": {
     "total_votes": 14,
     "trail_count": 79,
-    "active_brazilians": 44,
-    "total_hp": 49708.3,
-    "total_delegated_hp": 33722.73,
+    "active_brazilians": 43,
+    "total_hp": 49709.46,
+    "total_delegated_hp": 33723.52,
     "active_members": 288,
     "market": {
-      "hive_usd": 0.050858,
+      "hive_usd": 0.051812,
       "usd_brl": null
     },
     "script_version": "2.32.0"
