@@ -3043,14 +3043,14 @@
     "script_version": "2.32.0"
   },
   "2026-09-19": {
-    "total_votes": 9,
+    "total_votes": 10,
     "trail_count": 79,
     "active_brazilians": 43,
-    "total_hp": 49715.49,
-    "total_delegated_hp": 33725.32,
+    "total_hp": 49716.63,
+    "total_delegated_hp": 33726.1,
     "active_members": 288,
     "market": {
-      "hive_usd": 0.053194,
+      "hive_usd": 0.053416,
       "usd_brl": null
     },
     "script_version": "2.32.0"
