@@ -3123,12 +3123,12 @@
   "2026-09-25": {
     "total_votes": 12,
     "trail_count": 79,
-    "active_brazilians": 43,
-    "total_hp": 49767.29,
-    "total_delegated_hp": 33742.21,
+    "active_brazilians": 44,
+    "total_hp": 49768.64,
+    "total_delegated_hp": 33742.69,
     "active_members": 288,
     "market": {
-      "hive_usd": 0.057013,
+      "hive_usd": 0.057397,
       "usd_brl": null
     },
     "script_version": "2.32.0"
