@@ -3238,14 +3238,14 @@
     "script_version": "2.32.0"
   },
   "2026-10-04": {
-    "total_votes": 10,
+    "total_votes": 11,
     "trail_count": 79,
     "active_brazilians": 40,
-    "total_hp": 49705.11,
-    "total_delegated_hp": 33639.72,
+    "total_hp": 49705.79,
+    "total_delegated_hp": 33640.19,
     "active_members": 288,
     "market": {
-      "hive_usd": 0.057028,
+      "hive_usd": 0.057379,
       "usd_brl": null
     },
     "script_version": "2.32.0"
