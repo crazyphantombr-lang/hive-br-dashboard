@@ -3277,14 +3277,14 @@
     "script_version": "2.32.0"
   },
   "2026-10-07": {
-    "total_votes": 10,
+    "total_votes": 12,
     "trail_count": 79,
     "active_brazilians": 39,
-    "total_hp": 49729.87,
-    "total_delegated_hp": 33646.04,
+    "total_hp": 49732.14,
+    "total_delegated_hp": 33646.91,
     "active_members": 288,
     "market": {
-      "hive_usd": 0.055291,
+      "hive_usd": 0.054277,
       "usd_brl": null
     },
     "script_version": "2.32.0"
