@@ -3306,11 +3306,11 @@
     "total_votes": 14,
     "trail_count": 80,
     "active_brazilians": 40,
-    "total_hp": 49806.53,
-    "total_delegated_hp": 33652.99,
+    "total_hp": 49806.55,
+    "total_delegated_hp": 33653,
     "active_members": 288,
     "market": {
-      "hive_usd": 0.054526,
+      "hive_usd": 0.054513,
       "usd_brl": null
     },
     "script_version": "2.32.0"
