@@ -3316,14 +3316,14 @@
     "script_version": "2.32.0"
   },
   "2026-10-10": {
-    "total_votes": 13,
+    "total_votes": 14,
     "trail_count": 80,
     "active_brazilians": 40,
-    "total_hp": 49809.48,
-    "total_delegated_hp": 33654.98,
+    "total_hp": 49810.12,
+    "total_delegated_hp": 33655.42,
     "active_members": 288,
     "market": {
-      "hive_usd": 0.056039,
+      "hive_usd": 0.055528,
       "usd_brl": null
     },
     "script_version": "2.32.0"
