@@ -3422,12 +3422,12 @@
   "2026-10-18": {
     "total_votes": 11,
     "trail_count": 80,
-    "active_brazilians": 41,
-    "total_hp": 50165.36,
-    "total_delegated_hp": 33975.14,
-    "active_members": 288,
+    "active_brazilians": 40,
+    "total_hp": 49765.13,
+    "total_delegated_hp": 33574.9,
+    "active_members": 287,
     "market": {
-      "hive_usd": 0.04814344,
+      "hive_usd": 0.04812994,
       "usd_brl": null
     },
     "script_version": "2.32.0"
