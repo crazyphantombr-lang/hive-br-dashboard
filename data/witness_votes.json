@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-20T23:34:06.194Z",
+  "last_updated": "2026-10-21T23:51:17.568Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -319,9 +319,9 @@
     "pablito.saldo": {
       "igormuba": false,
       "nexo.witness": false,
-      "mengao": true,
+      "mengao": false,
       "fernandosoder": false,
-      "perfilbrasil": true
+      "perfilbrasil": false
     },
     "perfilbrasil": {
       "igormuba": false,
