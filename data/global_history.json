@@ -3537,14 +3537,14 @@
     "script_version": "2.32.0"
   },
   "2026-10-27": {
-    "total_votes": 11,
+    "total_votes": 9,
     "trail_count": 80,
     "active_brazilians": 38,
-    "total_hp": 49731.61,
-    "total_delegated_hp": 33488.52,
+    "total_hp": 49732.3,
+    "total_delegated_hp": 33488.98,
     "active_members": 286,
     "market": {
-      "hive_usd": 0.04851325,
+      "hive_usd": 0.0488693,
       "usd_brl": null
     },
     "script_version": "2.32.0"
