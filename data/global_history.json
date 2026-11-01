@@ -3602,14 +3602,14 @@
     "script_version": "2.32.0"
   },
   "2026-11-01": {
-    "total_votes": 15,
+    "total_votes": 13,
     "trail_count": 80,
     "active_brazilians": 40,
-    "total_hp": 49746.41,
-    "total_delegated_hp": 33485.85,
+    "total_hp": 49747.73,
+    "total_delegated_hp": 33486.74,
     "active_members": 286,
     "market": {
-      "hive_usd": 0.04730572,
+      "hive_usd": 0.04668183,
       "usd_brl": null
     },
     "script_version": "2.32.0"
