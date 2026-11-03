@@ -3628,14 +3628,14 @@
     "script_version": "2.32.0"
   },
   "2026-11-03": {
-    "total_votes": 11,
+    "total_votes": 12,
     "trail_count": 80,
     "active_brazilians": 40,
-    "total_hp": 49768.25,
-    "total_delegated_hp": 33492.08,
+    "total_hp": 49772.71,
+    "total_delegated_hp": 33493.08,
     "active_members": 286,
     "market": {
-      "hive_usd": 0.04520287,
+      "hive_usd": 0.04487787,
       "usd_brl": null
     },
     "script_version": "2.32.0"
