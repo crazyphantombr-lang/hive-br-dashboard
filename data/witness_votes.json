@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-05T01:12:55.280Z",
+  "last_updated": "2026-11-06T01:18:13.477Z",
   "targets": [
     "igormuba",
     "nexo.witness",
@@ -443,11 +443,11 @@
       "perfilbrasil": false
     },
     "xlety": {
-      "igormuba": true,
-      "nexo.witness": true,
-      "mengao": true,
-      "fernandosoder": true,
-      "perfilbrasil": true
+      "igormuba": false,
+      "nexo.witness": false,
+      "mengao": false,
+      "fernandosoder": false,
+      "perfilbrasil": false
     },
     "xvlad": {
       "igormuba": false,
