@@ -3732,14 +3732,14 @@
     "script_version": "2.32.0"
   },
   "2026-11-11": {
-    "total_votes": 11,
+    "total_votes": 15,
     "trail_count": 80,
     "active_brazilians": 35,
-    "total_hp": 49831.53,
-    "total_delegated_hp": 33513.23,
+    "total_hp": 49835.86,
+    "total_delegated_hp": 33514.39,
     "active_members": 286,
     "market": {
-      "hive_usd": 0.04311587,
+      "hive_usd": 0.04266082,
       "usd_brl": null
     },
     "script_version": "2.32.0"
